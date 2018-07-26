@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>计划管理</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}" rel="stylesheet">
+    <link href="../static/assets/materialize/css/materialize.min.css"
+          th:href="@{assets/materialize/css/materialize.min.css}" media="screen,projection" rel="stylesheet"/>
+    <!-- Bootstrap Styles-->
+    <link href="../static/assets/css/bootstrap.css"
+          th:href="@{assets/css/bootstrap.css}" rel="stylesheet"/>
+    <!-- FontAwesome Styles-->
+    <link href="../static/assets/css/font-awesome.css"
+          th:href="@{assets/css/font-awesome.css}" rel="stylesheet"/>
+    <!-- Morris Chart Styles-->
+    <link href="../static/assets/js/morris/morris-0.4.3.min.css"
+          th:href="@{assets/js/morris/morris-0.4.3.min.css}" rel="stylesheet"/>
+    <!-- Custom Styles-->
+    <link href="../static/assets/css/custom-styles.css"
+          th:href="@{assets/css/custom-styles.css}" rel="stylesheet"/>
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans'
+          th:href="@{http://fonts.googleapis.com/css?family=Open+Sans}" rel='stylesheet' type='text/css'/>
+    <link href="../static/assets/js/Lightweight-Chart/cssCharts.css"
+          th:href="@{assets/js/Lightweight-Chart/cssCharts.css}" rel="stylesheet">
+</head>
+
+<body>
+<div id="wrapper">
+    <!-- top side start-->
+    <div  th:include="template/top_side_template :: topside"></div>
+    <!-- top side end-->
+    <!-- left side start-->
+    <nav class="navbar-default navbar-side" role="navigation"
+         th:include="template/left_side_template :: leftside"></nav>
+    <!-- left side end-->
+    <div id="page-wrapper">
+        <div id="header" class="header">
+            <!--<h3 class="page-header">-->
+            <!--Dashboard-->
+            <!--</h3>-->
+            <ol class="breadcrumb">
+                <li><a href="index.html">计划监控</a></li>
+                <li class="active">计划管理</li>
+            </ol>
+        </div>
+        <div id="page-inner">
+
+            <div class="row">
+                <div class="col-md-4 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="card-action">
+                            <b>Tasks Panel</b>
+                        </div>
+                        <div class="card-image">
+                            <div class="collection">
+                                <a href="#!" class="collection-item">Red<span class="new badge red"
+                                                                              data-badge-caption="red">4</span></a>
+                                <a href="#!" class="collection-item">Blue<span class="new badge blue"
+                                                                               data-badge-caption="blue">4</span></a>
+                                <a href="#!" class="collection-item"><span class="badge">1</span>Alan</a>
+                                <a href="#!" class="collection-item"><span class="new badge">4</span>Alan</a>
+                                <a href="#!" class="collection-item">Alan<span class="new badge blue"
+                                                                               data-badge-caption="blue">4</span></a>
+                                <a href="#!" class="collection-item"><span class="badge">14</span>Alan</a>
+                                <a href="#!" class="collection-item">Custom Badge Captions<span class="new badge"
+                                                                                                data-badge-caption="custom caption">4</span></a>
+                                <a href="#!" class="collection-item">Custom Badge Captions<span class="badge"
+                                                                                                data-badge-caption="custom caption">4</span></a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-md-8 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="card-action">
+                            <b>User List</b>
+                        </div>
+                        <div class="card-image">
+                            <ul class="collection">
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle green">track_changes</i>
+                                    <span class="title">Title</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                                </li>
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle">folder</i>
+                                    <span class="title">Title</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                                </li>
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle green">track_changes</i>
+                                    <span class="title">Title</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                                </li>
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle red">play_arrow</i>
+                                    <span class="title">Title</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <!-- /. ROW  -->
+            <div class="fixed-action-btn horizontal click-to-toggle">
+                <a href="#header" class="btn-floating btn-large red"><i class="material-icons">publish</i></a>
+            </div>
+
+            <footer th:include="template/footer_template :: my_footer">
+            </footer>
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+<!-- JS Scripts-->
+<!-- jQuery Js -->
+<script src="../static/assets/js/jquery-1.10.2.js"
+        th:src="@{assets/js/jquery-1.10.2.js}"></script>
+<!-- Bootstrap Js -->
+<script src="../static/assets/js/bootstrap.min.js"
+        th:src="@{assets/js/bootstrap.min.js}"></script>
+<script src="../static/assets/materialize/js/materialize.min.js"
+        th:src="@{assets/materialize/js/materialize.min.js}"></script>
+<!-- Metis Menu Js -->
+<script src="../static/assets/js/jquery.metisMenu.js"
+        th:src="@{assets/js/jquery.metisMenu.js}"></script>
+<!-- Morris Chart Js -->
+<script src="../static/assets/js/morris/raphael-2.1.0.min.js"
+        th:src="@{assets/js/morris/raphael-2.1.0.min.js}"></script>
+<script src="../static/assets/js/morris/morris.js"
+        th:src="@{assets/js/morris/morris.js}"></script>
+<script src="../static/assets/js/easypiechart.js"
+        th:src="@{assets/js/easypiechart.js}"></script>
+<script src="../static/assets/js/easypiechart-data.js"
+        th:src="@{assets/js/easypiechart-data.js}"></script>
+<script src="../static/assets/js/Lightweight-Chart/jquery.chart.js"
+        th:src="@{assets/js/Lightweight-Chart/jquery.chart.js}"></script>
+<!-- Custom Js -->
+<script src="../static/assets/js/custom-scripts.js"
+        th:src="@{assets/js/custom-scripts.js}"></script>
+</body>
+
+</html>

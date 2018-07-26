@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav  th:fragment="leftside">
+    <!--logo and iconic logo start-->
+    <!--/. NAV TOP  -->
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+
+                <li id="page-index" >
+                    <a class="active-menu waves-effect waves-dark" href="index.html"><i class="fa fa-dashboard"></i>
+                        监控首页</a>
+                </li>
+                <li id="page-monitor" >
+                    <a href="#" class="waves-effect waves-dark"><i class="fa fa-sitemap fa-lg"></i>计划监控<span
+                            class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li id="page-monitor-plan" >
+                            <a href="monitor_plan.html">计划管理</a>
+                        </li>
+                        <li id="page-monitor_burden" >
+                            <a href="monitor_burden.html">负荷监控</a>
+                        </li>
+                        <li id="page-monitor_ship" >
+                            <a href="monitor_ship.html">船舶监控</a>
+                        </li>
+                    </ul>
+                </li>
+                <li id="page-job" >
+                    <a href="#" class="waves-effect waves-dark"><i class="fa fa-desktop fa-lg"></i>派工管理<span
+                            class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li id="page-job_arrange" >
+                            <a href="job_arrange.html">派工管理</a>
+                        </li>
+                        <li id="page-job_record" >
+                            <a href="job_record.html">派工记录</a>
+                        </li>
+                    </ul>
+                </li>
+                <li id="page-manage" >
+                    <a href="#" class="waves-effect waves-dark"><i class="fa fa-cog fa-lg"></i>系统管理<span
+                            class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li id="page-manage_workers" >
+                            <a href="manage_workers.html">工人管理</a>
+                        </li>
+                        <li id="page-manage_department" >
+                            <a href="manage_department.html">部门管理</a>
+                        </li>
+                        <li id="page-manage_exception" >
+                            <a href="#">系统异常</a>
+                        </li>
+                    </ul>
+                </li>
+                <li id="page-exception" >
+                    <a href="#" class="waves-effect waves-dark"><i class="fa fa-bar-chart-o fa-lg"></i>异常管理</a>
+                </li>
+                <li id="page-storehouse" >
+                    <a href="#" class="waves-effect waves-dark"><i class="fa fa-qrcode fa-lg"></i> 仓储管理</a>
+                </li>
+
+                <li id="page-taoliao" >
+                    <a   href="#" class="waves-effect waves-dark"><i class="fa fa-table fa-lg"></i> 在线套料</a>
+                </li>
+                <li id="page-scanner" >
+                    <a  href="#" class="waves-effect waves-dark"><i class="fa fa-edit fa-lg"></i> 扫码页面</a>
+                </li>
+
+                <li id="page-exit" >
+                    <a href="#" class="waves-effect waves-dark"><i class="fa fa-fw fa-sign-out fa-lg"></i> 退出登录</a>
+                </li>
+            </ul>
+        </div>
+    <!-- /. NAV SIDE  -->
+</nav>
+</body>
+</html>
