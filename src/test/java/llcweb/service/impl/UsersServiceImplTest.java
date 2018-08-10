@@ -33,7 +33,9 @@ public class UsersServiceImplTest {
     public void getUsersPage() throws Exception {
 
         Page<Users> users = usersService.getUsersPage(new PageParam(1,10),"chen");
-        //for (Users user: users. )
+        for (Users user: users.getContent()){
+
+        }
     }
 
 }

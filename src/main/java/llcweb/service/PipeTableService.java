@@ -1,5 +1,9 @@
 package llcweb.service;
 
+import llcweb.domain.models.PipeTable;
+import llcweb.tools.PageParam;
+import org.springframework.data.domain.Page;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -25,4 +29,8 @@ public interface PipeTableService {
     *删除
     * */
     void deleteById(int id);
+
+    Page<PipeTable> getPage(PageParam pageParam, Integer batchId);
+    void turnUnit(int startPage, String batchName);
+
 }

@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
  //Integer 是id 的类型
 public interface DepartmentsRepository extends JpaRepository<Departments,Integer>{
-
+    Departments findByName(String name);
 }

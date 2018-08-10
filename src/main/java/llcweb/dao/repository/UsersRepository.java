@@ -15,4 +15,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  //Integer 是id 的类型
 public interface UsersRepository extends JpaRepository<Users,Integer>{
     Page<Users> findAll(Specification<Users> spec, Pageable pageable);
+    Users findByUsernameAndPassword(String userName,String password);
+    Users findByUsername(String userName);
 }

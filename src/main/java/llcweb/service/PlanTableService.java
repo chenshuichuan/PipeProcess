@@ -25,4 +25,5 @@ public interface PlanTableService {
     *删除
     * */
     void deleteById(int id);
+    void analyzePlan();
 }

@@ -1,5 +1,7 @@
 package llcweb.service;
 
+import llcweb.domain.models.UnitTable;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -25,4 +27,11 @@ public interface UnitTableService {
     *删除
     * */
     void deleteById(int id);
+
+    void turnUnit();
+
+    int countPipeNumberOfUnit(UnitTable unitTable);
+    void countPipeNumberOfUnits();
+
+    void judgeBatchUnitPlanId(String batchName);
 }

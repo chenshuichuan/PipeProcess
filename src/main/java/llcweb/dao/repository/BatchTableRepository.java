@@ -1,7 +1,10 @@
 package llcweb.dao.repository;
 
 import llcweb.domain.models.BatchTable;
+import llcweb.domain.models.PipeTable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * Created by:Ricardo
@@ -11,5 +14,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
  //Integer 是id 的类型
 public interface BatchTableRepository extends JpaRepository<BatchTable,Integer>{
-
+    BatchTable findByBatchName(String batchName);
+    BatchTable findByShipCodeAndBatchName(String shipCode, String batchName);
 }

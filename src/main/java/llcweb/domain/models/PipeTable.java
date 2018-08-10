@@ -41,14 +41,9 @@ public class PipeTable {
 
     private Date updateTime;
 
-    public Integer getIsOutOfUnit() {
-        return isOutOfUnit;
-    }
 
-    public void setIsOutOfUnit(Integer isOutOfUnit) {
-        this.isOutOfUnit = isOutOfUnit;
-    }
 
+    private String unitName;
     private Integer isOutOfUnit;
     public PipeTable() {
     }
@@ -81,7 +76,21 @@ public class PipeTable {
         this.outfield = outfield;
         this.isOutOfUnit = isOutOfUnit;
     }
+    public Integer getIsOutOfUnit() {
+        return isOutOfUnit;
+    }
 
+    public void setIsOutOfUnit(Integer isOutOfUnit) {
+        this.isOutOfUnit = isOutOfUnit;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
     public Integer getPipeId() {
         return pipeId;
     }

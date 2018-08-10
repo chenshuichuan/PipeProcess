@@ -17,8 +17,8 @@ public class UnitTable {
 
     private String shipCode;
 
-    private String batchId;
-
+    private Integer batchId;
+    private String batchName;
     private String description;
 
     private Integer planId;
@@ -38,17 +38,32 @@ public class UnitTable {
     private Integer pipeFinishedNumber;
 
     private Date finishedTime;
+
     public UnitTable( ) {
 
     }
 
-    public UnitTable(String unitName, String shipCode, String batchId, String description) {
+    public UnitTable(String unitName, String shipCode, Integer batchId, String description) {
         this.unitName = unitName;
         this.shipCode = shipCode;
         this.batchId = batchId;
         this.description = description;
     }
+    public String getBatchName() {
+        return batchName;
+    }
 
+    public void setBatchName(String batchName) {
+        this.batchName = batchName;
+    }
+
+    public Integer getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(Integer planId) {
+        this.planId = planId;
+    }
     public Integer getUnitId() {
         return unitId;
     }
@@ -73,12 +88,12 @@ public class UnitTable {
         this.shipCode = shipCode == null ? null : shipCode.trim();
     }
 
-    public String getBatchId() {
+    public Integer getBatchId() {
         return batchId;
     }
 
-    public void setBatchId(String batchId) {
-        this.batchId = batchId == null ? null : batchId.trim();
+    public void setBatchId(Integer batchId) {
+        this.batchId = batchId  ;
     }
 
     public String getDescription() {

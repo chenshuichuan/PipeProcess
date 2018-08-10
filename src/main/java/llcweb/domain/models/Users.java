@@ -1,14 +1,19 @@
 package llcweb.domain.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="users")
-public class Users {
+public class Users implements Serializable,UserDetails {
     @Id
     @GeneratedValue
     private Integer id;
@@ -32,6 +37,58 @@ public class Users {
     private String ipAddr;
 
     private Integer workerId;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = {
+                    @JoinColumn(name = "ur_user_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "ur_role_id")
+            }
+    )
+    private List<Roles> roles;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> auths = new ArrayList<>();
+        List<Roles> roles = getRoles();
+        for(Roles role : roles)
+        {
+            auths.add(new SimpleGrantedAuthority(role.getFlag()));
+        }
+        return auths;
+    }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public List<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Roles> roles) {
+        this.roles = roles;
+    }
+
     public Users( ) {
 
     }
