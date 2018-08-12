@@ -15,21 +15,22 @@ public class Workers {
 
     private String name;
 
-    private String password;
+    private String code;
 
     private String job;
 
     private Integer role;
-
+    private String state;
+    private String asUser;
     private String departments;
 
     private Date updateTime;
     public Workers( ) {
 
     }
-    public Workers(String name, String password, String job, Integer role, String departments) {
+    public Workers(String name, String code, String job, Integer role, String departments) {
         this.name = name;
-        this.password = password;
+        this.code = code;
         this.job = job;
         this.role = role;
         this.departments = departments;
@@ -51,12 +52,12 @@ public class Workers {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getPassword() {
-        return password;
+    public String getCode() {
+        return code;
     }
 
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setCode(String code) {
+        this.code = code == null ? null : code.trim();
     }
 
     public String getJob() {
@@ -89,5 +90,19 @@ public class Workers {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+    public String getAsUser() {
+        return asUser;
+    }
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setAsUser(String asUser) {
+        this.asUser = asUser;
     }
 }

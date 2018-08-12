@@ -12,7 +12,8 @@
             <ul class="nav" id="main-menu">
 
                 <li id="page-index" >
-                    <a class="active-menu waves-effect waves-dark" href="index.html"><i class="fa fa-dashboard"></i>
+                    <a class="active-menu waves-effect waves-dark" href="index.html"
+                       th:href="@{/index}"><i class="fa fa-dashboard"></i>
                         监控首页</a>
                 </li>
                 <li id="page-monitor" >
@@ -20,13 +21,13 @@
                             class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li id="page-monitor-plan" >
-                            <a href="monitor_plan.html">计划管理</a>
+                            <a href="monitor_plan.html" th:href="@{/monitor_plan}">计划管理</a>
                         </li>
                         <li id="page-monitor_burden" >
-                            <a href="monitor_burden.html">负荷监控</a>
+                            <a href="monitor_burden.html" th:href="@{/monitor_burden}">负荷监控</a>
                         </li>
                         <li id="page-monitor_ship" >
-                            <a href="monitor_ship.html">船舶监控</a>
+                            <a href="monitor_ship.html" th:href="@{/monitor_ship}">船舶监控</a>
                         </li>
                     </ul>
                 </li>
@@ -35,10 +36,10 @@
                             class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li id="page-job_arrange" >
-                            <a href="job_arrange.html">派工管理</a>
+                            <a href="job_arrange.html" th:href="@{/job_arrange}">派工管理</a>
                         </li>
                         <li id="page-job_record" >
-                            <a href="job_record.html">派工记录</a>
+                            <a href="job_record.html" th:href="@{/job_record}">派工记录</a>
                         </li>
                     </ul>
                 </li>
@@ -47,10 +48,10 @@
                             class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li id="page-manage_workers" >
-                            <a href="manage_workers.html">工人管理</a>
+                            <a href="manage_workers.html" th:href="@{/manage_workers}">工人管理</a>
                         </li>
                         <li id="page-manage_department" >
-                            <a href="manage_department.html">部门管理</a>
+                            <a href="manage_department.html" th:href="@{/manage_department}">部门管理</a>
                         </li>
                         <li id="page-manage_exception" >
                             <a href="#">系统异常</a>
@@ -70,7 +71,9 @@
                 <li id="page-scanner" >
                     <a  href="#" class="waves-effect waves-dark"><i class="fa fa-edit fa-lg"></i> 扫码页面</a>
                 </li>
-
+                <li id="page-home" >
+                    <a  href="#" class="waves-effect waves-dark"><i class="fa fa-home fa-lg"></i> 个人中心</a>
+                </li>
                 <li id="page-exit" >
                     <a href="/login?logout" th:href="@{/login?logout}" class="waves-effect waves-dark"><i class="fa fa-fw fa-sign-out fa-lg"></i> 退出登录</a>
                 </li>

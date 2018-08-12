@@ -34,7 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //解决静态资源被拦截的问题
         web.ignoring()
                 .antMatchers("/assets/**")
-        .antMatchers("/custom/**");
+                .antMatchers("/custom/**")
+                .antMatchers("/iframe/**")
+                .antMatchers("/fortable/**");
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {

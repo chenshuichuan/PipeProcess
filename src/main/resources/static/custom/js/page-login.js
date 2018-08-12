@@ -28,9 +28,10 @@ var click = setInterval(function () {
 
 $(document).ready(function () {
 
-    //设想，用定时器关闭用户登录失败或注销时登录页面的提示信息
-    function timedMsg()
-    {
-        var t=setTimeout("alert('5 seconds!')",5000)
-    }
+
 });
+//设想，用定时器关闭用户登录失败或注销时登录页面的提示信息
+function timedMsg()
+{
+    var t=setTimeout("alert('5 seconds!')",5000)
+}
