@@ -55,5 +55,18 @@ public class StringUtil {
         b[6] = (byte) (l >>> 8);  
         b[7] = (byte) (l);  
         return b;  
-    } 
+    }
+	/**
+	 * 判断字符串是否为正整数纯数字，不为空
+	 * @param str 长整数
+	 * @return 代表长整数的字节数组
+	 */
+	public static boolean isPositiveInt(String str){
+		Pattern pattern = Pattern.compile("[0-9]*");
+		Matcher isNum = pattern.matcher(str);
+		if( !isNum.matches() ){
+			return false;
+		}
+		return true;
+	}
 }

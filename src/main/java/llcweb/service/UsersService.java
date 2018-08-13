@@ -1,6 +1,7 @@
 package llcweb.service;
 
 import llcweb.domain.models.Users;
+import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
 
@@ -30,5 +31,9 @@ public interface UsersService {
     * */
     void deleteById(int id);
 
-    Page<Users> getUsersPage(PageParam pageParam, String userName);
+    /*
+  * 根据分页参数以及各字段示例查找信息
+  * example 为字段可能包含的值
+  * */
+    Page<Users> getPage(PageParam pageParam, Users example);
 }

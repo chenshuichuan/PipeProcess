@@ -1,6 +1,7 @@
 package llcweb.controller;
 
 import llcweb.domain.User;
+import llcweb.domain.models.Users;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
 import org.slf4j.Logger;
@@ -32,7 +33,9 @@ public class UsersController {
     @ResponseBody
     public Map<String,Object> login(HttpServletRequest request, HttpServletResponse response){
         Map<String,Object> map =new HashMap<String,Object>();
-        map.put("page",usersService.getUsersPage(new PageParam(1,10),"chen"));
+        Users users = new Users();
+        users.setUsername("chen");
+        map.put("page",usersService.getPage(new PageParam(1,10),users));
         return map;
     }
 }

@@ -1,5 +1,9 @@
 package llcweb.service;
 
+import llcweb.domain.models.Workers;
+import llcweb.tools.PageParam;
+import org.springframework.data.domain.Page;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -25,4 +29,5 @@ public interface ProcessOrderService {
     *删除
     * */
     void deleteById(int id);
+
 }

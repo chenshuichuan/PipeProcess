@@ -60,10 +60,21 @@ public class HtmlController {
         return modelAndView;
     }
 
-    @RequestMapping("/test.html")
-    public ModelAndView test(@RequestParam("name")String modelName){
+    //计划管理页面
+    @RequestMapping("/monitor_plan.html")
+    public ModelAndView monitor_plan(){
+        ModelAndView modelAndView = new ModelAndView("monitor_plan");
+        return modelAndView;
+    }
+    @RequestMapping("/iframe/plan.html")
+    public ModelAndView iframe_plan(){
+        ModelAndView modelAndView = new ModelAndView("./iframe/plan");
+        return modelAndView;
+    }
 
-        System.out.println("modelName="+modelName);
+    @RequestMapping("/test.html")
+    public ModelAndView test(){
+
         List<String> learnList =new ArrayList<>();
         learnList.add("hello1");
         learnList.add("hello2");

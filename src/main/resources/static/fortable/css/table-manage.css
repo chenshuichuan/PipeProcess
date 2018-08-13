@@ -119,9 +119,11 @@ form {
 	padding:5px 0 0 0;
 	width: 80px;
 	text-align: right;
-	font-weight: bold;
 }
-
+.prop-value{
+	font-weight: bold;
+	color: #4c4ae1;
+}
 .info-content .prop-value {
 	padding-top:5px;
 	margin-left:90px;
@@ -188,4 +190,10 @@ form {
 
 .info-block{
 	margin:0 0 10px 0;
+}
+
+.info-hr{
+	height:3px;
+	border:none;
+	border-top:3px double #000000;
 }

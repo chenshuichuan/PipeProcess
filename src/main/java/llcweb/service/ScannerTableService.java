@@ -1,5 +1,10 @@
 package llcweb.service;
 
+import llcweb.domain.models.ScannerTable;
+import llcweb.domain.models.Workers;
+import llcweb.tools.PageParam;
+import org.springframework.data.domain.Page;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -25,4 +30,10 @@ public interface ScannerTableService {
     *删除
     * */
     void deleteById(int id);
+
+    /*
+  * 根据分页参数以及各字段示例查找信息
+  * example 为字段可能包含的值
+  * */
+    Page<ScannerTable> getPage(PageParam pageParam, ScannerTable example);
 }

@@ -1,6 +1,9 @@
 package llcweb.service;
 
+import llcweb.domain.models.UnitProcessing;
 import llcweb.domain.models.UnitTable;
+import llcweb.tools.PageParam;
+import org.springframework.data.domain.Page;
 
 /**
  * Created by:Ricardo
@@ -34,4 +37,11 @@ public interface UnitTableService {
     void countPipeNumberOfUnits();
 
     void judgeBatchUnitPlanId(String batchName);
+    void analyzePlanOfUnits();
+
+    /*
+    * * 根据分页参数以及各字段示例查找信息
+    * * example 为字段可能包含的值
+    * * */
+    Page<UnitTable> getPage(PageParam pageParam, UnitTable example);
 }

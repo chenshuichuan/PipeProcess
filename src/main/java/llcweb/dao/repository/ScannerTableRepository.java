@@ -1,6 +1,10 @@
 package llcweb.dao.repository;
 
 import llcweb.domain.models.ScannerTable;
+import llcweb.domain.models.Workers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -11,5 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
  //Integer 是id 的类型
 public interface ScannerTableRepository extends JpaRepository<ScannerTable,Integer>{
-
+    Page<ScannerTable> findAll(Specification<ScannerTable> spec, Pageable pageable);
 }

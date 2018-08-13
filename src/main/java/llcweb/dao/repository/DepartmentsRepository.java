@@ -1,6 +1,10 @@
 package llcweb.dao.repository;
 
 import llcweb.domain.models.Departments;
+import llcweb.domain.models.Workers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -11,5 +15,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
  //Integer 是id 的类型
 public interface DepartmentsRepository extends JpaRepository<Departments,Integer>{
+    Page<Departments> findAll(Specification<Departments> spec, Pageable pageable);
     Departments findByName(String name);
 }

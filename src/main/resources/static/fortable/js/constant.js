@@ -1,4 +1,13 @@
+
 /*常量*/
+Date.prototype.toLocaleString = function() {
+    return this.getFullYear() + "/" + (this.getMonth() + 1) + "/" + this.getDate();
+};
+//后台传来的日期数据，转化为2012/08/02 的格式
+function dateToString(date) {
+    if(date===null)return "未知";
+    else return new Date(date).toLocaleString();
+}
 var CONSTANT = {
 		DATA_TABLES : {
 			DEFAULT_OPTION : { //DataTables初始化选项

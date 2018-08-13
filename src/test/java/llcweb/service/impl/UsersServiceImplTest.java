@@ -1,6 +1,7 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.UsersRepository;
+import llcweb.domain.User;
 import llcweb.domain.models.Users;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
@@ -31,9 +32,10 @@ public class UsersServiceImplTest {
 
     @Test
     public void getUsersPage() throws Exception {
-
-        Page<Users> users = usersService.getUsersPage(new PageParam(1,10),"chen");
-        for (Users user: users.getContent()){
+        Users users = new Users();
+        users.setUsername("chen");
+        Page<Users> usersPage = usersService.getPage(new PageParam(1,10),users);
+        for (Users user: usersPage.getContent()){
 
         }
     }

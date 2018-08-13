@@ -59,22 +59,16 @@ public class UsersServiceImpl implements UsersService {
         logger.info("service add id="+id);
     }
 
-    public Page<Users> getUsersPage(PageParam pageParam, String userName) {
+    @Override
+    public Page<Users> getPage(PageParam pageParam, Users users) {
         //规格定义
         Specification<Users> specification = new Specification<Users>() {
 
-            /**
-             * 构造断言
-             * @param root 实体对象引用
-             * @param query 规则查询对象
-             * @param cb 规则构建对象
-             * @return 断言
-             */
             @Override
             public Predicate toPredicate(Root<Users> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>(); //所有的断言
-                if(StringUtils.isNotBlank(userName)){ //添加断言
-                    Predicate likeUserName = cb.like(root.get("username").as(String.class),userName+"%");
+                if(StringUtils.isNotBlank(users.getUsername())){ //添加断言
+                    Predicate likeUserName = cb.like(root.get("username").as(String.class),users.getUsername()+"%");
                     predicates.add(likeUserName);
                 }
                 return cb.and(predicates.toArray(new Predicate[0]));
