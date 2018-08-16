@@ -1,7 +1,11 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
+import llcweb.dao.repository.PlanTableRepository;
+import llcweb.dao.repository.WorkersRepository;
+import llcweb.domain.entities.ArrangeRecord;
 import llcweb.domain.models.ArrangeTable;
+import llcweb.domain.models.PlanTable;
 import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
 import llcweb.tools.PageParam;
@@ -35,7 +39,10 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
     private  final  Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     @Autowired
     private ArrangeTableRepository arrangeTableRepository;
-
+    @Autowired
+    private WorkersRepository workersRepository;
+    @Autowired
+    private PlanTableRepository planTableRepository;
     @Transactional
     @Override
     public void add() {
@@ -90,6 +97,40 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         Pageable pageable = new PageRequest(pageParam.getCurrentPage() - 1, pageParam.getNumPerPage()); //页码：前端从1开始，jpa从0开始，做个转换
         //查询
         return arrangeTableRepository.findAll(specification,pageable);
+    }
+
+    @Override
+    public ArrangeRecord getRecord(ArrangeTable arrangeTable) {
+        ArrangeRecord arrangeRecord =new ArrangeRecord(arrangeTable);
+        PlanTable planTable = planTableRepository.findOne(arrangeTable.getPlanId());
+        String plan = "";
+        if (planTable!=null)
+            plan = planTable.getBatchName()+"--"+ planTable.getBatchDescription()+"--"+planTable.getProcessPlace();
+        else {
+            plan = "派工记录对应批次未找到！请检查数据库";
+            logger.error(plan);
+        }
+        arrangeRecord.setPlan(plan);
+
+        Workers workers = workersRepository.findOne(arrangeTable.getWorkerId());
+        String worker ="";
+        if (workers!=null)
+            worker = workers.getCode()+"-"+workers.getName();
+        else{
+            worker = "暂无";
+        }
+        arrangeRecord.setWorker(worker);
+
+        workers = workersRepository.findOne(arrangeTable.getArrangerId());
+        worker ="";
+        if (workers!=null)
+            worker = workers.getCode()+"-"+workers.getName();
+        else{
+            worker = "派工记录对应派工者未找到！请检查数据库";
+            logger.error(plan);
+        }
+        arrangeRecord.setArranger(worker);
+        return arrangeRecord;
     }
 
 }

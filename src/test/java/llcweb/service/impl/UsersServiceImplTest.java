@@ -5,6 +5,7 @@ import llcweb.domain.User;
 import llcweb.domain.models.Users;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
 
 /**
@@ -28,7 +30,6 @@ public class UsersServiceImplTest {
     private UsersService usersService;
     @Autowired
     private UsersRepository usersRepository;
-    @Autowired
 
     @Test
     public void getUsersPage() throws Exception {
@@ -39,5 +40,9 @@ public class UsersServiceImplTest {
 
         }
     }
-
+    @Test
+    public void getUsers() throws Exception {
+        Users users = usersService.getCurrentUser();
+        Assert.assertThat(users,notNullValue());
+    }
 }

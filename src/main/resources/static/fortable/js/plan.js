@@ -6,9 +6,12 @@
 *     页面加载-->
 *     事件监听-->
 **/
+
 var urlPage = "/plan/page";
 var urlDelete = "/plan/deleteById";
 var urlUpdate = "/plan/update";
+var urlGetUnits = "/unit/getUnitsByPlanId";
+
 var $wrapper = $('#div-table-container');
 
 $(function () {
@@ -152,7 +155,7 @@ $(function () {
         //reload效果与draw(true)或者draw()类似,draw(false)则可在获取新数据的同时停留在当前页码,可自行试验
 //		_table.ajax.reload();
 //		_table.draw(false);
-        _table.draw();
+        _table.draw();//触发表格数据重新加载
     });
 
     $("#btn-advanced-search").click(function () {
@@ -297,13 +300,13 @@ var planManage = {
         $("#serial-view").text(item.serialNumber);
         $("#planName-view").text(item.planName);
         $("#batchName-view").text(item.batchName);
-        $("#processPlace-view").text(item.proceesPlace);
+        $("#processPlace-view").text(item.processPlace);
         $("#lightBodyPipe-view").text(item.lightBodyPipe);
         $("#actualStart-view").text(dateToString(item.actualStart));
         $("#actualEnd-view").text(dateToString(item.actualEnd));
         $("#sendPicTime-view").text(dateToString(item.sendPicTime));
         $("#upldateTime-view").text(dateToString(item.upldateTime));
-        $("#oneBcutNum-view").text(item.oneBcutNum);
+        $("#oneBCutNum-view").text(item.oneBcutNum);
         $("#oneBendCut-view").text(item.oneBendCut);
         $("#oneVerCut-view").text(item.oneVerCut);
         $("#oneBigCut-view").text(item.oneBigCut);
@@ -312,7 +315,7 @@ var planManage = {
         $("#twoSpeVerCut-view").text(item.twoSpeVerCut);
         $("#stocks-view").text(item.stocks);
         $("#sections-view").text(item.sections);
-        $("#units-view").text("单元view，待完成");
+        $("#units-view").text(getUnitsName(item.id));
         $("#remark-view").text(item.remark);
     },
     addItemInit: function () {
@@ -334,7 +337,7 @@ var planManage = {
         $("#planStart-edit").val(dateToString(item.planStart));
         $("#planEnd-edit").val(dateToString(item.planEnd));
         $("#sendPicTime-edit").val(dateToString(item.sendPicTime));
-        $("#oneBCutNum-edit").val(item.oneBCutNum);
+        $("#oneBCutNum-edit").val(item.oneBcutNum);
         $("#oneBendCut-edit").val(item.oneBendCut);
         $("#oneVerCut-edit").val(item.oneVerCut);
         $("#oneBigCut-edit").val(item.oneBigCut);
@@ -342,7 +345,8 @@ var planManage = {
         $("#twoSpeVerCut-edit").val(item.twoSpeVerCut);
         $("#stocks-edit").val(item.stocks);
         $("#sections-edit").val(item.sections);
-        $("#units-edit").val("单元名或id列表，待完成，用户点击此输入框弹出对话框进行单元归属计划的操作");
+        //填充单元名
+        $("#units-edit").val(getUnitsName(item.id));
         $("#remark-edit").val(item.remark);
 
         $("#plan-edit").show().siblings(".info-block").hide();
@@ -360,7 +364,7 @@ var planManage = {
         var planStart = $("#planStart-edit").val();
         var planEnd = $("#planEnd-edit").val();
         var sendPicTime = $("#sendPicTime-edit").val();
-        var oneBCutNum = $("#oneBCutNum-edit").val();
+        //var oneBCutNum = $("#oneBCutNum-edit").val();
         var oneBendCut = $("#oneBendCut-edit").val();
         var oneVerCut= $("#oneVerCut-edit").val();
         var oneBigCut = $("#oneBigCut-edit").val();
@@ -375,7 +379,7 @@ var planManage = {
                 "serialNumber": serialNumber, "planName": planName, "batchName": batchName,
                 "processPlace": processPlace, "lightBodyPipe": lightBodyPipe,
                 "actualStart": planStart, "actualEnd": planEnd, "sendPicTime": sendPicTime,
-                "oneBcutNum": oneBCutNum, "oneBendCut": oneBendCut, "oneVerCut": oneVerCut,
+                 "oneBendCut": oneBendCut, "oneVerCut": oneVerCut,
                 "oneBigCut": oneBigCut, "twoSpeBendCut": twoSpeBendCut, "twoSpeVerCut": twoSpeVerCut,
                 "stocks": stocks,"sections": sections
             },
@@ -439,11 +443,27 @@ function classIsCutted(isCutted) {
     else if (isCutted === -1) return "text-warning";
     else return "text-error";
 }
-//根据planId获取该plan包含的所有单元名称和id（对象）
-function getUnitsName(planId) {
-    var url = urlGetUnits+"?planId="+planId;
-    $.get(url,function(data,status){
-        //alert("数据: " + data + "\n状态: " + status);
-        $.dialog.tips(data.message);
+//根据planId获取该plan包含的所有单元对象
+function getUnits(planId) {
+    var units =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetUnits,
+        data :"planId=" + planId,
+        async : false,
+        success : function(data){
+            units = data.data;
+        }
     });
+    return units;
+}
+//根据planId获取该plan包含的所有单元名称
+function getUnitsName(planId) {
+    var units = getUnits(planId);
+    var unitNames="";
+    for(var i = 0;i<units.length;i++){
+        unitNames+=units[i].unitName+",";
+    }
+    return unitNames;
 }

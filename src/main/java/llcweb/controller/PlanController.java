@@ -112,7 +112,7 @@ public class PlanController {
         String planStart = request.getParameter("planStart");
         String planEnd = request.getParameter("planEnd");
         String sendPicTime = request.getParameter("sendPicTime");
-        String oneBCutNum = request.getParameter("oneBCutNum");
+        //String oneBCutNum = request.getParameter("oneBCutNum");
         String oneBendCut = request.getParameter("oneBendCut");
         String oneVerCut = request.getParameter("oneVerCut");
         String oneBigCut = request.getParameter("oneBigCut");
@@ -152,18 +152,31 @@ public class PlanController {
 //                if(StringUtil.isPositiveInt(oneBcutNum)){
 //                }
 //            }
-            if(oneBCutNum!=null&&oneBCutNum.length()>0)planTable.setOneBcutNum(Integer.parseInt(oneBCutNum));
-            else planTable.setOneBcutNum(0);
-            if(oneBendCut!=null&&oneBendCut.length()>0)planTable.setOneBendCut(Integer.parseInt(oneBendCut));
+//            if(oneBCutNum!=null&&oneBCutNum.length()>0)planTable.setOneBcutNum(Integer.parseInt(oneBCutNum));
+//            else planTable.setOneBcutNum(0);
+            int totalNum =0;
+            if(oneBendCut!=null&&oneBendCut.length()>0){
+                totalNum+=Integer.parseInt(oneBendCut);
+                planTable.setOneBendCut(Integer.parseInt(oneBendCut));
+            }
             else planTable.setOneBendCut(0);
-            if(oneVerCut!=null&&oneVerCut.length()>0)planTable.setOneVerCut(Integer.parseInt(oneVerCut));
+            if(oneVerCut!=null&&oneVerCut.length()>0){
+                totalNum+=Integer.parseInt(oneVerCut);
+                planTable.setOneVerCut(Integer.parseInt(oneVerCut));
+            }
             else planTable.setOneVerCut(0);
-            if(oneBigCut!=null&&oneBigCut.length()>0)planTable.setOneBigCut(Integer.parseInt(oneBigCut));
+            if(oneBigCut!=null&&oneBigCut.length()>0){
+                totalNum+=Integer.parseInt(oneBigCut);
+                planTable.setOneBigCut(Integer.parseInt(oneBigCut));
+            }
             else planTable.setOneBigCut(0);
+            planTable.setOneBcutNum(0);
+
             if(twoSpeBendCut!=null&&twoSpeBendCut.length()>0)planTable.setTwoSpeBendCut(Integer.parseInt(twoSpeBendCut));
             else planTable.setTwoSpeBendCut(0);
             if(twoSpeVerCut!=null&&twoSpeVerCut.length()>0)planTable.setTwoSpeVerCut(Integer.parseInt(twoSpeVerCut));
             else planTable.setTwoSpeVerCut(0);
+
 
             planTable.setStocks(stocks);
             planTable.setSections(sections);
@@ -193,4 +206,5 @@ public class PlanController {
 
     //添加单条数据的接口暂时不写，计划信息都是用excel上传的
 
+    //
 }

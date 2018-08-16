@@ -1,6 +1,7 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.*;
+import llcweb.domain.entities.Units;
 import llcweb.domain.models.*;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.UnitTableService;
@@ -262,5 +263,20 @@ public class UnitTableServiceImpl implements UnitTableService {
         Pageable pageable = new PageRequest(pageParam.getCurrentPage() - 1, pageParam.getNumPerPage()); //页码：前端从1开始，jpa从0开始，做个转换
         //查询
         return unitTableRepository.findAll(specification,pageable);
+    }
+    @Override
+    public List<UnitTable> findByPlanId(int planId) {
+        return unitTableRepository.findByPlanId(planId);
+    }
+    //将UnitTable 封装为Units对象
+    @Override
+    public List<Units> findUnitsByPlanId(int planId) {
+        List<Units> unitsList = new ArrayList<>();
+        List<UnitTable> unitTableList = unitTableRepository.findByPlanId(planId);
+        for (UnitTable unitTable: unitTableList){
+            Units units = new Units(unitTable);
+            unitsList.add(units);
+        }
+        return unitsList;
     }
 }

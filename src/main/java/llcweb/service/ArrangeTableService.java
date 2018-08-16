@@ -1,5 +1,6 @@
 package llcweb.service;
 
+import llcweb.domain.entities.ArrangeRecord;
 import llcweb.domain.models.ArrangeTable;
 import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
@@ -36,4 +37,9 @@ public interface ArrangeTableService {
   * example 为字段可能包含的值
   * */
     Page<ArrangeTable> getPage(PageParam pageParam, ArrangeTable example);
+
+    /*
+   *将arrangeTable封装为arrangeRecord
+   * */
+    ArrangeRecord getRecord(ArrangeTable arrangeTable);
 }

@@ -38,4 +38,19 @@ public class UsersController {
         map.put("page",usersService.getPage(new PageParam(1,10),users));
         return map;
     }
+    @RequestMapping(value = "/getCurrentUser",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> getCurrentUser(){
+        Map<String,Object> map =new HashMap<String,Object>();
+        Users users = usersService.getCurrentUser();
+        map.put("data",users);
+//        { "data":{ "accountNonExpired":true, "accountNonLocked":true,
+//                "authorities":[ { "authority":"0" } ],
+//            "credentialsNonExpired":true, "enabled":true,
+//                    "id":1, "mail":"", "password":"admin",
+//                    "phone":"13557453450", "role":0,
+//                    "roles":[ { "flag":"0", "id":1, "name":"绠＄悊鍛�" } ],
+//            "state":0, "username":"admin" } }
+        return map;
+    }
 }

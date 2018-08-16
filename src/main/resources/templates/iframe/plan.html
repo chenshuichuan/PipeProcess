@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title>Datatable-serverSide 自行封装请求参数和返回数据例子</title>
+    <title>计划管理</title>
     <!-- Bootstrap -->
     <link href="../../static/fortable/lib/bootstrap-2.3.2/css/bootstrap.min.css"
           th:href="@{/fortable/lib/bootstrap-2.3.2/css/bootstrap.min.css}" rel="stylesheet">
@@ -133,7 +133,7 @@
                     <div class="row-fluid">
                         <div class="span3">
                             <label class="prop-name">一部下料总数:</label>
-                            <div class="prop-value" id="oneBcutNum-view"></div>
+                            <div class="prop-value" id="oneBCutNum-view"></div>
                         </div>
                         <div class="span3">
                             <label class="prop-name">一部弯管下料数:</label>
@@ -180,7 +180,7 @@
                             <label class="prop-name">包含单元:</label>
                             <div class="prop-value" id="units-view"></div>
                         </div>
-                        <div class="span2">
+                        <div class="span6">
                             <label class="prop-name">备注:</label>
                             <div class="prop-value" id="remark-view"></div>
                         </div>
@@ -263,9 +263,9 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label" for="oneBcutNum-edit">一部弯管下料数:</label>
+                            <label class="control-label" for="oneBCutNum-edit">一部弯管下料数:</label>
                             <div class="controls">
-                                <input type="text" id="oneBcutNum-edit" name="oneBcutNum-edit">
+                                <input type="text" id="oneBCutNum-edit" name="oneBCutNum-edit">
                             </div>
                         </div>
                         <div class="control-group">
@@ -304,6 +304,8 @@
                                 <input type="text" class="xlarge" id="stocks-edit" name="stocks-edit">
                             </div>
                         </div>
+
+                        
 
                         <div class="control-group">
                             <label class="control-label" for="sections-edit">包含托盘:</label>

@@ -29,8 +29,9 @@
     <!-- Custom Styles-->
     <link href="../static/assets/plugins/dataTables/css/jquery.dataTables.min.css"
           th:href="@{/assets/plugins/dataTables/css/jquery.dataTables.min.css}" rel="stylesheet"/>
-    <link href="../static/custom/css/page-manage_workers.css"
-          th:href="@{/custom/css/page-manage_workers.css}" rel="stylesheet"/>
+    <link href="../static/assets/plugins/ztree/zTreeStyle/zTreeStyle.css"
+          th:href="@{/assets/plugins/ztree/zTreeStyle/zTreeStyle.css}" rel="stylesheet"/>
+
 </head>
 
 <body>
@@ -54,8 +55,8 @@
         <div id="page-inner">
             <div class="row" style="margin-top: -40px;">
                 <div class="col-md-12">
-                    <iframe th:src="@{/iframe/workers.html}"
-                            src="./iframe/plan.html" frameborder=0 allowfullscreen></iframe>
+                    <!--<iframe th:src="@{/iframe/workers.html}"-->
+                            <!--src="./iframe/plan.html" frameborder=0 allowfullscreen></iframe>-->
                 </div>
                 <div class="col-md-12">
                     <div id="plan-panel">
@@ -68,7 +69,9 @@
 
             <div class="row">
                 <div class="col-md-12">
-
+                    <div class="zTreeDemoBackground left">
+                        <ul id="treeDemo" class="ztree"></ul>
+                    </div>
                 </div>
             </div>
             <footer th:include="template/footer_template :: my_footer">
@@ -97,11 +100,42 @@
 <!--特定页面js-->
 <script src="../static/assets/plugins/dataTables/js/jquery.dataTables.min.js"
         th:src="@{/assets/plugins/dataTables/js/jquery.dataTables.min.js}"></script>
-<script src="../static/custom/js/constant.js"
-        th:src="@{/custom/js/constant.js}"></script>
-<script src="../static/custom/js/page-manage_workers.js"
-        th:src="@{/custom/js/page-manage_workers.js}"></script>
+<script src="../static/assets/plugins/ztree/jquery-1.4.4.min.js"
+        th:src="@{/assets/plugins/ztree/jquery-1.4.4.min.js}"></script>
+<script src="../static/assets/plugins/ztree/jquery.ztree.core.min.js"
+        th:src="@{/assets/plugins/ztree/jquery.ztree.core.min.js}"></script>
 
+
+<SCRIPT type="text/javascript">
+    <!--
+    var setting = {
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+
+    var zNodes =[
+        { id:1, pId:0, name:"展开、折叠 自定义图标不同", open:true, iconSkin:"pIcon01"},
+        { id:11, pId:1, name:"叶子节点1", iconSkin:"icon01"},
+        { id:12, pId:1, name:"叶子节点2", iconSkin:"icon02"},
+        { id:13, pId:1, name:"叶子节点3", iconSkin:"icon03"},
+        { id:2, pId:0, name:"展开、折叠 自定义图标相同", open:true, iconSkin:"pIcon02"},
+        { id:21, pId:2, name:"叶子节点1", iconSkin:"icon04"},
+        { id:22, pId:2, name:"叶子节点2", iconSkin:"icon05"},
+        { id:23, pId:2, name:"叶子节点3", iconSkin:"icon06"},
+        { id:3, pId:0, name:"不使用自定义图标", open:true },
+        { id:31, pId:3, name:"叶子节点1"},
+        { id:32, pId:3, name:"叶子节点2"},
+        { id:33, pId:3, name:"叶子节点3"}
+    ];
+
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    });
+    //-->
+</SCRIPT>
 </body>
 
 </html>

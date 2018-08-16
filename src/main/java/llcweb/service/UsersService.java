@@ -36,4 +36,6 @@ public interface UsersService {
   * example 为字段可能包含的值
   * */
     Page<Users> getPage(PageParam pageParam, Users example);
+
+    Users getCurrentUser();
 }

@@ -28,6 +28,17 @@ public class HtmlController {
     @Autowired
     private UsersService usersService;
 
+    @RequestMapping("/test.html")
+    public ModelAndView test(){
+
+        List<String> learnList =new ArrayList<>();
+        learnList.add("hello1");
+        learnList.add("hello2");
+        ModelAndView modelAndView = new ModelAndView("test");
+        modelAndView.addObject("learnList", learnList);
+
+        return modelAndView;
+    }
     @RequestMapping("/index.html")
     public ModelAndView index(){
 
@@ -72,15 +83,38 @@ public class HtmlController {
         return modelAndView;
     }
 
-    @RequestMapping("/test.html")
-    public ModelAndView test(){
+    //批次派工页面
+    @RequestMapping("/arrange_batchs.html")
+    public ModelAndView arrange_batchs(){
+        ModelAndView modelAndView = new ModelAndView("arrange_batchs");
+        return modelAndView;
+    }
+    @RequestMapping("/iframe/arrange_batch.html")
+    public ModelAndView iframe_arrange_batch(){
+        ModelAndView modelAndView = new ModelAndView("./iframe/arrange_batch");
+        return modelAndView;
+    }
+    //单元派工页面
+    @RequestMapping("/arrange_units.html")
+    public ModelAndView arrange_units(){
+        ModelAndView modelAndView = new ModelAndView("arrange_units");
+        return modelAndView;
+    }
+    @RequestMapping("/iframe/arrange_unit.html")
+    public ModelAndView iframe_arrange_unit(){
+        ModelAndView modelAndView = new ModelAndView("./iframe/arrange_unit");
+        return modelAndView;
+    }
 
-        List<String> learnList =new ArrayList<>();
-        learnList.add("hello1");
-        learnList.add("hello2");
-        ModelAndView modelAndView = new ModelAndView("test");
-        modelAndView.addObject("learnList", learnList);
-
+    //派工记录页面
+    @RequestMapping("/arrange_records.html")
+    public ModelAndView arrange_records(){
+        ModelAndView modelAndView = new ModelAndView("arrange_records");
+        return modelAndView;
+    }
+    @RequestMapping("/iframe/arrange_record.html")
+    public ModelAndView iframe_arrange_record(){
+        ModelAndView modelAndView = new ModelAndView("./iframe/arrange_record");
         return modelAndView;
     }
 }

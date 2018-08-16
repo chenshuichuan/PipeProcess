@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>派工记录</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}" rel="stylesheet">
+    <link href="../static/assets/materialize/css/materialize.min.css"
+          th:href="@{assets/materialize/css/materialize.min.css}" rel="stylesheet"/>
+    <!-- Bootstrap Styles-->
+    <link href="../static/assets/css/bootstrap.css"
+          th:href="@{/assets/css/bootstrap.css}" rel="stylesheet"/>
+    <!-- FontAwesome Styles-->
+    <link href="../static/assets/css/font-awesome.css"
+          th:href="@{/assets/css/font-awesome.css}" rel="stylesheet"/>
+    <!-- Custom Styles-->
+    <link href="../static/assets/css/custom-styles.css"
+          th:href="@{/assets/css/custom-styles.css}" rel="stylesheet"/>
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans'
+          th:href="@{http://fonts.googleapis.com/css?family=Open+Sans}" rel='stylesheet' type='text/css'/>
+
+    <!-- commom Styles-->
+    <link href="../static/custom/css/common.css"
+          th:href="@{/custom/css/common.css}" rel="stylesheet"/>
+
+    <!-- Custom Styles-->
+    <link href="../static/assets/plugins/dataTables/css/jquery.dataTables.min.css"
+          th:href="@{/assets/plugins/dataTables/css/jquery.dataTables.min.css}" rel="stylesheet"/>
+
+</head>
+
+<body>
+
+<div id="wrapper">
+    <!-- top side start-->
+    <div  th:include="template/top_side_template :: topside"></div>
+    <!-- top side end-->
+    <!-- left side start-->
+    <nav class="navbar-default navbar-side" role="navigation"
+         th:include="template/left_side_template :: leftside"></nav>
+    <!-- left side end-->
+    <div id="page-wrapper">
+        <div id="header" class="header">
+            <ol class="breadcrumb">
+                <li><a href="#">计划监控</a></li>
+                <li class="active">派工记录</li>
+            </ol>
+        </div>
+
+        <div id="page-inner">
+            <div class="row" style="margin-top: -40px;">
+                <div class="col-md-12">
+                    <iframe th:src="@{/iframe/arrange_record.html}"
+                            src="./iframe/arrange_record.html" frameborder=0 allowfullscreen></iframe>
+                </div>
+                <div class="col-md-12">
+                    <div id="plan-panel">
+                        <!---->
+                        <!--计划详细信息面板-->
+                        <!--计划表格-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                </div>
+            </div>
+            <footer th:include="template/footer_template :: my_footer">
+            </footer>
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+<!-- JS Scripts-->
+<!-- jQuery Js -->
+<script src="../static/assets/js/jquery-1.10.2.js"
+        th:src="@{/assets/js/jquery-1.10.2.js}"></script>
+<!-- Bootstrap Js -->
+<script src="../static/assets/js/bootstrap.min.js"
+        th:src="@{/assets/js/bootstrap.min.js}"></script>
+<!-- Metis Menu Js -->
+<script src="../static/assets/js/jquery.metisMenu.js"
+        th:src="@{/assets/js/jquery.metisMenu.js}"></script>
+<!--通用 Custom Js -->
+<script src="../static/assets/js/custom-scripts.js"
+        th:src="@{/assets/js/custom-scripts.js}"></script>
+<script src="../static/custom/js/common.js"
+        th:src="@{/custom/js/commom.js}"></script>
+<!--特定页面js-->
+<script src="../static/assets/plugins/dataTables/js/jquery.dataTables.min.js"
+        th:src="@{/assets/plugins/dataTables/js/jquery.dataTables.min.js}"></script>
+
+</body>
+
+</html>

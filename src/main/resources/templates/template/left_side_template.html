@@ -13,7 +13,7 @@
 
                 <li id="page-index" >
                     <a class="active-menu waves-effect waves-dark" href="index.html"
-                       th:href="@{/index}"><i class="fa fa-dashboard"></i>
+                       th:href="@{/index.html}"><i class="fa fa-dashboard"></i>
                         监控首页</a>
                 </li>
                 <li id="page-monitor" >
@@ -21,13 +21,13 @@
                             class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li id="page-monitor-plan" >
-                            <a href="monitor_plan.html" th:href="@{/monitor_plan}">计划管理</a>
+                            <a href="monitor_plan.html" th:href="@{/monitor_plan.html}">计划管理</a>
                         </li>
                         <li id="page-monitor_burden" >
-                            <a href="monitor_burden.html" th:href="@{/monitor_burden}">负荷监控</a>
+                            <a href="monitor_burden.html" th:href="@{/monitor_burden.html}">负荷监控</a>
                         </li>
                         <li id="page-monitor_ship" >
-                            <a href="monitor_ship.html" th:href="@{/monitor_ship}">船舶监控</a>
+                            <a href="monitor_ship.html" th:href="@{/monitor_ship.html}">船舶监控</a>
                         </li>
                     </ul>
                 </li>
@@ -35,11 +35,17 @@
                     <a href="#" class="waves-effect waves-dark"><i class="fa fa-desktop fa-lg"></i>派工管理<span
                             class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li id="page-job_arrange" >
-                            <a href="job_arrange.html" th:href="@{/job_arrange}">派工管理</a>
+                        <li id="page-batch_arrange" >
+                            <a href="arrange_batchs.html" th:href="@{/arrange_batchs.html}">下料派工</a>
                         </li>
+                        <li id="page-unit_arrange" >
+                            <a href="arrange_units.html" th:href="@{/arrange_units.html}">单元派工</a>
+                        </li>
+                        <!--<li id="page-job_arrange" >-->
+                            <!--<a href="arrange_batchs.html" th:href="@{/arrange_batchs.html}">管件派工</a>-->
+                        <!--</li>-->
                         <li id="page-job_record" >
-                            <a href="job_record.html" th:href="@{/job_record}">派工记录</a>
+                            <a href="arrange_records.html" th:href="@{/arrange_records.html}">派工记录</a>
                         </li>
                     </ul>
                 </li>
@@ -48,10 +54,10 @@
                             class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li id="page-manage_workers" >
-                            <a href="manage_workers.html" th:href="@{/manage_workers}">工人管理</a>
+                            <a href="manage_workers.html" th:href="@{/manage_workers.html}">工人管理</a>
                         </li>
                         <li id="page-manage_department" >
-                            <a href="manage_department.html" th:href="@{/manage_department}">部门管理</a>
+                            <a href="manage_department.html" th:href="@{/manage_department.html}">部门管理</a>
                         </li>
                         <li id="page-manage_exception" >
                             <a href="#">系统异常</a>

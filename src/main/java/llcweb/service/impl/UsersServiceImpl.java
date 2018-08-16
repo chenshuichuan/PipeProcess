@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,5 +80,19 @@ public class UsersServiceImpl implements UsersService {
         Pageable pageable = new PageRequest(pageParam.getCurrentPage()-1,pageParam.getNumPerPage()); //页码：前端从1开始，jpa从0开始，做个转换
         //查询
         return this.usersRepository.findAll(specification,pageable);
+    }
+
+    @Override
+    public Users getCurrentUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+
+        logger.info("username = "+userDetails.getUsername());
+        logger.info("username = "+userDetails.getPassword());
+        Users users = usersRepository.findByUsernameAndPassword(userDetails.getUsername(),userDetails.getPassword());
+        if(users!=null)logger.info("users id = "+users.getId()+",worker's id="+users.getWorkerId());
+        return users;
     }
 }

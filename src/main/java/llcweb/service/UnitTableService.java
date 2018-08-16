@@ -1,9 +1,12 @@
 package llcweb.service;
 
+import llcweb.domain.entities.Units;
 import llcweb.domain.models.UnitProcessing;
 import llcweb.domain.models.UnitTable;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * Created by:Ricardo
@@ -44,4 +47,7 @@ public interface UnitTableService {
     * * example 为字段可能包含的值
     * * */
     Page<UnitTable> getPage(PageParam pageParam, UnitTable example);
+
+    List<UnitTable> findByPlanId(int planId);
+    List<Units> findUnitsByPlanId(int planId);
 }
