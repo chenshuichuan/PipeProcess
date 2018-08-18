@@ -16,4 +16,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  //Integer 是id 的类型
 public interface ScannerTableRepository extends JpaRepository<ScannerTable,Integer>{
     Page<ScannerTable> findAll(Specification<ScannerTable> spec, Pageable pageable);
+    //根据绑定的工位查找扫码枪
+    ScannerTable findByWorkplaceId(int workplaceId);
 }

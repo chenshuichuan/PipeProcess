@@ -2,9 +2,12 @@ package llcweb.service;
 
 import llcweb.domain.entities.ArrangeRecord;
 import llcweb.domain.models.ArrangeTable;
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * Created by:Ricardo
@@ -42,4 +45,7 @@ public interface ArrangeTableService {
    *将arrangeTable封装为arrangeRecord
    * */
     ArrangeRecord getRecord(ArrangeTable arrangeTable);
+
+    List<ArrangeTable> findArrangeByWorkplace(String section,String stage,String workplace,int isFinished);
+    boolean isWorkpalceVacancy(Departments departments);
 }

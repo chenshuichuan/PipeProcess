@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -17,4 +19,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface DepartmentsRepository extends JpaRepository<Departments,Integer>{
     Page<Departments> findAll(Specification<Departments> spec, Pageable pageable);
     Departments findByName(String name);
+    List<Departments> findByUpDepartment(int upDepartment);
+    List<Departments> findByLevel(int level);
 }

@@ -31,7 +31,8 @@ public class UnitTable {
 
     private Integer processOrder;
 
-    private Integer processState;
+    private Integer processState;//当前工序
+    private Integer nextStage;//下一工序
 
     private Integer pipeProcessingNumber;
 
@@ -151,7 +152,13 @@ public class UnitTable {
     public void setPipeProcessingNumber(Integer pipeProcessingNumber) {
         this.pipeProcessingNumber = pipeProcessingNumber;
     }
+    public Integer getNextStage() {
+        return nextStage;
+    }
 
+    public void setNextStage(Integer nextStage) {
+        this.nextStage = nextStage;
+    }
     public Integer getPipeFinishedNumber() {
         return pipeFinishedNumber;
     }

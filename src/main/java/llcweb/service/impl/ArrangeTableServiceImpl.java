@@ -1,10 +1,12 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
+import llcweb.dao.repository.DepartmentsRepository;
 import llcweb.dao.repository.PlanTableRepository;
 import llcweb.dao.repository.WorkersRepository;
 import llcweb.domain.entities.ArrangeRecord;
 import llcweb.domain.models.ArrangeTable;
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.PlanTable;
 import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
@@ -43,6 +45,9 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
     private WorkersRepository workersRepository;
     @Autowired
     private PlanTableRepository planTableRepository;
+    @Autowired
+    private DepartmentsRepository departmentsRepository;
+
     @Transactional
     @Override
     public void add() {
@@ -132,5 +137,31 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         arrangeRecord.setArranger(worker);
         return arrangeRecord;
     }
+
+    @Override
+    public List<ArrangeTable> findArrangeByWorkplace(String section, String stage, String workplace, int isFinished) {
+
+        return arrangeTableRepository.
+                findBySectionAndStageAndWorkplaceAndIsFinished(section,stage,workplace,isFinished);
+    }
+
+    //判断工位是否空闲
+    @Override
+    public boolean isWorkpalceVacancy(Departments workplace) {
+        //Departments workplace = departmentsRepository.findOne(workplaceId);
+        if(workplace==null||workplace.getLever()!=2){
+            logger.error("未找到或查找的不是工位！");
+            return false;
+        }
+        Departments stage = departmentsRepository.findOne(workplace.getUpDepartment());
+        Departments section = departmentsRepository.findOne(stage.getUpDepartment());
+        //查找未完成派工
+        List<ArrangeTable> arrangeTableList =
+                findArrangeByWorkplace(section.getName(),stage.getName(),workplace.getName(),0);
+        if(arrangeTableList!=null && arrangeTableList.size()>0)return false;
+
+        return true;
+    }
+
 
 }

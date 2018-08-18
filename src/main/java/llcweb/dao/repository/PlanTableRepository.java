@@ -23,5 +23,7 @@ public interface PlanTableRepository extends JpaRepository<PlanTable,Integer>{
     List<PlanTable> findByBatchName(String batchName);
     //批次和加工点可以决定唯一一条数据，约定
     PlanTable findByBatchNameAndProcessPlace(String batchName,String processPlace);
-//    PlanTable findByPlanId(int planId);
+
+    //根据加工工段查找未完工计划，约定未完工的计划的实际完工时间为null
+    List<PlanTable> findByProcessPlaceAndActuralEndIsNull(String processPlace);
 }

@@ -489,125 +489,13 @@
 <script>
     var $144 = $;
 </script>
-
-<script type="text/javascript">
-    var setting = {
-        data: {
-            simpleData: {
-                enable: true
-            }
-        },
-        callback: {
-            onClick: onClick
-        }
-    };
-    var zNodes =[
-        { id:1, pId:0, name:"展开、折叠 自定义图标不同", open:true, iconSkin:"pIcon01"},
-        { id:11, pId:1, name:"叶子节点1", iconSkin:"icon01"},
-        { id:12, pId:1, name:"叶子节点2", iconSkin:"icon02"},
-        { id:13, pId:1, name:"叶子节点3", iconSkin:"icon03"},
-        { id:2, pId:0, name:"展开、折叠 自定义图标相同", open:true, iconSkin:"pIcon02"},
-        { id:21, pId:2, name:"叶子节点1", iconSkin:"icon04"},
-        { id:22, pId:2, name:"叶子节点2", iconSkin:"icon05"},
-        { id:23, pId:2, name:"叶子节点3", iconSkin:"icon06"},
-        { id:3, pId:0, name:"不使用自定义图标", open:true },
-        { id:31, pId:3, name:"叶子节点1"},
-        { id:32, pId:3, name:"叶子节点2"},
-        { id:33, pId:3, name:"叶子节点3"}
-    ];
-    zNodes[12]={id:34, pId:0, name:"叶子节点3"};
-    zNodes[13]={id:35, pId:34, name:"叶子节点3"};
-    $144(document).ready(function(){
-        $144.fn.zTree.init($144("#treeDemo"), setting, zNodes);
-        var $jq =jQuery.noConflict(true);
-        $110('#dataTables-example').dataTable(
-            {
-                "scrollY": 500,
-                "scrollX": true
-            }
-        );
-
-
-        //侧边栏 //侧边栏用的是jq1.11 和ztree的1.44不兼容
-        $110(".dropdown-button").dropdown();
-        $110("#sideNav").click(function(){
-            if($110(this).hasClass('closed')){
-                $110('.navbar-side').animate({left: '0px'});
-                $110(this).removeClass('closed');
-                $110('#page-wrapper').animate({'margin-left' : '260px'});
-
-            }
-            else{
-                $110(this).addClass('closed');
-                $110('.navbar-side').animate({left: '-260px'});
-                $110('#page-wrapper').animate({'margin-left' : '0px'});
-            }
-        });
-        /*MENU
-            ------------------------------------*/
-        $110('#main-menu').metisMenu();
-        $110(window).bind("load resize", function () {
-            if ($110(this).width() < 768) {
-                $110('div.sidebar-collapse').addClass('collapse')
-            } else {
-                $110('div.sidebar-collapse').removeClass('collapse')
-            }
-        });
-
-        //mainApp.initFunction();
-    });
-    //这里要记录当前选择的工位，及其父部门(也就是工序)的id,如若选择的工序与当前cookie保存的不一致，则重新加载表格数据
-    function onClick(event, treeId, treeNode, clickFlag) {
-//        var log = "[ onClick ]&nbsp;&nbsp;clickFlag = "
-//            + clickFlag + " (" + (clickFlag===1 ? "普通选中": (clickFlag===0 ? "<b>取消选中</b>" : "<b>追加选中</b>")) + ")";
-
-        var log="";
-        var trs = "<tr class=\"odd gradeX\">\n" +
-            "                                        <td>Trident</td>\n" +
-            "                                        <td>Internet Explorer 4.0</td>\n" +
-            "                                        <td>Win 95+</td>\n" +
-            "                                        <td class=\"center\">4</td>\n" +
-            "                                        <td class=\"center\">X</td>\n" +
-            "                                    </tr>\n" +
-            "                                    <tr class=\"even gradeC\">\n" +
-            "                                        <td>Trident</td>\n" +
-            "                                        <td>Internet Explorer 5.0</td>\n" +
-            "                                        <td>Win 95+</td>\n" +
-            "                                        <td class=\"center\">5</td>\n" +
-            "                                        <td class=\"center\">C</td>\n" +
-            "                                    </tr>\n" +
-            "                                    <tr class=\"odd gradeA\">\n" +
-            "                                        <td>Trident</td>\n" +
-            "                                        <td>Internet Explorer 5.5</td>\n" +
-            "                                        <td>Win 95+</td>\n" +
-            "                                        <td class=\"center\">5.5</td>\n" +
-            "                                        <td class=\"center\">A</td>\n" +
-            "                                    </tr>\n" +
-            "                                    <tr class=\"even gradeA\">\n" +
-            "                                        <td>Trident</td>\n" +
-            "                                        <td>Internet Explorer 6</td>\n" +
-            "                                        <td>Win 98+</td>\n" +
-            "                                        <td class=\"center\">6</td>\n" +
-            "                                        <td class=\"center\">A</td>\n" +
-            "                                    </tr>\n" +
-            "                                    <tr class=\"odd gradeA\">\n" +
-            "                                        <td>Trident</td>\n" +
-            "                                        <td>Internet Explorer 7</td>\n" +
-            "                                        <td>Win XP SP2+</td>\n" +
-            "                                        <td class=\"center\">7</td>\n" +
-            "                                        <td class=\"center\">A</td>\n" +
-            "                                    </tr>";
-        $("#tb-body").empty();
-        $("#tb-body").prepend(trs);
-        log+=" treeId="+treeId+" :treeNode="+treeNode.name;
-        $("#selected-view").text(log);
-    }
-    function onMouseDown(event, treeId, treeNode)  {
-        $("#selected-view").text("[ onMouseDown ]&nbsp;&nbsp;" + (treeNode?treeNode.name:"root"));
-    }
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var treeList = /*[[${treeList}]]*/ 2;
+    /*]]>*/
 </script>
-
-
+<script src="../static/custom/js/arrange_units.js"
+        th:src="@{/custom/js/arrange_units.js}"></script>
 </body>
 
 </html>

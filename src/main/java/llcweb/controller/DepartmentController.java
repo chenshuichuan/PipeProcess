@@ -1,8 +1,12 @@
 package llcweb.controller;
 
+import llcweb.dao.repository.DepartmentsRepository;
 import llcweb.dao.repository.UnitTableRepository;
+import llcweb.domain.entities.DepartmentInfo;
 import llcweb.domain.entities.Units;
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.UnitTable;
+import llcweb.service.DepartmentsService;
 import llcweb.service.UnitTableService;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
@@ -24,14 +28,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/department")
-public class departmentController {
+public class DepartmentController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UsersService usersService;
     @Autowired
-    private UnitTableService unitTableService;
+    private DepartmentsService departmentsService;
     @Autowired
-    private UnitTableRepository unitTableRepository;
+    private DepartmentsRepository departmentsRepository;
 
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
@@ -58,13 +62,13 @@ public class departmentController {
         }
         int size = Integer.parseInt(pageSize);
         int currentPage = Integer.parseInt(startIndex)/size+1;
-        UnitTable unitTable = new UnitTable();
+        Departments departments = new Departments();
 
-        Page<UnitTable> unitTablePage = unitTableService.getPage(new PageParam(currentPage,size),unitTable);
-        List<UnitTable> unitTableList = unitTablePage.getContent();
+        Page<Departments> departmentsPage = departmentsService.getPage(new PageParam(currentPage,size),departments);
+        List<Departments> departmentsList = departmentsPage.getContent();
         //总记录数
-        long total = unitTablePage.getTotalElements();
-        map.put("pageData", unitTableList);
+        long total = departmentsPage.getTotalElements();
+        map.put("pageData", departmentsList);
         map.put("total", total);
         map.put("draw", draw);
         return map;
@@ -78,10 +82,10 @@ public class departmentController {
             @RequestParam("id")int id){
         Map<String,Object> map =new HashMap<String,Object>();
 
-        UnitTable unitTable = unitTableRepository.findOne(id);
-        if (unitTable!=null) {
-            unitTableRepository.delete(unitTable);
-            String message ="成功删除批次："+unitTable.getBatchName()+"的:"+unitTable.getUnitName()+"单元！";
+        Departments departments = departmentsRepository.findOne(id);
+        if (departments!=null) {
+            departmentsRepository.delete(departments);
+            String message ="成功删除："+departments.getName();
             map.put("result",1);
             map.put("message",message);
             logger.info(message);
@@ -109,19 +113,29 @@ public class departmentController {
 //        return map;
 //    }
 
-    //更新数据
-    @RequestMapping(value = "/getUnitsByPlanId",method = RequestMethod.GET)
-    @ResponseBody
-    public Map<String,Object> getUnitsByPlanId(HttpServletRequest request, HttpServletResponse response
-    ,@RequestParam("planId")int planId){
+    //根据id查找info信息
+    @RequestMapping(value = "/getDepartmentInfoById",method = RequestMethod.GET)
+    public Map<String,Object> getDepartmentInfoById(
+            HttpServletRequest request, HttpServletResponse response,
+            @RequestParam("id")int id){
         Map<String,Object> map =new HashMap<String,Object>();
-        List<Units> unitsList = unitTableService.findUnitsByPlanId(planId);
-        map.put("data",unitsList);
-        //String message = "更改序号的信息失败！请检查数据";
-        map.put("result",0);
-        map.put("message","");
-        logger.info("");
 
+        DepartmentInfo departmentInfo = departmentsService.getDepartmentInfo(id);
+        if (departmentInfo!=null) {
+
+            String message ="成功找到："+departmentInfo.getName();
+            map.put("result",1);
+            map.put("data",departmentInfo);
+            map.put("message",message);
+            logger.info(message);
+        }
+        else{
+            String message = "未找到相关信息！请检查数据";
+            map.put("result",0);
+            map.put("data",null);
+            map.put("message",message);
+            logger.info(message);
+        }
         return map;
     }
 }

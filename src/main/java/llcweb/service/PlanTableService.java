@@ -35,4 +35,6 @@ public interface PlanTableService {
 * example 为字段可能包含的值
 * */
     Page<PlanTable> getPage(PageParam pageParam, PlanTable example);
+
+    boolean isPlanFinished(PlanTable planTable);
 }

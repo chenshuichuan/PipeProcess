@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -16,4 +18,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  //Integer 是id 的类型
 public interface ArrangeTableRepository extends JpaRepository<ArrangeTable,Integer>{
     Page<ArrangeTable> findAll(Specification<ArrangeTable> spec, Pageable pageable);
+
+    //查找某工位的派工情况
+    List<ArrangeTable> findBySectionAndStageAndWorkplaceAndIsFinished(String section,String stage,String workpalce,int isFinished);
+
 }

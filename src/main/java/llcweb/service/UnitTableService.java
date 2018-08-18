@@ -50,4 +50,5 @@ public interface UnitTableService {
 
     List<UnitTable> findByPlanId(int planId);
     List<Units> findUnitsByPlanId(int planId);
+    List<UnitTable> getUnitsByStageId(int stageId);
 }

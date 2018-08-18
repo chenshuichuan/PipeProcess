@@ -27,6 +27,7 @@ public interface UnitTableRepository extends JpaRepository<UnitTable,Integer>{
     List<UnitTable> findByBatchNameAndUnitNameLike(String batchName, String unitName);
     List<UnitTable> findByBatchNameAndPlanIdIsNull(String batchName);
     List<UnitTable> findByPlanId(int planId);
+    List<UnitTable> findByPlanIdAndNextStage(int planId,int nextStage);
 
 //    @Query( nativeQuery = true,
 //            value = "select unit_id,unit_name,batch_name,description,pipe_shape,pipe_number,process_order from unit_table where plan_id = ?1")

@@ -1,9 +1,12 @@
 package llcweb.service;
 
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.Users;
 import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * Created by:Ricardo
@@ -38,4 +41,5 @@ public interface UsersService {
     Page<Users> getPage(PageParam pageParam, Users example);
 
     Users getCurrentUser();
+    List<Departments> getDepartments(Users users);
 }

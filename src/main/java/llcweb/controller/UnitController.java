@@ -1,8 +1,10 @@
 package llcweb.controller;
 
+import llcweb.dao.repository.DepartmentsRepository;
 import llcweb.dao.repository.PlanTableRepository;
 import llcweb.dao.repository.UnitTableRepository;
 import llcweb.domain.entities.Units;
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.PlanTable;
 import llcweb.domain.models.UnitTable;
 import llcweb.service.PlanTableService;
@@ -18,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * plan表的相关数据接口文件
@@ -37,6 +36,12 @@ public class UnitController {
     private UnitTableService unitTableService;
     @Autowired
     private UnitTableRepository unitTableRepository;
+    @Autowired
+    private DepartmentsRepository departmentsRepository;
+    @Autowired
+    private PlanTableService planTableService;
+    @Autowired
+    private PlanTableRepository planTableRepository;
 
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
@@ -118,7 +123,7 @@ public class UnitController {
     @RequestMapping(value = "/getUnitsByPlanId",method = RequestMethod.GET)
     @ResponseBody
     public Map<String,Object> getUnitsByPlanId(HttpServletRequest request, HttpServletResponse response
-    ,@RequestParam("planId")int planId){
+            ,@RequestParam("planId")int planId){
         Map<String,Object> map =new HashMap<String,Object>();
         List<Units> unitsList = unitTableService.findUnitsByPlanId(planId);
         map.put("data",unitsList);
@@ -127,6 +132,21 @@ public class UnitController {
         map.put("message","");
         logger.info("");
 
+        return map;
+    }
+
+    //根据部门工序获取可派给该部门工序的所有单元
+    @RequestMapping(value = "/getUnitsByStageId",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> getUnitsByStageId(@RequestParam("stageId")int stageId){
+        Map<String,Object> map =new HashMap<String,Object>();
+
+        List<UnitTable> unitsList = unitTableService.getUnitsByStageId(stageId);
+        map.put("data",unitsList);
+        //String message = "更改序号的信息失败！请检查数据";
+        map.put("result",0);
+        map.put("message","");
+        logger.info("");
         return map;
     }
 }

@@ -279,4 +279,31 @@ public class UnitTableServiceImpl implements UnitTableService {
         }
         return unitsList;
     }
+
+    //根据部门工序获取可派给该工序的单元
+    @Override
+    public List<UnitTable> getUnitsByStageId(int departmentStageId) {
+        //获取该部门工序信息以及所属工段信息
+        Departments stage = departmentsRepository.findOne(departmentStageId);
+        if(stage!=null){
+            int stageId = stage.getStageId();//得到加工工序，（注意加工工序和部门工序的差别！）
+            Departments section = departmentsRepository.findOne(stage.getUpDepartment());
+            if(section!=null){
+                List<UnitTable> unitTableList = new ArrayList<>();
+
+                //获取可派给该工段的未完成计划的批次
+                List<PlanTable> planTableList =
+                        planTableRepository.findByProcessPlaceAndActuralEndIsNull(section.getName());
+
+                for (PlanTable planTable:planTableList){
+                    //获取计划下所有的下一工序为所求工序的单元
+                    List<UnitTable> temp =
+                            unitTableRepository.findByPlanIdAndNextStage(planTable.getId(),stageId);
+                    unitTableList.addAll(temp);
+                }
+                return  unitTableList;
+            }
+        }
+        return null;
+    }
 }

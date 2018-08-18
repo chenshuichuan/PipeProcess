@@ -38,6 +38,7 @@ public class PlanController {
     @Autowired
     private PlanTableRepository planTableRepository;
 
+
     @RequestMapping(value = "/page",method = RequestMethod.GET)
     @ResponseBody
     public Map<String,Object> page(HttpServletRequest request, HttpServletResponse response){

@@ -1,336 +1,287 @@
 ﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>部门管理</title>
+
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}" rel="stylesheet">
-    <link href="../static/assets/materialize/css/materialize.min.css"
-          th:href="@{assets/materialize/css/materialize.min.css}" media="screen,projection" rel="stylesheet"/>
+    <link rel="stylesheet" href="../static/assets/materialize/css/materialize.min.css"
+          th:href="@{/assets/materialize/css/materialize.min.css}" media="screen,projection"/>
     <!-- Bootstrap Styles-->
     <link href="../static/assets/css/bootstrap.css"
-          th:href="@{assets/css/bootstrap.css}" rel="stylesheet"/>
+          th:href="@{/assets/css/bootstrap.css}" rel="stylesheet"/>
     <!-- FontAwesome Styles-->
     <link href="../static/assets/css/font-awesome.css"
-          th:href="@{assets/css/font-awesome.css}" rel="stylesheet"/>
-    <!-- Morris Chart Styles-->
-    <link href="../static/assets/js/morris/morris-0.4.3.min.css"
-          th:href="@{assets/js/morris/morris-0.4.3.min.css}" rel="stylesheet"/>
+          th:href="@{/assets/css/font-awesome.css}" rel="stylesheet"/>
+
     <!-- Custom Styles-->
     <link href="../static/assets/css/custom-styles.css"
-          th:href="@{assets/css/custom-styles.css}" rel="stylesheet"/>
+          th:href="@{/assets/css/custom-styles.css}" rel="stylesheet"/>
     <!-- Google Fonts-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans'
           th:href="@{http://fonts.googleapis.com/css?family=Open+Sans}" rel='stylesheet' type='text/css'/>
-    <link href="../static/assets/js/Lightweight-Chart/cssCharts.css"
-          th:href="@{assets/js/Lightweight-Chart/cssCharts.css}" rel="stylesheet">
-</head>
 
+    <!-- commom Styles-->
+    <link href="../static/custom/css/common.css"
+          th:href="@{/custom/css/common.css}" rel="stylesheet"/>
+    <!--Custom Styles-->
+    <link href="../static/assets/plugins/ztree/zTreeStyle/zTreeStyle.css"
+          th:href="@{/assets/plugins/ztree/zTreeStyle/zTreeStyle.css}" rel="stylesheet"/>
+
+</head>
 <body>
 <div id="wrapper">
     <!-- top side start-->
-    <div  th:include="template/top_side_template :: topside"></div>
+    <div th:include="template/top_side_template :: topside"></div>
     <!-- top side end-->
     <!-- left side start-->
     <nav class="navbar-default navbar-side" role="navigation"
          th:include="template/left_side_template :: leftside"></nav>
     <!-- left side end-->
     <div id="page-wrapper">
-        <div id="header" class="header">
-            <!--<h3 class="page-header">-->
-            <!--Dashboard-->
-            <!--</h3>-->
+        <div class="header">
             <ol class="breadcrumb">
-                <li><a href="index.html">系统管理</a></li>
+                <li><a href="#">系统管理</a></li>
                 <li class="active">部门管理</li>
             </ol>
         </div>
+
         <div id="page-inner">
-            <div class="dashboard-cards">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-3">
-
-                        <div class="card horizontal cardIcon waves-effect waves-dark">
-                            <div class="card-image red">
-                                <i class="material-icons dp48">import_export</i>
-                            </div>
-                            <div class="card-stacked red">
-                                <div class="card-content">
-                                    <h3>84,198</h3>
-                                </div>
-                                <div class="card-action">
-                                    <strong>REVENUE</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3">
-                        <div class="card horizontal cardIcon waves-effect waves-dark">
-                            <div class="card-image orange">
-                                <i class="material-icons dp48">shopping_cart</i>
-                            </div>
-                            <div class="card-stacked orange">
-                                <div class="card-content">
-                                    <h3>36,540</h3>
-                                </div>
-                                <div class="card-action">
-                                    <strong>SALES</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xs-12 col-sm-6 col-md-3">
-
-                        <div class="card horizontal cardIcon waves-effect waves-dark">
-                            <div class="card-image blue">
-                                <i class="material-icons dp48">equalizer</i>
-                            </div>
-                            <div class="card-stacked blue">
-                                <div class="card-content">
-                                    <h3>24,225</h3>
-                                </div>
-                                <div class="card-action">
-                                    <strong>PRODUCTS</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3">
-
-                        <div class="card horizontal cardIcon waves-effect waves-dark">
-                            <div class="card-image green">
-                                <i class="material-icons dp48">supervisor_account</i>
-                            </div>
-                            <div class="card-stacked green">
-                                <div class="card-content">
-                                    <h3>88,658</h3>
-                                </div>
-                                <div class="card-action">
-                                    <strong>VISITS</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <!-- /. ROW  -->
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-7">
-                    <div class="cirStats">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="card-panel text-center">
-                                    <h4>Profit</h4>
-                                    <div class="easypiechart" id="easypiechart-blue" data-percent="82"><span
-                                            class="percent">82%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="card-panel text-center">
-                                    <h4>No. of Visits</h4>
-                                    <div class="easypiechart" id="easypiechart-red" data-percent="46"><span
-                                            class="percent">46%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="card-panel text-center">
-                                    <h4>Customers</h4>
-                                    <div class="easypiechart" id="easypiechart-teal" data-percent="84"><span
-                                            class="percent">84%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="card-panel text-center">
-                                    <h4>Sales</h4>
-                                    <div class="easypiechart" id="easypiechart-orange" data-percent="55"><span
-                                            class="percent">55%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!--/.row-->
-                <div class="col-xs-12 col-sm-12 col-md-5">
+            <div class="panel panel-default" style="margin-top: -30px;">
+                <div class="panel-body" style="min-height: 500px;">
                     <div class="row">
-                        <div class="col-xs-12">
-                            <div class="card">
-                                <div class="card-image donutpad">
-                                    <div id="morris-donut-chart"></div>
+                        <div class="col-md-3">
+                            <div>部门列表:
+                            </div>
+                            <div class="zTreeDemoBackground left">
+                                <ul id="treeDemo" class="ztree"></ul>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <button type="button" class="btn btn-success" id="btn-add">
+                                <i class="fa fa-plus-circle"></i> 添加部门
+                            </button>
+                            <button type="button" class="btn btn-warning" id="btn-edit">
+                                <i class="fa fa-trash-o"></i> 修改
+                            </button>
+                            <button type="button" class="btn btn-danger" id="btn-del">
+                                <i class="fa fa-trash-o"></i> 删除
+                            </button>
+                            <button type="button" class="btn btn-primary" id="btn-refresh">
+                                <i class="fa fa-refresh"></i> 刷新
+                            </button>
+                            <!--view panel-->
+                            <div id="view-panel" class="panel panel-info" style="margin-top: 10px;">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title" id="view-title">该部门信息</h3>
                                 </div>
-                                <div class="card-action">
-                                    <b>Donut Chart Example</b>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="view-name">名称：</label>
+                                            <span id="view-name">一部大管工段</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="view-level">级别：</label>
+                                            <span id="view-level">工段</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="view-upDepartment">上级：</label>
+                                            <span id="view-upDepartment">一部大管工段</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="view-description">描述：</label>
+                                            <span id="view-description">一部大管工段</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="view-updateTime">录入时间：</label>
+                                            <span id="view-updateTime">工段</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="view-worker">当前绑定工人：</label>
+                                            <span id="view-worker">一部大管工段</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="view-scanner">当前绑定扫码枪：</label>
+                                            <span id="view-scanner">一部大管工段</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="view-isLock">是否锁定：</label>
+                                            <span id="view-isLock"></span>
+                                        </div>
+                                    </div>
+
                                 </div>
+
+                            </div>
+                            <!--add panel-->
+                            <div id="add-panel"  class="panel panel-success" style="display: none; margin-top: 10px;">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title" id="add-title">添加信息</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="add-name">名称：</label>
+                                            <input id="add-name"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="add-level">级别：</label>
+                                            <input id="add-level"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="add-upDepartment">上级：</label>
+                                            <input id="add-upDepartment"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="add-description">描述：</label>
+                                            <input id="add-description"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <button id="btn-add-save" type="button" class="btn btn-primary">保存</button>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button id="btn-add-cancel" type="button" class="btn btn-warning">取消</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--edit panel-->
+                            <div id="edit-panel"  class="panel panel-warning" style="display: none; margin-top: 10px;">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title" id="edit-title">修改信息</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="edit-id">id(只读)：</label>
+                                            <input id="edit-id" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="edit-name">名称：</label>
+                                            <input id="edit-name"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="edit-level">级别：</label>
+                                            <input id="edit-level"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="edit-upDepartment">上级：</label>
+                                            <input id="edit-upDepartment"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="edit-description">描述：</label>
+                                            <input id="edit-description"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="edit-worker">当前绑定工人：</label>
+                                            <span id="edit-worker">一部大管工段</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="edit-isLock">是否锁定：</label>
+                                            <input id="edit-isLock"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <button  id="btn-edit-save" type="button" class="btn btn-primary">保存</button>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button  id="btn-edit-cancel" type="button" class="btn btn-warning">取消</button>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                </div><!--/.row-->
-            </div>
-
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="card">
-                        <div class="card-image">
-                            <div id="morris-line-chart"></div>
-                        </div>
-                        <div class="card-action">
-                            <b>Line Chart</b>
-                        </div>
-                    </div>
-
                 </div>
 
-                <div class="col-md-7">
-                    <div class="card">
-                        <div class="card-image">
-                            <div id="morris-bar-chart"></div>
-                        </div>
-                        <div class="card-action">
-                            <b> Bar Chart Example</b>
-                        </div>
-                    </div>
-                </div>
 
+                <footer th:include="template/footer_template :: my_footer">
+                </footer>
             </div>
-
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="card">
-                        <div class="card-image">
-                            <div id="morris-area-chart"></div>
-                        </div>
-                        <div class="card-action">
-                            <b>Area Chart</b>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-
-                </div>
-            </div>
-            <!-- /. ROW  -->
-
-            <div class="row">
-                <div class="col-md-4 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="card-action">
-                            <b>Tasks Panel</b>
-                        </div>
-                        <div class="card-image">
-                            <div class="collection">
-                                <a href="#!" class="collection-item">Red<span class="new badge red"
-                                                                              data-badge-caption="red">4</span></a>
-                                <a href="#!" class="collection-item">Blue<span class="new badge blue"
-                                                                               data-badge-caption="blue">4</span></a>
-                                <a href="#!" class="collection-item"><span class="badge">1</span>Alan</a>
-                                <a href="#!" class="collection-item"><span class="new badge">4</span>Alan</a>
-                                <a href="#!" class="collection-item">Alan<span class="new badge blue"
-                                                                               data-badge-caption="blue">4</span></a>
-                                <a href="#!" class="collection-item"><span class="badge">14</span>Alan</a>
-                                <a href="#!" class="collection-item">Custom Badge Captions<span class="new badge"
-                                                                                                data-badge-caption="custom caption">4</span></a>
-                                <a href="#!" class="collection-item">Custom Badge Captions<span class="badge"
-                                                                                                data-badge-caption="custom caption">4</span></a>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-                <div class="col-md-8 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="card-action">
-                            <b>User List</b>
-                        </div>
-                        <div class="card-image">
-                            <ul class="collection">
-                                <li class="collection-item avatar">
-                                    <i class="material-icons circle green">track_changes</i>
-                                    <span class="title">Title</span>
-                                    <p>First Line <br>
-                                        Second Line
-                                    </p>
-                                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                                </li>
-                                <li class="collection-item avatar">
-                                    <i class="material-icons circle">folder</i>
-                                    <span class="title">Title</span>
-                                    <p>First Line <br>
-                                        Second Line
-                                    </p>
-                                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                                </li>
-                                <li class="collection-item avatar">
-                                    <i class="material-icons circle green">track_changes</i>
-                                    <span class="title">Title</span>
-                                    <p>First Line <br>
-                                        Second Line
-                                    </p>
-                                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                                </li>
-                                <li class="collection-item avatar">
-                                    <i class="material-icons circle red">play_arrow</i>
-                                    <span class="title">Title</span>
-                                    <p>First Line <br>
-                                        Second Line
-                                    </p>
-                                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-            <!-- /. ROW  -->
-            <div class="fixed-action-btn horizontal click-to-toggle">
-                <a href="#header" class="btn-floating btn-large red"><i class="material-icons">publish</i></a>
-            </div>
-
-            <footer th:include="template/footer_template :: my_footer">
-            </footer>
+            <!-- /. PAGE INNER  -->
         </div>
-        <!-- /. PAGE INNER  -->
+        <!-- /. PAGE WRAPPER  -->
+        <!-- /. WRAPPER  -->
+        <!-- JS Scripts-->
     </div>
-    <!-- /. PAGE WRAPPER  -->
 </div>
-<!-- /. WRAPPER  -->
-<!-- JS Scripts-->
 <!-- jQuery Js -->
 <script src="../static/assets/js/jquery-1.10.2.js"
-        th:src="@{assets/js/jquery-1.10.2.js}"></script>
+        th:src="@{/assets/js/jquery-1.10.2.js}"></script>
+<script>
+    var $110 = $;
+    //    $110(".dropdown-button").dropdown();
+</script>
 <!-- Bootstrap Js -->
 <script src="../static/assets/js/bootstrap.min.js"
-        th:src="@{assets/js/bootstrap.min.js}"></script>
+        th:src="@{/assets/js/bootstrap.min.js}"></script>
 <script src="../static/assets/materialize/js/materialize.min.js"
-        th:src="@{assets/materialize/js/materialize.min.js}"></script>
+        th:src="@{/assets/materialize/js/materialize.min.js}"></script>
 <!-- Metis Menu Js -->
 <script src="../static/assets/js/jquery.metisMenu.js"
-        th:src="@{assets/js/jquery.metisMenu.js}"></script>
-<!-- Morris Chart Js -->
-<script src="../static/assets/js/morris/raphael-2.1.0.min.js"
-        th:src="@{assets/js/morris/raphael-2.1.0.min.js}"></script>
-<script src="../static/assets/js/morris/morris.js"
-        th:src="@{assets/js/morris/morris.js}"></script>
-<script src="../static/assets/js/easypiechart.js"
-        th:src="@{assets/js/easypiechart.js}"></script>
-<script src="../static/assets/js/easypiechart-data.js"
-        th:src="@{assets/js/easypiechart-data.js}"></script>
-<script src="../static/assets/js/Lightweight-Chart/jquery.chart.js"
-        th:src="@{assets/js/Lightweight-Chart/jquery.chart.js}"></script>
-<!-- Custom Js -->
-<script src="../static/assets/js/custom-scripts.js"
-        th:src="@{assets/js/custom-scripts.js}"></script>
+        th:src="@{/assets/js/jquery.metisMenu.js}"></script>
+
+
+<script src="../static/assets/plugins/ztree/jquery-1.4.4.min.js"
+        th:src="@{/assets/plugins/ztree/jquery-1.4.4.min.js}"></script>
+<script src="../static/assets/plugins/ztree/jquery.ztree.core.min.js"
+        th:src="@{/assets/plugins/ztree/jquery.ztree.core.min.js}"></script>
+
+<script src="../static/assets/js/util-cookie.js"
+        th:src="@{/assets/js/util-cookie.js}"></script>
+
+<script>
+    var $144 = $;
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var treeList = /*[[${treeList}]]*/ 2;
+    /*]]>*/
+</script>
+
+<script type="text/javascript">
+
+</script>
+
+<script src="../static/custom/js/manage_department.js"
+        th:src="@{/custom/js/manage_department.js}"></script>
 </body>
 
 </html>

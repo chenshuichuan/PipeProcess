@@ -1,8 +1,12 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
+import llcweb.dao.repository.DepartmentsRepository;
 import llcweb.dao.repository.UsersRepository;
+import llcweb.dao.repository.WorkersRepository;
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.Users;
+import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
@@ -38,6 +42,10 @@ public class UsersServiceImpl implements UsersService {
     private  final  Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private DepartmentsRepository departmentsRepository;
+    @Autowired
+    private WorkersRepository workersRepository;
 
     @Transactional
     @Override
@@ -87,12 +95,53 @@ public class UsersServiceImpl implements UsersService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-
-
         logger.info("username = "+userDetails.getUsername());
-        logger.info("username = "+userDetails.getPassword());
+        //logger.info("username = "+userDetails.getPassword());
         Users users = usersRepository.findByUsernameAndPassword(userDetails.getUsername(),userDetails.getPassword());
         if(users!=null)logger.info("users id = "+users.getId()+",worker's id="+users.getWorkerId());
         return users;
     }
+
+    /**
+     *@Author: Ricardo
+     *@Description: 根据登录用户获取其可以查看修改的工段部门列表
+     *@Date: 20:55 2018/8/17
+     *@param: users：role，0 管理员.1 工段长. 2工人
+     **/
+    @Override
+    public List<Departments> getDepartments(Users users) {
+        if (users==null||users.getRole()>=2){
+            logger.error("获取部门树失败！");
+            return null;
+        }
+
+        List<Departments> departmentsList= new ArrayList<>();
+        //管理员，查看全部工段
+        if(users.getRole()==0){
+            departmentsList = departmentsRepository.findByLevel(0);
+        }
+        //工段长，根据workers表管理的部门进行查找
+        else if (users.getRole()==1){
+            Workers workers =workersRepository.findOne(users.getWorkerId());
+            if (workers==null){
+                logger.error("用户："+users.getUsername()+"未找到对应工段长信息！请检查数据！");
+                return null;
+            }
+            //管理的工段id列表
+            String [] dList = workers.getDepartments().split(",");
+            logger.info("管理部门="+dList.toString());
+            for (String str:dList){
+                int sectionId = Integer.parseInt(str);
+                //某工段
+                Departments dSection = departmentsRepository.findOne(sectionId);
+                if (dSection==null||dSection.getLever()!=0){
+                    logger.error("找到用户管理的部门不是工段！不合法！请检查");
+                    return  null;
+                }
+                departmentsList.add(dSection);
+            }
+        }
+        return departmentsList;
+    }
+
 }

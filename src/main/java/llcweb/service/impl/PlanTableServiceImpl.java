@@ -85,4 +85,12 @@ public class PlanTableServiceImpl implements PlanTableService {
         //查询
         return planTableRepository.findAll(specification,pageable);
     }
+
+    @Override
+    public boolean isPlanFinished(PlanTable planTable) {
+        if(planTable!=null&&planTable.getActuralEnd()!=null)
+            return true;
+
+        return false;
+    }
 }
