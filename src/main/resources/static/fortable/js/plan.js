@@ -10,7 +10,6 @@
 var urlPage = "/plan/page";
 var urlDelete = "/plan/deleteById";
 var urlUpdate = "/plan/update";
-var urlGetUnits = "/unit/getUnitsByPlanId";
 
 var $wrapper = $('#div-table-container');
 
@@ -428,42 +427,42 @@ var planManage = {
     }
 };
 
-//判断下料状态
-function stringIsCutted(isCutted) {
-    if (isCutted === 1) return "下料完成";
-    else if (isCutted === 0) return "已派工";
-    else if (isCutted === -1) return "未开始";
-    else return "未知";
-}
-
-//根据下料状态返回渲染的css class
-function classIsCutted(isCutted) {
-    if (isCutted === 1) return "text-success";
-    else if (isCutted === 0) return "text-info";
-    else if (isCutted === -1) return "text-warning";
-    else return "text-error";
-}
-//根据planId获取该plan包含的所有单元对象
-function getUnits(planId) {
-    var units =null;
-    //设置同步
-    $.ajax({
-        type : "get",
-        url : urlGetUnits,
-        data :"planId=" + planId,
-        async : false,
-        success : function(data){
-            units = data.data;
-        }
-    });
-    return units;
-}
-//根据planId获取该plan包含的所有单元名称
-function getUnitsName(planId) {
-    var units = getUnits(planId);
-    var unitNames="";
-    for(var i = 0;i<units.length;i++){
-        unitNames+=units[i].unitName+",";
-    }
-    return unitNames;
-}
+// //判断下料状态
+// function stringIsCutted(isCutted) {
+//     if (isCutted === 1) return "下料完成";
+//     else if (isCutted === 0) return "已派工";
+//     else if (isCutted === -1) return "未开始";
+//     else return "未知";
+// }
+//
+// //根据下料状态返回渲染的css class
+// function classIsCutted(isCutted) {
+//     if (isCutted === 1) return "text-success";
+//     else if (isCutted === 0) return "text-info";
+//     else if (isCutted === -1) return "text-warning";
+//     else return "text-error";
+// }
+// //根据planId获取该plan包含的所有单元对象
+// function getUnits(planId) {
+//     var units =null;
+//     //设置同步
+//     $.ajax({
+//         type : "get",
+//         url : urlGetUnits,
+//         data :"planId=" + planId,
+//         async : false,
+//         success : function(data){
+//             units = data.data;
+//         }
+//     });
+//     return units;
+// }
+// //根据planId获取该plan包含的所有单元名称
+// function getUnitsName(planId) {
+//     var units = getUnits(planId);
+//     var unitNames="";
+//     for(var i = 0;i<units.length;i++){
+//         unitNames+=units[i].unitName+",";
+//     }
+//     return unitNames;
+// }

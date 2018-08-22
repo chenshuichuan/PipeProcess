@@ -84,4 +84,12 @@ public class ShipTableServiceImpl implements ShipTableService {
         //查询
         return shipTableRepository.findAll(specification,pageable);
     }
+
+    //根据state 查询船
+    //state：1 完工状态 ，0未完工状态
+    @Override
+    public List<ShipTable> getAllShipNameByState(int state) {
+        if(state==1) return shipTableRepository.findFinishedShip();
+        else  return shipTableRepository.findUnfinishedShip();
+    }
 }

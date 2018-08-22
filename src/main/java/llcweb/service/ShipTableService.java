@@ -5,6 +5,8 @@ import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -35,4 +37,5 @@ public interface ShipTableService {
   * example 为字段可能包含的值
   * */
     Page<ShipTable> getPage(PageParam pageParam, ShipTable example);
+    List<ShipTable> getAllShipNameByState(int state);
 }

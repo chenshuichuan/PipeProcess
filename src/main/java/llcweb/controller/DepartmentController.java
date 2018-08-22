@@ -2,10 +2,13 @@ package llcweb.controller;
 
 import llcweb.dao.repository.DepartmentsRepository;
 import llcweb.dao.repository.UnitTableRepository;
+import llcweb.dao.repository.WorkstageRepository;
 import llcweb.domain.entities.DepartmentInfo;
 import llcweb.domain.entities.Units;
+import llcweb.domain.entities.WorkplaceInfo;
 import llcweb.domain.models.Departments;
 import llcweb.domain.models.UnitTable;
+import llcweb.domain.models.Workstage;
 import llcweb.service.DepartmentsService;
 import llcweb.service.UnitTableService;
 import llcweb.service.UsersService;
@@ -36,7 +39,8 @@ public class DepartmentController {
     private DepartmentsService departmentsService;
     @Autowired
     private DepartmentsRepository departmentsRepository;
-
+    @Autowired
+    private WorkstageRepository workstageRepository;
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
     @ResponseBody
@@ -128,6 +132,55 @@ public class DepartmentController {
             map.put("data",departmentInfo);
             map.put("message",message);
             logger.info(message);
+        }
+        else{
+            String message = "未找到相关信息！请检查数据";
+            map.put("result",0);
+            map.put("data",null);
+            map.put("message",message);
+            logger.info(message);
+        }
+        return map;
+    }
+
+    //根据部门工序id查找工序下所有工位及工位状态信息
+    @RequestMapping(value = "/getWorkplaceInfoByStageId",method = RequestMethod.GET)
+    public Map<String,Object> getWorkplaceInfoByStageId(@RequestParam("stageId")int stageId){
+        Map<String,Object> map =new HashMap<String,Object>();
+
+        Departments departments = departmentsRepository.findOne(stageId);
+        if (departments!=null&&departments.getLevel()==1) {//保证传入的是部门工序
+            List<WorkplaceInfo> workplaceInfoList = departmentsService.getWorkPlaceByStage(stageId);
+            map.put("result",1);
+            map.put("data",workplaceInfoList);
+            map.put("message","获取成功");
+            logger.info("获取成功");
+        }
+        else{
+            String message = "未找到相关信息！请检查数据";
+            map.put("result",0);
+            map.put("data",null);
+            map.put("message",message);
+            logger.info(message);
+        }
+        return map;
+    }
+    //根据工段名称查找工段下某工序的部门工序，如查找一部大管工段下的下料工序部门(一部大管工段,下料)
+    @RequestMapping(value = "/getDepartmentBySectionAndStage",method = RequestMethod.GET)
+    public Map<String,Object> getDepartmentBySectionAndStage(@RequestParam("stage")String stage,
+                                                          @RequestParam("section")String section){
+        Map<String,Object> map =new HashMap<String,Object>();
+        Workstage workstage = workstageRepository.findByName(stage);
+        Departments sectionDepartment = departmentsRepository.findByName(section)
+                ;
+        if (sectionDepartment!=null&&sectionDepartment.getLevel()==0&&workstage!=null) {//保证传入的是部门工段
+            Departments stageDepartment =
+                    departmentsRepository.findByUpDepartmentAndLevelAndStageId(sectionDepartment.getId(),
+                            1,workstage.getId());
+            map.put("result",1);
+            map.put("data",stageDepartment);
+            map.put("message","获取成功");
+            logger.info("获取成功");
         }
         else{
             String message = "未找到相关信息！请检查数据";

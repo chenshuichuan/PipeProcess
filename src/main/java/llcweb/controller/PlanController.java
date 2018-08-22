@@ -1,8 +1,10 @@
 package llcweb.controller;
 
 import llcweb.dao.repository.PlanTableRepository;
+import llcweb.dao.repository.ShipTableRepository;
 import llcweb.dao.repository.WorkersRepository;
 import llcweb.domain.models.PlanTable;
+import llcweb.domain.models.ShipTable;
 import llcweb.domain.models.Workers;
 import llcweb.service.PlanTableService;
 import llcweb.service.UsersService;
@@ -37,6 +39,8 @@ public class PlanController {
     private PlanTableService planTableService;
     @Autowired
     private PlanTableRepository planTableRepository;
+    @Autowired
+    private ShipTableRepository shipTableRepository;
 
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
@@ -50,20 +54,52 @@ public class PlanController {
         String startIndex = request.getParameter("startIndex");
         //数据长度
         String pageSize = request.getParameter("pageSize");
-
-       //获取客户端需要那一列排序
-        String orderColumn = request.getParameter("orderColumn");
-        if(orderColumn == null){
-            orderColumn = "serialNumber";
-        }
-        //获取排序方式 默认为asc
-        String orderDir = request.getParameter("orderDir");
-        if(orderDir == null){
-            orderDir = "asc";
-        }
         int size = Integer.parseInt(pageSize);
         int currentPage = Integer.parseInt(startIndex)/size+1;
+
+//       //获取客户端需要那一列排序
+//        String orderColumn = request.getParameter("orderColumn");
+//        if(orderColumn == null){
+//            orderColumn = "serialNumber";
+//        }
+//        //获取排序方式 默认为asc
+//        String orderDir = request.getParameter("orderDir");
+//        if(orderDir == null){
+//            orderDir = "asc";
+//        }
         PlanTable planTable = new PlanTable();
+        String fuzzy = request.getParameter("fuzzySearch");
+        if("true".equals(fuzzy)){//模糊查找
+            String searchValue = request.getParameter("fuzzy");
+            if (searchValue!=null&&!searchValue.equals("")) {
+                planTable.setPlanName(searchValue);
+                planTable.setShipName(searchValue);
+                planTable.setBatchName(searchValue);
+                planTable.setBatchDescription(searchValue);
+                planTable.setStocks(searchValue);
+                planTable.setSections(searchValue);
+                planTable.setProcessPlace(searchValue);
+            }
+        }
+       else{
+            //工段
+            String processPlace = request.getParameter("processPlace");
+            if (processPlace!=null&&!processPlace.equals("")) {
+                planTable.setProcessPlace(processPlace);
+            }
+            //船号
+            String shipCode = request.getParameter("shipCode");
+            if (shipCode!=null&&!shipCode.equals("")) {
+                ShipTable shipTable = shipTableRepository.findByShipCode(shipCode);
+                if (shipTable!=null) planTable.setShipName(shipTable.getShipName());
+            }
+            //下料状态
+            String isCutted = request.getParameter("isCutted");
+            if (isCutted!=null&&!isCutted.equals("")) {
+                planTable.setIsCutted(Integer.parseInt(isCutted));
+            }
+        }
+
         Page<PlanTable> planPage = planTableService.getPage(new PageParam(currentPage,size),planTable);
         List<PlanTable> planTableList = planPage.getContent();
         //总记录数

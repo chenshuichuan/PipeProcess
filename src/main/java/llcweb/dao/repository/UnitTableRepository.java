@@ -1,12 +1,14 @@
 package llcweb.dao.repository;
 
 import llcweb.domain.entities.Units;
+import llcweb.domain.models.ArrangeTable;
 import llcweb.domain.models.UnitTable;
 import llcweb.domain.models.Workers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -18,7 +20,8 @@ import java.util.List;
  * Time: 13:36
  */
  //Integer 是id 的类型
-public interface UnitTableRepository extends JpaRepository<UnitTable,Integer>{
+public interface UnitTableRepository extends JpaRepository<UnitTable,Integer>
+        , JpaSpecificationExecutor<UnitTable> {
     Page<UnitTable> findAll(Specification<UnitTable> spec, Pageable pageable);
 
     UnitTable findByBatchNameAndUnitName(String batchName, String unitName);

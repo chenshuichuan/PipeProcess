@@ -1,4 +1,15 @@
 
+//根据planId获取该plan包含的所有单元对象
+var urlGetUnits = "/unit/getUnitsByPlanId";
+//根据部门工序获取工序下所有工位信息
+var urlGetWorkplaceInfoByStageId="/department/getWorkplaceInfoByStageId";
+
+var urlGetDepartmentBySectionAndStage ="/department/getDepartmentBySectionAndStage";
+//获取当前用户管理的工段列表
+var urlGetUserManageSections = "/users/getUserManageSections";
+////获取当前未完工的船名和shipCode
+var urlGetAllUnfinishedShip = "/ship/getAllUnfinishedShip";
+
 /*常量*/
 Date.prototype.toLocaleString = function() {
     return this.getFullYear() + "/" + (this.getMonth() + 1) + "/" + this.getDate();
@@ -62,3 +73,109 @@ var CONSTANT = {
             }
 		}
 };
+
+
+
+//判断下料状态
+function stringIsCutted(isCutted) {
+    if (isCutted === 1) return "下料完成";
+    else if (isCutted === 0) return "已派工";
+    else if (isCutted === -1) return "未开始";
+    else return "未知";
+}
+
+//根据下料状态返回渲染的css class
+function classIsCutted(isCutted) {
+    if (isCutted === 1) return "text-success";
+    else if (isCutted === 0) return "text-info";
+    else if (isCutted === -1) return "text-warning";
+    else return "text-error";
+}
+
+//根据planId获取该plan包含的所有单元对象
+function getUnits(planId) {
+    var units =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetUnits,
+        data :"planId=" + planId,
+        async : false,
+        success : function(data){
+            units = data.data;
+        }
+    });
+    return units;
+}
+//根据planId获取该plan包含的所有单元名称
+function getUnitsName(planId) {
+    var units = getUnits(planId);
+    var unitNames="";
+    for(var i = 0;i<units.length;i++){
+        unitNames+=units[i].unitName+",";
+    }
+    return unitNames;
+}
+
+
+//根据部门工序获取工序下所有工位信息
+function getWorkplaceInfoByStageId(stageId) {
+    var departmentList =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetWorkplaceInfoByStageId,
+        data :"stageId=" + stageId,
+        async : false,
+        success : function(data){
+            departmentList = data.data;
+        }
+    });
+    return departmentList;
+}
+//根据工段和工段下的部门工序，获取其department信息
+function getDepartmentBySectionAndStage(section,stage) {
+    var department =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetDepartmentBySectionAndStage,
+        data :"section=" + section+"&stage="+stage,
+        async : false,
+        success : function(data){
+            department = data.data;
+        }
+    });
+    return department;
+}
+
+//获取当前用户管理的工段列表
+function getUserManageSections() {
+    var sections =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetUserManageSections,
+        data :"",
+        async : false,
+        success : function(data){
+            sections = data.data;
+        }
+    });
+    return sections;
+}
+////获取当前未完工的船名和shipCode
+function getAllUnfinishedShip() {
+    var ships =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetAllUnfinishedShip,
+        data :"",
+        async : false,
+        success : function(data){
+            ships = data.data;
+        }
+    });
+    return ships;
+}

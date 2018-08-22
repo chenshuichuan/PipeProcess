@@ -16,7 +16,7 @@ public class Departments {
 
     private String name;
 
-    private Integer lever;
+    private Integer level;
 
     private Integer upDepartment;
 
@@ -29,10 +29,10 @@ public class Departments {
     public Departments() {
 
     }
-    public Departments(String name, Integer lever,
+    public Departments(String name, Integer level,
                        Integer upDepartment, String description, Integer stageId) {
         this.name = name;
-        this.lever = lever;
+        this.level = level;
         this.upDepartment = upDepartment;
         this.description = description;
         this.stageId = stageId;
@@ -53,12 +53,12 @@ public class Departments {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getLever() {
-        return lever;
+    public Integer getLevel() {
+        return level;
     }
 
-    public void setLever(Integer lever) {
-        this.lever = lever;
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     public Integer getUpDepartment() {

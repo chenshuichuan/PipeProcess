@@ -10,20 +10,27 @@ import llcweb.tools.DateUtil;
  *@param:
  **/
 
-public class DepartmentInfo {
+public class WorkplaceInfo {
 
     private Integer id;
     private String name;
-    private String level;
-    private String description;
-    private String updateTime;
 
+    public boolean isVaccancy() {
+        return isVaccancy;
+    }
+
+    public void setVaccancy(boolean vaccancy) {
+        isVaccancy = vaccancy;
+    }
+
+    private boolean isVaccancy;
+    private String description;
     private String upDepartment;//upDepartment
     private String bangdingWorker;
     private String scanner;//工位的话，绑定的扫码枪
     private int isLock;//工位的话，绑定的扫码枪,当天是否锁定
 
-    public DepartmentInfo() {
+    public WorkplaceInfo() {
 
     }
 
@@ -43,12 +50,10 @@ public class DepartmentInfo {
         this.isLock = isLock;
     }
 
-    public DepartmentInfo(Departments departments) {
+    public WorkplaceInfo(Departments departments) {
         this.id = departments.getId();
         this.name = departments.getName();
         this.description = departments.getDescription();
-        this.updateTime = DateUtil.formatDateTimeString(departments.getUpdatatTime());
-        this.level = departments.getLevel()==0?"工段":(departments.getLevel()==1?"工序":"工位");
     }
     public Integer getId() {
         return id;
@@ -66,28 +71,12 @@ public class DepartmentInfo {
         this.name = name;
     }
 
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
     }
 
     public String getUpDepartment() {

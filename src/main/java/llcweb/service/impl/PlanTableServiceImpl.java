@@ -2,12 +2,14 @@ package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.PlanTableRepository;
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.PlanTable;
 import llcweb.domain.models.UnitTable;
 import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.PlanTableService;
 import llcweb.service.UnitTableService;
+import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,6 +43,8 @@ public class PlanTableServiceImpl implements PlanTableService {
     private PlanTableRepository planTableRepository;
     @Autowired
     private UnitTableService unitTableService;
+    @Autowired
+    private UsersService usersService;
 
     @Transactional
     @Override
@@ -77,6 +81,30 @@ public class PlanTableServiceImpl implements PlanTableService {
             @Override
             public Predicate toPredicate(Root<PlanTable> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>(); //所有的断言
+                if(StringUtils.isNotBlank(example.getProcessPlace())){ //添加断言
+                    Predicate likeName = cb.like(root.get("processPlace").as(String.class),"%"+example.getProcessPlace()+"%");
+                    predicates.add(likeName);
+                }
+                else{
+                    CriteriaBuilder.In<Object> in = cb.in(root.get("processPlace"));
+                    List<Departments> sectionList =  usersService.getSections(usersService.getCurrentUser());
+                    for (Departments section: sectionList){
+                        in.value(section.getName());
+                    }
+                    predicates.add(in);
+                }
+                if(StringUtils.isNotBlank(example.getBatchName())){ //添加断言
+                    Predicate likeName = cb.like(root.get("batchName").as(String.class),"%"+example.getBatchName()+"%");
+                    predicates.add(likeName);
+                }
+                if(StringUtils.isNotBlank(example.getShipName())){ //添加断言
+                    Predicate likeName = cb.like(root.get("shipName").as(String.class),"%"+example.getShipName()+"%");
+                    predicates.add(likeName);
+                }
+                if(example.getIsCutted()!=null){ //添加断言
+                    Predicate likeName = cb.equal(root.get("isCutted").as(Integer.class),example.getIsCutted());
+                    predicates.add(likeName);
+                }
                 return cb.and(predicates.toArray(new Predicate[0]));
             }
         };
@@ -90,7 +118,6 @@ public class PlanTableServiceImpl implements PlanTableService {
     public boolean isPlanFinished(PlanTable planTable) {
         if(planTable!=null&&planTable.getActuralEnd()!=null)
             return true;
-
         return false;
     }
 }

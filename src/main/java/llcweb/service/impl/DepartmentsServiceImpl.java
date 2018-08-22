@@ -1,11 +1,11 @@
 package llcweb.service.impl;
 
-import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.DepartmentsRepository;
 import llcweb.dao.repository.ScannerTableRepository;
 import llcweb.dao.repository.WorkersRepository;
 import llcweb.domain.entities.DepartmentInfo;
 import llcweb.domain.entities.DepartmentTree;
+import llcweb.domain.entities.WorkplaceInfo;
 import llcweb.domain.models.Departments;
 import llcweb.domain.models.ScannerTable;
 import llcweb.domain.models.Users;
@@ -114,8 +114,8 @@ public class DepartmentsServiceImpl implements DepartmentsService {
             return null;
         }
         List<Departments> departmentsList= new ArrayList<>();
-        //工序列表
-        List<Departments> sectionList =  usersService.getDepartments(users);
+        //工段列表
+        List<Departments> sectionList =  usersService.getSections(users);
         for(Departments departments: sectionList){
             //工段下的工序列表
             List<Departments> dstage = departmentsRepository.findByUpDepartment(departments.getId());
@@ -123,7 +123,7 @@ public class DepartmentsServiceImpl implements DepartmentsService {
             departmentsList.addAll(dstage);
 
             for (Departments stage: dstage){
-                if (stage.getLever()!=1)logger.error("找到的部门非工序！不合法！请检查");
+                if (stage.getLevel()!=1)logger.error("找到的部门非工序！不合法！请检查");
                 else{
                     //工序下的工位列表
                     List<Departments> dWorkPlace = departmentsRepository.findByUpDepartment(stage.getId());
@@ -133,8 +133,6 @@ public class DepartmentsServiceImpl implements DepartmentsService {
         }
         return departmentsList;
     }
-
-
     /**
      *@Author: Ricardo
      *@Description: 根据用户获取其可以派工的的部门树，根据showState决定是否加上工位的加工状态
@@ -154,15 +152,15 @@ public class DepartmentsServiceImpl implements DepartmentsService {
         List<DepartmentTree> departmentTreeList = new ArrayList<>();
         for (Departments departments:departmentsList){
             DepartmentTree departmentTree = new DepartmentTree(departments);
-            if(departments.getLever()==0){
+            if(departments.getLevel()==0){
                 departmentTree.setOpen(true);
                 departmentTree.setIconSkin("pIcon01");
             }
-            else if(departments.getLever()==1){
+            else if(departments.getLevel()==1){
                 departmentTree.setOpen(false);
                 departmentTree.setIconSkin("");
             }
-            else if(departments.getLever()==2){
+            else if(departments.getLevel()==2){
                 departmentTree.setOpen(false);
                 departmentTree.setIconSkin("");
                 //查找某工位是否存在未完成派工
@@ -176,6 +174,8 @@ public class DepartmentsServiceImpl implements DepartmentsService {
         }
         return departmentTreeList;
     }
+
+    //根据部门id获取某个部门的详细信息
     @Override
     public DepartmentInfo getDepartmentInfo(int id) {
         Departments departments = departmentsRepository.findOne(id);
@@ -183,10 +183,10 @@ public class DepartmentsServiceImpl implements DepartmentsService {
             DepartmentInfo departmentInfo = new DepartmentInfo(departments);
             Departments upDe = departmentsRepository.findOne(departments.getUpDepartment());
             if(upDe!=null)departmentInfo.setUpDepartment(upDe.getName());
-            else if(departments.getLever()!=0)logger.error("非工段部门未找到上级部门！");
+            else if(departments.getLevel()!=0)logger.error("非工段部门未找到上级部门！");
 
             //工位的话，查询工位当前绑定的工人
-            if(departments.getLever()==2){
+            if(departments.getLevel()==2){
                 ScannerTable scannerTable = scannerTableRepository.findByWorkplaceId(departments.getId());
                 if(scannerTable!=null){
                     Workers workers = workersRepository.findOne(scannerTable.getWorkerId());
@@ -199,5 +199,25 @@ public class DepartmentsServiceImpl implements DepartmentsService {
             return departmentInfo;
         }
         return null;
+    }
+
+    /**
+     *@Author: Ricardo
+     *@Description: 根据部门工序，获取该工序下所有的工位及工位状态
+     *@Date: 20:55 2018/8/17
+     *@param: users：role，0 管理员.1 工段长. 2工人
+     **/
+    @Override
+    public List<WorkplaceInfo> getWorkPlaceByStage(int stageId) {
+
+        List<WorkplaceInfo> workplaceInfoList= new ArrayList<>();
+        //工位列表
+        List<Departments> departmentsList =  departmentsRepository.findByUpDepartment(stageId);
+        for(Departments departments: departmentsList){
+           WorkplaceInfo workplaceInfo = new WorkplaceInfo(departments);
+           workplaceInfo.setVaccancy(arrangeTableService.isWorkpalceVacancy(departments));
+           workplaceInfoList.add(workplaceInfo);
+        }
+        return workplaceInfoList;
     }
 }

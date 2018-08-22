@@ -1,11 +1,13 @@
 package llcweb.dao.repository;
 
+import llcweb.domain.models.ArrangeTable;
 import llcweb.domain.models.AttachmentHubHeader;
 import llcweb.domain.models.Workers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /**
  * Created by:Ricardo
@@ -14,6 +16,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 13:36
  */
  //Integer 是id 的类型
-public interface AttachmentHubHeaderRepository extends JpaRepository<AttachmentHubHeader,Integer>{
+public interface AttachmentHubHeaderRepository extends JpaRepository<AttachmentHubHeader,Integer>
+        , JpaSpecificationExecutor<AttachmentHubHeader> {
     Page<AttachmentHubHeader> findAll(Specification<AttachmentHubHeader> spec, Pageable pageable);
 }

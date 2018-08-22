@@ -44,8 +44,15 @@ public class HtmlController {
 
         return modelAndView;
     }
-    @RequestMapping("/index.html")
+    @RequestMapping("/")
     public ModelAndView index(){
+        ModelAndView modelAndView = new ModelAndView("index");
+        Users users = usersService.getCurrentUser();
+        modelAndView.addObject("user", users);
+        return modelAndView;
+    }
+    @RequestMapping("/index.html")
+    public ModelAndView index1(){
         ModelAndView modelAndView = new ModelAndView("index");
         Users users = usersService.getCurrentUser();
         modelAndView.addObject("user", users);
@@ -77,8 +84,9 @@ public class HtmlController {
     @RequestMapping("/iframe/workers.html")
     public ModelAndView iframe_workers(){
         ModelAndView modelAndView = new ModelAndView("./iframe/workers");
-        Users users = usersService.getCurrentUser();
-        modelAndView.addObject("user", users);
+        //iframe级别的不能获取登录用户，其值为null,为什么??
+//        Users users = usersService.getCurrentUser();
+//        modelAndView.addObject("user", users);
         return modelAndView;
     }
 
@@ -93,8 +101,8 @@ public class HtmlController {
     @RequestMapping("/iframe/plan.html")
     public ModelAndView iframe_plan(){
         ModelAndView modelAndView = new ModelAndView("./iframe/plan");
-        Users users = usersService.getCurrentUser();
-        modelAndView.addObject("user", users);
+//        Users users = usersService.getCurrentUser();
+//        modelAndView.addObject("user", users);
         return modelAndView;
     }
 
@@ -109,8 +117,8 @@ public class HtmlController {
     @RequestMapping("/iframe/arrange_batch.html")
     public ModelAndView iframe_arrange_batch(){
         ModelAndView modelAndView = new ModelAndView("./iframe/arrange_batch");
-        Users users = usersService.getCurrentUser();
-        modelAndView.addObject("user", users);
+//        Users users = usersService.getCurrentUser();
+//        modelAndView.addObject("user", users);
         return modelAndView;
     }
     //单元派工页面
@@ -127,8 +135,8 @@ public class HtmlController {
     @RequestMapping("/iframe/arrange_unit.html")
     public ModelAndView iframe_arrange_unit(){
         ModelAndView modelAndView = new ModelAndView("./iframe/arrange_unit");
-        Users users = usersService.getCurrentUser();
-        modelAndView.addObject("user", users);
+//        Users users = usersService.getCurrentUser();
+//        modelAndView.addObject("user", users);
         return modelAndView;
     }
 
@@ -143,8 +151,8 @@ public class HtmlController {
     @RequestMapping("/iframe/arrange_record.html")
     public ModelAndView iframe_arrange_record(){
         ModelAndView modelAndView = new ModelAndView("./iframe/arrange_record");
-        Users users = usersService.getCurrentUser();
-        modelAndView.addObject("user", users);
+//        Users users = usersService.getCurrentUser();
+//        modelAndView.addObject("user", users);
         return modelAndView;
     }
 

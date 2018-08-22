@@ -40,6 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        http.headers().frameOptions().disable();
+
         http
                 .csrf().disable()
                 .authorizeRequests()
@@ -61,5 +64,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //设置注销成功后跳转页面，默认是跳转到登录页面
                 .logoutSuccessUrl("/login?logout")
                 .permitAll();//注销请求可直接访问
+
     }
 }

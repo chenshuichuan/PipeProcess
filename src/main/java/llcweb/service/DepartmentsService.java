@@ -2,6 +2,7 @@ package llcweb.service;
 
 import llcweb.domain.entities.DepartmentInfo;
 import llcweb.domain.entities.DepartmentTree;
+import llcweb.domain.entities.WorkplaceInfo;
 import llcweb.domain.models.Departments;
 import llcweb.domain.models.Users;
 import llcweb.domain.models.Workers;
@@ -45,4 +46,5 @@ public interface DepartmentsService {
     List<DepartmentTree> getDepartmentTree(Users users, boolean showState);
     List<Departments> getDepartments(Users users);
     DepartmentInfo getDepartmentInfo(int id);
+    List<WorkplaceInfo> getWorkPlaceByStage(int stageId);
 }

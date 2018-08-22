@@ -1,6 +1,7 @@
 package llcweb.controller;
 
 import llcweb.domain.User;
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.Users;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +40,7 @@ public class UsersController {
         map.put("page",usersService.getPage(new PageParam(1,10),users));
         return map;
     }
+    //获取当前登录用户
     @RequestMapping(value = "/getCurrentUser",method = RequestMethod.GET)
     @ResponseBody
     public Map<String,Object> getCurrentUser(){
@@ -51,6 +54,16 @@ public class UsersController {
 //                    "phone":"13557453450", "role":0,
 //                    "roles":[ { "flag":"0", "id":1, "name":"绠＄悊鍛�" } ],
 //            "state":0, "username":"admin" } }
+        return map;
+    }
+    //获取当前用户管理的工段列表
+    @RequestMapping(value = "/getUserManageSections",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> getUserManageSections(){
+        Map<String,Object> map =new HashMap<String,Object>();
+        Users users = usersService.getCurrentUser();
+        List<Departments>sectionsList =  usersService.getSections(users);
+        map.put("data",sectionsList);
         return map;
     }
 }

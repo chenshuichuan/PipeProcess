@@ -26,12 +26,17 @@
     <link href="../static/custom/css/common.css"
           th:href="@{/custom/css/common.css}" rel="stylesheet"/>
 
-    <!-- Custom Styles-->
-    <link href="../static/assets/plugins/dataTables/css/jquery.dataTables.min.css"
-          th:href="@{/assets/plugins/dataTables/css/jquery.dataTables.min.css}" rel="stylesheet"/>
-    <link href="../static/assets/plugins/ztree/zTreeStyle/zTreeStyle.css"
-          th:href="@{/assets/plugins/ztree/zTreeStyle/zTreeStyle.css}" rel="stylesheet"/>
+    <link href="../static/assets/plugins/selector/css/bootstrap-select.min.css"
+          th:href="@{/assets/plugins/selector/css/bootstrap-select.min.css}" rel="stylesheet">
+    <style>
+        .special {
+            font-weight: bold !important;
+            color: #fff !important;
+            background: #bc0000 !important;
+            text-transform: uppercase;
+        }
 
+    </style>
 </head>
 
 <body>
@@ -68,10 +73,16 @@
             </div>
 
             <div class="row">
-                <div class="col-md-12">
-                    <div class="zTreeDemoBackground left">
-                        <ul id="treeDemo" class="ztree"></ul>
-                    </div>
+                <div class="col-md-6">
+                    <select id="select-test" class="form-control selectpicker" title="请选择省份11111" multiple>
+
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <select class="selectpicker">
+                        <option data-content="<i class='fa fa-tasks'></i>Relish">Relish</option>
+                    </select>
+
                 </div>
             </div>
             <footer th:include="template/footer_template :: my_footer">
@@ -89,53 +100,36 @@
 <!-- Bootstrap Js -->
 <script src="../static/assets/js/bootstrap.min.js"
         th:src="@{/assets/js/bootstrap.min.js}"></script>
-<!-- Metis Menu Js -->
-<script src="../static/assets/js/jquery.metisMenu.js"
-        th:src="@{/assets/js/jquery.metisMenu.js}"></script>
-<!--通用 Custom Js -->
-<script src="../static/assets/js/custom-scripts.js"
-        th:src="@{/assets/js/custom-scripts.js}"></script>
-<script src="../static/custom/js/common.js"
-        th:src="@{/custom/js/commom.js}"></script>
-<!--特定页面js-->
-<script src="../static/assets/plugins/dataTables/js/jquery.dataTables.min.js"
-        th:src="@{/assets/plugins/dataTables/js/jquery.dataTables.min.js}"></script>
-<script src="../static/assets/plugins/ztree/jquery-1.4.4.min.js"
-        th:src="@{/assets/plugins/ztree/jquery-1.4.4.min.js}"></script>
-<script src="../static/assets/plugins/ztree/jquery.ztree.core.min.js"
-        th:src="@{/assets/plugins/ztree/jquery.ztree.core.min.js}"></script>
+<!--&lt;!&ndash; Metis Menu Js &ndash;&gt;-->
+<!--<script src="../static/assets/js/jquery.metisMenu.js"-->
+        <!--th:src="@{/assets/js/jquery.metisMenu.js}"></script>-->
+<!--&lt;!&ndash;通用 Custom Js &ndash;&gt;-->
+<!--<script src="../static/assets/js/custom-scripts.js"-->
+        <!--th:src="@{/assets/js/custom-scripts.js}"></script>-->
+<!--<script src="../static/custom/js/common.js"-->
+        <!--th:src="@{/custom/js/commom.js}"></script>-->
 
+<script src="../static/assets/plugins/selector/js/bootstrap-select.min.js"
+        th:src="@{/assets/plugins/selector/js/bootstrap-select.min.js}"></script>
 
-<SCRIPT type="text/javascript">
-    <!--
-    var setting = {
-        data: {
-            simpleData: {
-                enable: true
-            }
+<script>
+
+    $(document).ready(function () {
+        //$("#select-test").empty();
+        var option="";
+        for (var i =0 ; i<5;i++){
+            option+= "<option"+ " value='"+i+ "' data-content=\"<span class='label "+
+                (i%2 ? "label-success'>" : "label-warning'>")+
+                "name"+i +"</span>\">"+"name"+i+ "</option>";
+
         }
-    };
+        alert(option);
+        $("#select-test").prepend(option);
+        //    刷新
+        $('#select-test').selectpicker('refresh');
 
-    var zNodes =[
-        { id:1, pId:0, name:"展开、折叠 自定义图标不同", open:true, iconSkin:"pIcon01"},
-        { id:11, pId:1, name:"叶子节点1", iconSkin:"icon01"},
-        { id:12, pId:1, name:"叶子节点2", iconSkin:"icon02"},
-        { id:13, pId:1, name:"叶子节点3", iconSkin:"icon03"},
-        { id:2, pId:0, name:"展开、折叠 自定义图标相同", open:true, iconSkin:"pIcon02"},
-        { id:21, pId:2, name:"叶子节点1", iconSkin:"icon04"},
-        { id:22, pId:2, name:"叶子节点2", iconSkin:"icon05"},
-        { id:23, pId:2, name:"叶子节点3", iconSkin:"icon06"},
-        { id:3, pId:0, name:"不使用自定义图标", open:true },
-        { id:31, pId:3, name:"叶子节点1"},
-        { id:32, pId:3, name:"叶子节点2"},
-        { id:33, pId:3, name:"叶子节点3"}
-    ];
-
-    $(document).ready(function(){
-        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     });
-    //-->
-</SCRIPT>
+</script>
 </body>
 
 </html>

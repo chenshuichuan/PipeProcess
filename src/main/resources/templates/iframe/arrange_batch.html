@@ -23,6 +23,9 @@
 
     <link href="../../static/fortable/css/table-manage.css"
           th:href="@{/fortable/css/table-manage.css}" rel="stylesheet">
+    
+    <link href="../../static/assets/plugins/selector/css/bootstrap-select.min.css"
+          th:href="@{/assets/plugins/selector/css/bootstrap-select.min.css}" rel="stylesheet">
 </head>
 
 <body>
@@ -52,32 +55,35 @@
             <!--高级查找-->
             <div class="row-fluid" style="display:none;" id="div-advanced-search">
                 <form class="form-inline well">
-                    <span>姓名:</span>
-                    <input type="text" class="input-medium" placeholder="姓名" id="name-search">
-                    <span>工号:</span>
-                    <input type="text" class="input-medium" placeholder="工号" id="code-search">
-                    <span>职务:</span>
-                    <input type="text" class="input-medium" placeholder="职务" id="job-search">
-                    <span>所属部门:</span>
-                    <input type="text" class="input-medium" placeholder="所属部门" id="departments-search">
+                    <!--当前用户管理的工段-->
+                    <span>工段:</span>
+                    <select id="section-search" class=" selectpicker" title="请选择工段">
+                        <option value="-1">示例选择1</option>
+                        <option value="0">示例选择2</option>
+                    </select>
+                    <!--所有船名-->
+                    <span>船名:</span>
+                    <select id="ship-search" class=" selectpicker" title="请选择船名">
+                        <option value="-1">示例选择1</option>
+                        <option value="0">示例选择2</option>
+                    </select>
+                    <!--&lt;!&ndash;船名对应批次&ndash;&gt;-->
+                    <!--<span>批次:</span>-->
+                    <!--<select id="batch-search" class=" selectpicker" title="请选择批次">-->
+                        <!--<option value="-1">示例选择1</option>-->
+                        <!--<option value="0">示例选择2</option>-->
+                    <!--</select>-->
+                    <span>下料状态:</span>
+                    <select id="isCutted-search" class=" selectpicker" title="下料状态">
+                        <option value="0" data-content="<span class='label label-success'>已下料</span>">已下料</option>
+                        <option value="-1" data-content="<span class='label label-danger'>未下料</span>">未下料</option>
+                    </select>
 
-                    <span>工作状态:</span>
-                    <select class="input-small" id="state-search">
-                        <option value="">全部</option>
-                        <option value="1">在线</option>
-                        <option value="0">离线</option>
-                    </select>
-                    <span>角色:</span>
-                    <select class="input-small" id="role-search">
-                        <option value="">全部</option>
-                        <option value="1">管理员</option>
-                        <option value="0">操作员</option>
-                    </select>
                     <button type="button" class="btn" id="btn-advanced-search"><i class="fa fa-search"></i> 查询</button>
                 </form>
             </div>
             <!--信息详情-->
-            <div class="block info-block" id="plan-view">
+            <div class="block info-block" id="plan-view" style="display:none;">
                 <div class="navbar navbar-inner block-header">
                     <div class="block-title">信息详情</div>
                     <div class="header-buttons">
@@ -185,13 +191,13 @@
                     </div>
                 </div>
             </div>
-
-            <div class="block info-block" id="plan-edit" style="display:none;">
+            <!--下料派工-->
+            <div class="block info-block" id="plan-edit">
                 <div class="navbar navbar-inner block-header">
                     <div class="block-title">下料派工:<span id="title-edit"></span></div>
                     <div class="header-buttons">
-                        <button type="button" class="btn btn-primary" id="btn-save-edit">派工</button>
-                        <button type="button" class="btn btn-cancel">取消</button>
+                        <button type="button" class="btn btn-warning" id="btn-save-edit">确认派工</button>
+                        <button type="button" class="btn btn-cancel">信息详情</button>
                     </div>
                 </div>
                 <div class="block-content info-content clearfix">
@@ -208,7 +214,7 @@
                             <label class="prop-name">批次:</label>
                             <div class="prop-value" id="batchName-view2"></div>
                         </div>
-                        <div class="span2">
+                        <div class="span4">
                             <label class="prop-name">加工工段:</label>
                             <div class="prop-value" id="processPlace-view2"></div>
                         </div>
@@ -224,14 +230,15 @@
                         <div class="control-group">
                             <label class="control-label" for="planId-edit">计划id:</label>
                             <div class="controls">
-                                <input type="text" id="planId-edit" name="planId-edit" readonly>
+                                <input type="text" class="large" id="planId-edit" name="planId-edit" readonly>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label" for="workPlace-edit">下料工位:</label>
                             <!--选择框，显示可派给的下料工位，以及显示工位状态 加载页面时渲染，-->
                             <div class="controls">
-                                <input type="text" class="xlarge" id="workPlace-edit" name="workPlace-edit" readonly>
+                                <select id="workPlace-edit" class="form-control large selectpicker" title="请选择工位">
+                                </select>
                             </div>
                         </div>
                         <div class="control-group">
@@ -301,6 +308,25 @@
                     </table>
                 </div>
             </div>
+
+            <!--批量派工&#45;&#45;待实现-->
+            <div class="row-fluid">
+                <div class="span6">
+                    <label class="control-label" for="select-multi-workplace">下料工位:</label>
+                    <select id="select-multi-workplace" class="form-control selectpicker" title="请选择工位" multiple>
+                        <option data-content="<span class='label label-success'>一部大管下料工位1</span>">一部大管下料工位1</option>
+                        <option data-content="<span class='label label-info'>一部大管下料工位1</span>">一部大管下料工位1</option>
+                        <option data-content="<span class='label label-warning'>一部大管下料工位1</span>">一部大管下料工位1</option>
+                        <option data-content="<span class='label label-danger'>一部大管下料工位1</span>">一部大管下料工位1</option>
+                    </select>
+                    <div style="margin-top: 10px;">
+                        <button type="button" class="btn btn-warning" id="btn-multi-arrange">
+                            <i class="fa fa-tasks"></i> 批量派工
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -324,9 +350,13 @@
 <script src="../../static/fortable/lib/dataTables-1.10.7/plugins/integration/bootstrap/2/dataTables.bootstrap.js"
         th:src="@{/fortable/lib/dataTables-1.10.7/plugins/integration/bootstrap/2/dataTables.bootstrap.js}"></script>
 <!-- DataTables JS end-->
+<script src="../../static/assets/plugins/selector/js/bootstrap-select.min.js"
+        th:src="@{/assets/plugins/selector/js/bootstrap-select.min.js}"></script>
+
 <script src="../../static/fortable/js/constant.js"
         th:src="@{/fortable/js/constant.js}"></script>
 <script src="../../static/fortable/js/arrange_batch.js"
         th:src="@{/fortable/js/arrange_batch.js}"></script>
+
 </body>
 </html>

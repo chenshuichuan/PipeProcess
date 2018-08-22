@@ -11,7 +11,6 @@ import llcweb.domain.models.PlanTable;
 import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
 import llcweb.tools.PageParam;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,7 +148,7 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
     @Override
     public boolean isWorkpalceVacancy(Departments workplace) {
         //Departments workplace = departmentsRepository.findOne(workplaceId);
-        if(workplace==null||workplace.getLever()!=2){
+        if(workplace==null||workplace.getLevel()!=2){
             logger.error("未找到或查找的不是工位！");
             return false;
         }

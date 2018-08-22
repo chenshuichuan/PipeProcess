@@ -41,5 +41,5 @@ public interface UsersService {
     Page<Users> getPage(PageParam pageParam, Users example);
 
     Users getCurrentUser();
-    List<Departments> getDepartments(Users users);
+    List<Departments> getSections(Users users);
 }

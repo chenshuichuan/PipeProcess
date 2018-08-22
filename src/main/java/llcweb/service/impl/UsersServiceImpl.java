@@ -1,13 +1,11 @@
 package llcweb.service.impl;
 
-import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.DepartmentsRepository;
 import llcweb.dao.repository.UsersRepository;
 import llcweb.dao.repository.WorkersRepository;
 import llcweb.domain.models.Departments;
 import llcweb.domain.models.Users;
 import llcweb.domain.models.Workers;
-import llcweb.service.ArrangeTableService;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
@@ -107,9 +105,11 @@ public class UsersServiceImpl implements UsersService {
      *@Description: 根据登录用户获取其可以查看修改的工段部门列表
      *@Date: 20:55 2018/8/17
      *@param: users：role，0 管理员.1 工段长. 2工人
+     *
+     * 此函数可以试着优化为，用户登录直接就获取，信息，然后存到Redis缓存中
      **/
     @Override
-    public List<Departments> getDepartments(Users users) {
+    public List<Departments> getSections(Users users) {
         if (users==null||users.getRole()>=2){
             logger.error("获取部门树失败！");
             return null;
@@ -134,7 +134,7 @@ public class UsersServiceImpl implements UsersService {
                 int sectionId = Integer.parseInt(str);
                 //某工段
                 Departments dSection = departmentsRepository.findOne(sectionId);
-                if (dSection==null||dSection.getLever()!=0){
+                if (dSection==null||dSection.getLevel()!=0){
                     logger.error("找到用户管理的部门不是工段！不合法！请检查");
                     return  null;
                 }

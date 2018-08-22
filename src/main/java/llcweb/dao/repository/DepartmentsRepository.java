@@ -1,11 +1,13 @@
 package llcweb.dao.repository;
 
+import llcweb.domain.models.ArrangeTable;
 import llcweb.domain.models.Departments;
 import llcweb.domain.models.Workers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
@@ -16,9 +18,11 @@ import java.util.List;
  * Time: 13:36
  */
  //Integer 是id 的类型
-public interface DepartmentsRepository extends JpaRepository<Departments,Integer>{
+public interface DepartmentsRepository extends JpaRepository<Departments,Integer>
+        , JpaSpecificationExecutor<Departments> {
     Page<Departments> findAll(Specification<Departments> spec, Pageable pageable);
     Departments findByName(String name);
     List<Departments> findByUpDepartment(int upDepartment);
+    Departments findByUpDepartmentAndLevelAndStageId(int upDepartment,int level,int stageId);
     List<Departments> findByLevel(int level);
 }

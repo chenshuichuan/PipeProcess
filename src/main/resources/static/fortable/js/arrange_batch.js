@@ -8,10 +8,6 @@
 **/
 //获取计划分页
 var urlPage = "/plan/page";
-//根据planId获取其包含的所有单元
-var urlGetUnitsByPlanId="/unit/getUnitsByPlanId";
-//根据加工工段获取工段下所有下料工位
-var urlGetWorkPlaceBySection="/departments/getCutWorkPlacesBySection";
 //将批次下料派工到工位
 var urlArrangeBatchToWorkPlace="/arrange/arrangeBatchToWorkPlace";
 
@@ -123,7 +119,7 @@ $(function () {
             //给当前行某列加样式
             $('td', row).eq(9).addClass(classIsCutted(data.isCutted));
             //不使用render，改用jquery文档操作呈现单元格
-            var $btnEdit = $('<button type="button" class="btn btn-small btn-primary btn-edit">派工</button>');
+            var $btnEdit = $('<button type="button" class="btn btn-small btn-info btn-edit">派工</button>');
             $('td', row).eq(10).append($btnEdit);
 
         },
@@ -163,7 +159,7 @@ $(function () {
         //获取该行对应的数据
         var item = _table.row($(this).closest('tr')).data();
         planManage.currentItem = item;
-        planManage.showItemDetail(item);
+        planManage.editItemInit(item);
     });
 
     $table.on("change", ":checkbox", function () {
@@ -208,6 +204,10 @@ $(function () {
     $("#btn-refresh").click(function () {
         window.location.reload();
     });
+    //初始化工段选择框
+    initSectionSeletor();
+    //初始化船名选择框
+    initShipSeletor();
 
 });
 
@@ -217,54 +217,51 @@ var planManage = {
     fuzzySearch: true,
     getQueryCondition: function (data) {
         var param = {};
-        //组装排序参数
-        if (data.order && data.order.length && data.order[0]) {
-            switch (data.order[0].column) {
-                case 1:
-                    param.orderColumn = "serialNumber";
-                    break;
-                case 2:
-                    param.orderColumn = "shipName";
-                    break;
-                case 3:
-                    param.orderColumn = "batchName";
-                    break;
-                case 4:
-                    param.orderColumn = "batchDescription";
-                    break;
-                case 5:
-                    param.orderColumn = "processPlace";
-                    break;
-                case 6:
-                    param.orderColumn = "number";
-                    break;
-                case 7:
-                    param.orderColumn = "planStart";
-                    break;
-                case 8:
-                    param.orderColumn = "planEnd";
-                    break;
-                case 9:
-                    param.orderColumn = "isCutted";
-                    break;
-                default:
-                    param.orderColumn = "serialNumber";
-                    break;
-            }
-            param.orderDir = data.order[0].dir;
-        }
-        // //组装查询参数
-        // param.fuzzySearch = userManage.fuzzySearch;
-        // if (userManage.fuzzySearch) {
-        //     param.fuzzy = $("#fuzzy-search").val();
-        // } else {
-        //     param.name = $("#name-search").val();
-        //     param.code = $("#code-search").val();
-        //     param.job = $("#job-search").val();
-        //     param.departments = $("#departments-search").val();
-        //     param.state = $("#state-search").val();
-        //     param.role = $("#role-search").val();
+        // //组装排序参数
+        // if (data.order && data.order.length && data.order[0]) {
+        //     switch (data.order[0].column) {
+        //         case 1:
+        //             param.orderColumn = "serialNumber";
+        //             break;
+        //         case 2:
+        //             param.orderColumn = "shipName";
+        //             break;
+        //         case 3:
+        //             param.orderColumn = "batchName";
+        //             break;
+        //         case 4:
+        //             param.orderColumn = "batchDescription";
+        //             break;
+        //         case 5:
+        //             param.orderColumn = "processPlace";
+        //             break;
+        //         case 6:
+        //             param.orderColumn = "number";
+        //             break;
+        //         case 7:
+        //             param.orderColumn = "planStart";
+        //             break;
+        //         case 8:
+        //             param.orderColumn = "planEnd";
+        //             break;
+        //         case 9:
+        //             param.orderColumn = "isCutted";
+        //             break;
+        //         default:
+        //             param.orderColumn = "serialNumber";
+        //             break;
+        //     }
+        //     param.orderDir = data.order[0].dir;
         // }
+        //组装查询参数
+        param.fuzzySearch = planManage.fuzzySearch;
+        if (planManage.fuzzySearch) {
+            param.fuzzy = $("#fuzzy-search").val();
+        } else {
+            param.processPlace = $("#section-search").val();
+            param.shipCode = $("#ship-search").val();
+            param.isCutted = $("#isCutted-search").val();
+        }
         //组装分页参数
         param.startIndex = data.start;
         param.pageSize = data.length;
@@ -297,21 +294,22 @@ var planManage = {
         $("#twoSpeVerCut-view").text(item.twoSpeVerCut);
         $("#stocks-view").text(item.stocks);
         $("#sections-view").text(item.sections);
-        $("#units-view").text("单元view，待完成");
+        $("#units-view").text(getUnitsName(item.id));
         $("#remark-view").text(item.remark);
     },
     editItemInit: function (item) {
         if (!item) {
             return;
         }
+        initSelector(item.processPlace);
+        $("#workPlace-edit").append();
         $("#form-edit")[0].reset();
         $("#title-edit").text(item.planName);
-
         $("#serial-view2").text(item.serialNumber);
         $("#planName-view2").text(item.planName);
         $("#batchName-view2").text(item.batchName);
         $("#processPlace-view2").text(item.processPlace);
-        $("#units-view2").text("单元名列表");
+        $("#units-view2").text(getUnitsName(item.id));
         $("#planId-edit").val(item.id);
 
         $("#plan-edit").show().siblings(".info-block").hide();
@@ -331,27 +329,56 @@ var planManage = {
             });
     }
 };
-
-//判断下料状态
-function stringIsCutted(isCutted) {
-    if (isCutted === 1) return "下料完成";
-    else if (isCutted === 0) return "已派工";
-    else if (isCutted === -1) return "未开始";
-    else return "未知";
+//根据的得到的工位列表渲染选择框
+function initSelector(processPlace) {
+    var stage = getDepartmentBySectionAndStage(processPlace,"下料");
+    var departmentList = getWorkplaceInfoByStageId(stage.id);
+    //根据的得到的工位列表渲染选择框
+    $("#workPlace-edit").empty();
+    var options = "";
+    for (var i=0; i<departmentList.length;i++){
+        //这里的是否空闲渲染存在问题
+        options+= "<option"+
+            " value='"+departmentList[i].id+ "' data-content=\"<span class='label "+
+            (departmentList[i].isVaccancy?"label-success'>" : "label-warning'>")+
+            departmentList[i].name +"</span>\">"+departmentList[i].name
+            +"</option>";
+    }
+    $("#workPlace-edit").append(options);
+    $('#workPlace-edit').selectpicker('refresh');
+}
+//根据船列表渲染工段选择框
+function initSectionSeletor() {
+    var sectionList = getUserManageSections();
+    //根据的得到的工位列表渲染选择框
+    var selector =  $("#section-search");
+    selector.empty();
+    var options = "";
+    for (var i=0; i<sectionList.length;i++){
+        //这里的是否空闲渲染存在问题
+        options+= "<option"+
+            " value='"+sectionList[i].name+ "' data-content=\"<span class='label label-success'>" +
+            sectionList[i].name +"</span>\">"+sectionList[i].name
+            +"</option>";
+    }
+    selector.append(options);
+    selector.selectpicker('refresh');
 }
 
-//根据下料状态返回渲染的css class
-function classIsCutted(isCutted) {
-    if (isCutted === 1) return "text-success";
-    else if (isCutted === 0) return "text-info";
-    else if (isCutted === -1) return "text-warning";
-    else return "text-error";
-}
-//根据planId获取该plan包含的所有单元名称和id（对象）
-function getUnitsName(planId) {
-    var url = urlGetUnits+"?planId="+planId;
-    $.get(url,function(data,status){
-        //alert("数据: " + data + "\n状态: " + status);
-        $.dialog.tips(data.message);
-    });
+//根据船列表渲染船名选择框
+function initShipSeletor() {
+    var shipList = getAllUnfinishedShip();
+    //根据的得到的工位列表渲染选择框
+    var selector =  $("#ship-search");
+    selector.empty();
+    var options = "";
+    for (var i=0; i<shipList.length;i++){
+        //这里的是否空闲渲染存在问题
+        options+= "<option"+
+            " value='"+shipList[i].shipCode+ "' data-content=\"<span class='label label-success'>" +
+            shipList[i].shipName +"</span>\">"+shipList[i].shipName
+            +"</option>";
+    }
+    selector.append(options);
+    selector.selectpicker('refresh');
 }
