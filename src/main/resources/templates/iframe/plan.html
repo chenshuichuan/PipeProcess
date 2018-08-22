@@ -21,6 +21,8 @@
 
     <link href="../../static/fortable/css/table-manage.css"
           th:href="@{/fortable/css/table-manage.css}" rel="stylesheet">
+    <link href="../../static/assets/plugins/selector/css/bootstrap-select.min.css"
+          th:href="@{/assets/plugins/selector/css/bootstrap-select.min.css}" rel="stylesheet">
 </head>
 
 
@@ -55,27 +57,30 @@
             <!--高级查找-->
             <div class="row-fluid" style="display:none;" id="div-advanced-search">
                 <form class="form-inline well">
-                    <span>姓名:</span>
-                    <input type="text" class="input-medium" placeholder="姓名" id="name-search">
-                    <span>工号:</span>
-                    <input type="text" class="input-medium" placeholder="工号" id="code-search">
-                    <span>职务:</span>
-                    <input type="text" class="input-medium" placeholder="职务" id="job-search">
-                    <span>所属部门:</span>
-                    <input type="text" class="input-medium" placeholder="所属部门" id="departments-search">
+                    <!--当前用户管理的工段-->
+                    <span>工段:</span>
+                    <select id="section-search" class=" selectpicker" title="请选择工段">
+                        <option value="-1">示例选择1</option>
+                        <option value="0">示例选择2</option>
+                    </select>
+                    <!--所有船名-->
+                    <span>船名:</span>
+                    <select id="ship-search" class=" selectpicker" title="请选择船名">
+                        <option value="-1">示例选择1</option>
+                        <option value="0">示例选择2</option>
+                    </select>
+                    <!--&lt;!&ndash;船名对应批次&ndash;&gt;-->
+                    <!--<span>批次:</span>-->
+                    <!--<select id="batch-search" class=" selectpicker" title="请选择批次">-->
+                    <!--<option value="-1">示例选择1</option>-->
+                    <!--<option value="0">示例选择2</option>-->
+                    <!--</select>-->
+                    <span>下料状态:</span>
+                    <select id="isCutted-search" class=" selectpicker" title="下料状态">
+                        <option value="0" data-content="<span class='label label-success'>已下料</span>">已下料</option>
+                        <option value="-1" data-content="<span class='label label-danger'>未下料</span>">未下料</option>
+                    </select>
 
-                    <span>工作状态:</span>
-                    <select class="input-small" id="state-search">
-                        <option value="">全部</option>
-                        <option value="1">在线</option>
-                        <option value="0">离线</option>
-                    </select>
-                    <span>角色:</span>
-                    <select class="input-small" id="role-search">
-                        <option value="">全部</option>
-                        <option value="1">管理员</option>
-                        <option value="0">操作员</option>
-                    </select>
                     <button type="button" class="btn" id="btn-advanced-search"><i class="fa fa-search"></i> 查询</button>
                 </form>
             </div>
@@ -404,6 +409,9 @@
 <script src="../../static/fortable/lib/dataTables-1.10.7/plugins/integration/bootstrap/2/dataTables.bootstrap.js"
         th:src="@{/fortable/lib/dataTables-1.10.7/plugins/integration/bootstrap/2/dataTables.bootstrap.js}"></script>
 <!-- DataTables JS end-->
+<script src="../../static/assets/plugins/selector/js/bootstrap-select.min.js"
+        th:src="@{/assets/plugins/selector/js/bootstrap-select.min.js}"></script>
+
 <script src="../../static/fortable/js/constant.js"
         th:src="@{/fortable/js/constant.js}"></script>
 <script src="../../static/fortable/js/plan.js"

@@ -179,3 +179,39 @@ function getAllUnfinishedShip() {
     });
     return ships;
 }
+
+//根据船列表渲染工段选择框
+function initSectionSeletor() {
+    var sectionList = getUserManageSections();
+    //根据的得到的工位列表渲染选择框
+    var selector =  $("#section-search");
+    selector.empty();
+    var options = "";
+    for (var i=0; i<sectionList.length;i++){
+        //这里的是否空闲渲染存在问题
+        options+= "<option"+
+            " value='"+sectionList[i].name+ "' data-content=\"<span class='label label-success'>" +
+            sectionList[i].name +"</span>\">"+sectionList[i].name
+            +"</option>";
+    }
+    selector.append(options);
+    selector.selectpicker('refresh');
+}
+
+//根据船列表渲染船名选择框
+function initShipSeletor() {
+    var shipList = getAllUnfinishedShip();
+    //根据的得到的工位列表渲染选择框
+    var selector =  $("#ship-search");
+    selector.empty();
+    var options = "";
+    for (var i=0; i<shipList.length;i++){
+        //这里的是否空闲渲染存在问题
+        options+= "<option"+
+            " value='"+shipList[i].shipCode+ "' data-content=\"<span class='label label-success'>" +
+            shipList[i].shipName +"</span>\">"+shipList[i].shipName
+            +"</option>";
+    }
+    selector.append(options);
+    selector.selectpicker('refresh');
+}

@@ -225,7 +225,10 @@ $(function () {
     $("#btn-refresh").click(function () {
         window.location.reload();
     });
-
+    //初始化工段选择框
+    initSectionSeletor();
+    //初始化船名选择框
+    initShipSeletor();
 });
 
 
@@ -234,54 +237,14 @@ var planManage = {
     fuzzySearch: true,
     getQueryCondition: function (data) {
         var param = {};
-        //组装排序参数
-        if (data.order && data.order.length && data.order[0]) {
-            switch (data.order[0].column) {
-                case 1:
-                    param.orderColumn = "serialNumber";
-                    break;
-                case 2:
-                    param.orderColumn = "shipName";
-                    break;
-                case 3:
-                    param.orderColumn = "batchName";
-                    break;
-                case 4:
-                    param.orderColumn = "batchDescription";
-                    break;
-                case 5:
-                    param.orderColumn = "processPlace";
-                    break;
-                case 6:
-                    param.orderColumn = "number";
-                    break;
-                case 7:
-                    param.orderColumn = "planStart";
-                    break;
-                case 8:
-                    param.orderColumn = "planEnd";
-                    break;
-                case 9:
-                    param.orderColumn = "isCutted";
-                    break;
-                default:
-                    param.orderColumn = "serialNumber";
-                    break;
-            }
-            param.orderDir = data.order[0].dir;
+        param.fuzzySearch = planManage.fuzzySearch;
+        if (planManage.fuzzySearch) {
+            param.fuzzy = $("#fuzzy-search").val();
+        } else {
+            param.processPlace = $("#section-search").val();
+            param.shipCode = $("#ship-search").val();
+            param.isCutted = $("#isCutted-search").val();
         }
-        // //组装查询参数
-        // param.fuzzySearch = userManage.fuzzySearch;
-        // if (userManage.fuzzySearch) {
-        //     param.fuzzy = $("#fuzzy-search").val();
-        // } else {
-        //     param.name = $("#name-search").val();
-        //     param.code = $("#code-search").val();
-        //     param.job = $("#job-search").val();
-        //     param.departments = $("#departments-search").val();
-        //     param.state = $("#state-search").val();
-        //     param.role = $("#role-search").val();
-        // }
         //组装分页参数
         param.startIndex = data.start;
         param.pageSize = data.length;
