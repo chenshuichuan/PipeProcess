@@ -74,7 +74,33 @@ var CONSTANT = {
 		}
 };
 
-
+var Dialog = {
+    lockDialog: function (title,message) {
+        $.dialog({
+            title: title,
+            width: '300px',
+            height: '200px',
+            lock: true,
+            background: '#000', /* 背景色 */
+            opacity: 0.5,       /* 透明度 */
+            content: message,
+            icon: 'error.gif',
+            ok: true,
+            cancel: true
+        });
+    },
+    infoDialog: function (title,message) {
+        $.dialog({
+            title: title,
+            width: '30px',
+            height: '200px',
+            content: message,
+            ok:true,
+            cancelVal: '关闭',
+            cancel: true /*为true等价于function(){}*/
+        });
+    }
+};
 
 //判断下料状态
 function stringIsCutted(isCutted) {
@@ -180,7 +206,7 @@ function getAllUnfinishedShip() {
     return ships;
 }
 
-//根据船列表渲染工段选择框
+//根据工段列表渲染工段选择框
 function initSectionSeletor() {
     var sectionList = getUserManageSections();
     //根据的得到的工位列表渲染选择框

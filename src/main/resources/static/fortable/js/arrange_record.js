@@ -8,7 +8,7 @@
 **/
 var urlPage = "/arrange/Page";
 var urlCancel = "/arrange/cancelById";
-var urlAdd = "/arrange/add";
+var url = "/arrange/add";
 var urlUpdate = "/arrange/update";
 
 $(function (){

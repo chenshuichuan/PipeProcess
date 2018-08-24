@@ -1,9 +1,7 @@
 package llcweb.service;
 
 import llcweb.domain.entities.ArrangeRecord;
-import llcweb.domain.models.ArrangeTable;
-import llcweb.domain.models.Departments;
-import llcweb.domain.models.Workers;
+import llcweb.domain.models.*;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
 
@@ -22,6 +20,12 @@ public interface ArrangeTableService {
      *添加信息
      */
     void add();
+    /*
+     *添加信息
+     */
+    int add(Workers arranger, PlanTable planTable, Departments workPlace);
+
+    int add(Workers arranger, UnitTable unitTable, Departments workPlace);
     /*
     *更新信息
     */
@@ -48,4 +52,16 @@ public interface ArrangeTableService {
 
     List<ArrangeTable> findArrangeByWorkplace(String section,String stage,String workplace,int isFinished);
     boolean isWorkpalceVacancy(Departments departments);
+
+    //plan批次派工到工位,出错返回0，正常返回1
+    int arrangeBatchToWorkPlace(Workers arranger, PlanTable planTable, Departments workPlace);
+
+    //除下料外其他的工序的单元派工
+    int arrangeUnitToWorkPlace(Workers arranger,UnitTable unitTable, Departments workPlace);
+
+    //下料的单元派工，不需要产生派工记录
+    int arrangeBatchUnitCut(UnitTable unitTable, Departments workPlace,int arrangeId);
+
+    //管件派工到下一个工序
+    int arrangePipe(PipeTable pipeTable, Departments workPlace,int arrangeId);
 }

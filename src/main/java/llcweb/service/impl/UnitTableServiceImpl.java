@@ -4,6 +4,7 @@ import llcweb.dao.repository.*;
 import llcweb.domain.entities.Units;
 import llcweb.domain.models.*;
 import llcweb.service.ArrangeTableService;
+import llcweb.service.ProcessOrderService;
 import llcweb.service.UnitTableService;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,9 @@ public class UnitTableServiceImpl implements UnitTableService {
     private PlanTableRepository planTableRepository;
     @Autowired
     private DepartmentsRepository departmentsRepository;
+    @Autowired
+    private ProcessOrderService processOrderService;
+
 
     @Transactional
     @Override
@@ -305,5 +309,41 @@ public class UnitTableServiceImpl implements UnitTableService {
             }
         }
         return null;
+    }
+
+    //如果当前所在工序为workstage 表的11，则为完成！
+    @Override
+    public boolean isFinished(UnitTable unitTable) {
+        if (unitTable!=null&&unitTable.getProcessState()==11)return true;
+        else  return false;
+    }
+
+    //将单元信息推进到下一个工序
+    //单元派工时更改单元信息 type==1时，是下料派工，要更改管件信息，其他工序不需要更改管件数量信息
+    // workPlace 是将要派工去的工位，带有下一工序信息 ,isCut : 下料派工
+    @Override
+    public int updateUnitToNextStage(UnitTable unitTable,Departments workPlace, boolean isCut) {
+
+        int nextStage = unitTable.getNextStage();
+        //更改unitTable 信息，将单元加工顺序推进到这个派工工序
+        if(isCut){
+            // 此处就是下料
+            if(unitTable.getProcessState()!=10||nextStage!=workPlace.getStageId()){
+                //10 是未开始下料状态, 此时，单元的下一工序和工位所属工序应该一致！
+                logger.error("批次："+unitTable.getBatchName()
+                        +"--单元："+unitTable.getUnitName()+"当前状态非未下料或单元的下一工序和工位所属工序应该不一致");
+            }
+            unitTable.setPipeProcessingNumber(unitTable.getPipeNumber());
+            unitTable.setPipeFinishedNumber(0);
+        }
+        unitTable.setProcessState(nextStage);
+        unitTable.setNextStage(processOrderService.nextStage(unitTable.getProcessOrder(),nextStage));
+
+        UnitTable temp = unitTableRepository.save(unitTable);
+        if(temp==null || (unitTable.getUnitId()!=temp.getUnitId())){
+            logger.error("单元："+unitTable.getUnitId()+"推进下到一工序出错！请检查");
+        }
+        else return temp.getUnitId();
+        return 0;
     }
 }

@@ -9,6 +9,7 @@ import llcweb.domain.models.PipeTable;
 import llcweb.domain.models.UnitTable;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.PipeTableService;
+import llcweb.service.ProcessOrderService;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,6 +45,9 @@ public class PipeTableServiceImpl implements PipeTableService {
     private BatchTableRepository batchTableRepository;
     @Autowired
     private UnitTableRepository unitTableRepository;
+    @Autowired
+    private ProcessOrderService processOrderService;
+
     @Transactional
     @Override
     public void add() {
@@ -54,6 +58,20 @@ public class PipeTableServiceImpl implements PipeTableService {
     @Override
     public void updateById(int id) {
         logger.info("service updateById id="+id);
+    }
+
+    //更新PipeTable 的 当前工序信息
+    @Override
+    public int updatePipeToNextStage(PipeTable pipeTable, int processState, int processIndex) {
+        pipeTable.setProcessSate(processState);
+        pipeTable.setProcessIndex(processIndex);
+        int nextStage = processOrderService.nextStage(pipeTable.getProcessOrder(),processState);
+        pipeTable.setNextStage(nextStage);
+        PipeTable temp = pipeTableRepository.save(pipeTable);
+        if(temp==null||temp.getPipeId().intValue()!=pipeTable.getPipeId())
+            logger.error("更新PipeTable："+pipeTable.getPipeId()+"的 当前工序信息出错！");
+        else return temp.getPipeId();
+        return 0;
     }
 
     @Override

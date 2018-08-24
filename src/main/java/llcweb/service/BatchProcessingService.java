@@ -19,6 +19,10 @@ public interface BatchProcessingService {
      */
     void add();
     /*
+    *添加信息
+    */
+    int add( int batchId, String sectionName, int pipeNumber,int unitNumber,int arrangeId);
+    /*
     *更新信息
     */
     void updateById(int id);
@@ -36,4 +40,5 @@ public interface BatchProcessingService {
   * example 为字段可能包含的值
   * */
     Page<BatchProcessing> getPage(PageParam pageParam, BatchProcessing example);
+
 }

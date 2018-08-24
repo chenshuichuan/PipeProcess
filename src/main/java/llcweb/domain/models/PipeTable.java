@@ -39,9 +39,21 @@ public class PipeTable {
 
     private Integer outfield;
 
+    private Integer processOrder;
+    private Integer processSate;
+    private Integer processIndex;
+
+    public Integer getNextStage() {
+        return nextStage;
+    }
+
+    public void setNextStage(Integer nextStage) {
+        this.nextStage = nextStage;
+    }
+
+    private Integer nextStage;
+
     private Date updateTime;
-
-
 
     private String unitName;
     private Integer isOutOfUnit;
@@ -75,6 +87,30 @@ public class PipeTable {
         this.surfaceName = surfaceName;
         this.outfield = outfield;
         this.isOutOfUnit = isOutOfUnit;
+    }
+
+    public Integer getProcessOrder() {
+        return processOrder;
+    }
+
+    public void setProcessOrder(Integer processOrder) {
+        this.processOrder = processOrder;
+    }
+
+    public Integer getProcessSate() {
+        return processSate;
+    }
+
+    public void setProcessSate(Integer processSate) {
+        this.processSate = processSate;
+    }
+
+    public Integer getProcessIndex() {
+        return processIndex;
+    }
+
+    public void setProcessIndex(Integer processIndex) {
+        this.processIndex = processIndex;
     }
     public Integer getIsOutOfUnit() {
         return isOutOfUnit;

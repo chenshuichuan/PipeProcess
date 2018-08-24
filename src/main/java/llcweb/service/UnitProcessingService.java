@@ -18,6 +18,11 @@ public interface UnitProcessingService {
      *添加信息
      */
     void add();
+
+    /*
+     *添加信息
+     */
+    int add(int unitId,int processState,int processIndex,int processPlace,int pipeNumber,int arrangeId);
     /*
     *更新信息
     */

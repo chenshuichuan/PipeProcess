@@ -23,4 +23,6 @@ public interface PipeTableRepository extends JpaRepository<PipeTable,Integer>
 
     List<PipeTable> findByBatchIdAndUnitName(int batchId, String unitName);
     int countByBatchIdAndUnitName(int batchId, String unitName);
+
+    //如要进行单管派工，即单管可以脱离单元单独派工，可增加一个是否脱离字段，进行刷选
 }

@@ -21,6 +21,8 @@ public interface PipeTableService {
     *更新信息
     */
     void updateById(int id);
+
+    int updatePipeToNextStage(PipeTable pipeTable,int processState, int processIndex);
     /*
     *根据id查找
     */

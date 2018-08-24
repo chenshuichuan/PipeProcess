@@ -46,6 +46,26 @@ public class UnitProcessingServiceImpl implements UnitProcessingService {
 
     @Transactional
     @Override
+    public int add(int unitId, int processState, int processIndex, int processPlace, int pipeNumber, int arrangeId) {
+       UnitProcessing unitProcessing = new UnitProcessing();
+       unitProcessing.setUnitId(unitId);
+       unitProcessing.setProcessState(processState);
+       unitProcessing.setProcessIndex(processIndex);
+       unitProcessing.setProcessPlace(processPlace);
+       unitProcessing.setPipeProcessingNumber(pipeNumber);
+       unitProcessing.setArrangeId(arrangeId);
+       UnitProcessing temp = unitProcessingRepository.save(unitProcessing);
+       if(temp!=null) return temp.getId();
+       else {
+           logger.error("无法生成UnitProcessing 记录！unitId="
+                   +unitId+"processState="+processState+"processIndex="+processIndex+
+                   "processPlace="+processPlace+"pipeNumber="+pipeNumber+arrangeId);
+           return 0;
+       }
+    }
+
+    @Transactional
+    @Override
     public void updateById(int id) {
         logger.info("service updateById id="+id);
     }

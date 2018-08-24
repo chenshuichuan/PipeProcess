@@ -1,15 +1,10 @@
 package llcweb.service.impl;
 
-import llcweb.dao.repository.ArrangeTableRepository;
-import llcweb.dao.repository.DepartmentsRepository;
-import llcweb.dao.repository.PlanTableRepository;
-import llcweb.dao.repository.WorkersRepository;
+import llcweb.dao.repository.*;
 import llcweb.domain.entities.ArrangeRecord;
-import llcweb.domain.models.ArrangeTable;
-import llcweb.domain.models.Departments;
-import llcweb.domain.models.PlanTable;
-import llcweb.domain.models.Workers;
-import llcweb.service.ArrangeTableService;
+import llcweb.domain.models.*;
+import llcweb.service.*;
+import llcweb.tools.DateUtil;
 import llcweb.tools.PageParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +41,28 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
     private PlanTableRepository planTableRepository;
     @Autowired
     private DepartmentsRepository departmentsRepository;
+    @Autowired
+    private UnitTableService unitTableService;
+    @Autowired
+    private UnitProcessingService unitProcessingService;
+    @Autowired
+    private UnitTableRepository unitTableRepository;
+    @Autowired
+    private PipeTableService pipeTableService;
+    @Autowired
+    private PipeProcessingService pipeProcessingService;
+    @Autowired
+    private PipeTableRepository pipeTableRepository;
+
+    @Autowired
+    private BatchTableRepository batchTableRepository;
+    @Autowired
+    private BatchProcessingRepository batchProcessingRepository;
+    @Autowired
+    private BatchProcessingService batchProcessingService;
+
+    @Autowired
+    private ProcessOrderService processOrderService;
 
     @Transactional
     @Override
@@ -53,6 +70,63 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         logger.info("service add");
     }
 
+    //构建批次派工记录
+    @Transactional
+    @Override
+    public int add(Workers arranger, PlanTable planTable, Departments workPlace) {
+        ArrangeTable arrangeTable = new ArrangeTable();
+        arrangeTable.setArrangeType(1);//1代表单元派工
+        arrangeTable.setName(planTable.getBatchName()+"---"+planTable.getProcessPlace());
+        arrangeTable.setPlanId(planTable.getId());
+        arrangeTable.setSection(planTable.getProcessPlace());
+        Departments stage = departmentsRepository.findOne(workPlace.getUpDepartment());
+        if(stage!=null){
+            arrangeTable.setStage(stage.getName());
+        }
+        else {
+            logger.error("工位"+workPlace.getName()+"的工序不存在！");
+            return 0;
+        }
+        arrangeTable.setArrangerId(arranger.getId());
+        logger.info("updateTime = "+ DateUtil.formatDateTimeString(arrangeTable.getUpdateTime()));
+        ArrangeTable temp = arrangeTableRepository.save(arrangeTable);
+
+        if(temp!=null)return  temp.getArrangeId();
+        else{
+            logger.error("批次派工无法生成派工记录！请检查");
+            return 0;
+        }
+    }
+    //构建单元派工记录
+    @Transactional
+    @Override
+    public int add(Workers arranger, UnitTable unitTable, Departments workPlace) {
+        ArrangeTable arrangeTable = new ArrangeTable();
+        arrangeTable.setArrangeType(2);//2代表单元派工
+        arrangeTable.setName(unitTable.getBatchName()+"---"+unitTable.getUnitName());
+        arrangeTable.setPlanId(unitTable.getPlanId());
+        Departments section = departmentsRepository.findOne(unitTable.getSection());
+        if(section!=null){
+            arrangeTable.setSection(section.getName());
+        }
+        else logger.error("要派工单元"+unitTable.getBatchName()+"---"+unitTable.getUnitName()+"的加工工段不存在！请检查");
+        Departments stage = departmentsRepository.findOne(workPlace.getUpDepartment());
+        if(stage!=null){
+            arrangeTable.setStage(stage.getName());
+        }
+        else {
+            logger.error("工位"+workPlace.getName()+"的工序不存在！");
+            return 0;
+        }
+        arrangeTable.setArrangerId(arranger.getId());
+        logger.info("updateTime = "+ DateUtil.formatDateTimeString(arrangeTable.getUpdateTime()));
+        ArrangeTable temp = arrangeTableRepository.save(arrangeTable);
+        if(temp!=null)return  temp.getArrangeId();
+        else{
+            logger.error("无法生成arrangeTable记录！");
+            return 0;
+        }
+    }
     @Transactional
     @Override
     public void updateById(int id) {
@@ -103,6 +177,7 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         return arrangeTableRepository.findAll(specification,pageable);
     }
 
+    //封装派工记录
     @Override
     public ArrangeRecord getRecord(ArrangeTable arrangeTable) {
         ArrangeRecord arrangeRecord =new ArrangeRecord(arrangeTable);
@@ -144,7 +219,13 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
                 findBySectionAndStageAndWorkplaceAndIsFinished(section,stage,workplace,isFinished);
     }
 
-    //判断工位是否空闲
+
+    /**
+     *@Author: Ricardo
+     *@Description:  //判断工位是否空闲 此函数应该直接放在departments表，做一个计数，计数未完成派工，计数为0时代表空闲，
+     *@Date: 21:49 2018/8/22
+     *@param:
+     **/
     @Override
     public boolean isWorkpalceVacancy(Departments workplace) {
         //Departments workplace = departmentsRepository.findOne(workplaceId);
@@ -162,5 +243,131 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         return true;
     }
 
+    /**
+     *@Author: Ricardo
+     *@Description: plan批次派工到工位,出错返回0，正常返回1
+     *@Date: 19:13 2018/8/22
+     *@param: arranger:派工者， planTable: 被派工的计划批次，workPlace：被派工工位
+     * 待实现: 此函数内的操作应保证数据完整性，故产生异常，则应该回滚！
+     **/
+    @Transactional
+    @Override
+    public int arrangeBatchToWorkPlace(Workers arranger, PlanTable planTable, Departments workPlace) {
+        //构建批次派工记录
+        int arrangeId = add(arranger,planTable,workPlace);
+        UnitTable unitTable = new UnitTable();
+        int pipeNumber =0;//batchProcessing表需要
+        //获取计划批次下所有单元，
+        List<UnitTable> unitTableList = unitTableRepository.findByPlanId(planTable.getId());
+        //进行单元派工
+        for (int i=0; i<unitTableList.size();++i){
+            unitTable = unitTableList.get(i);
+            if(unitTableService.isFinished(unitTable)||unitTable.getProcessState()!=10){
+                logger.error("批次："+planTable.getBatchName()+"的单元："+unitTable.getUnitName()+"已经完工！不处于未加工状态请检查数据库！");
+            }
+            //，进行单元派工
+            arrangeBatchUnitCut(unitTable, workPlace,arrangeId);
 
+            pipeNumber+=unitTable.getPipeNumber();
+        }
+        //构建batchProcessing记录
+        return batchProcessingService.add(unitTable.getBatchId(),planTable.getProcessPlace(),
+                pipeNumber,unitTableList.size(),arrangeId);
+    }
+
+
+    /**
+     *@Author: Ricardo
+     *@Description:  //管件派工到下一个工序
+     *@Date: 13:51 2018/8/23
+     *@param: arrangeId 可以留着到管件级别的派工时使用
+     **/
+    @Transactional
+    @Override
+    public int arrangePipe(PipeTable pipeTable, Departments workPlace,int arrangeId) {
+        //构建PipeProcessing
+        //得到管件的下一个工序,比如当前为未加工状态，下一工序为下料工序
+        int nextStage = pipeTable.getNextStage();
+        int nextProcessIndex = processOrderService.currentStageIndex(pipeTable.getProcessOrder(),nextStage);
+
+        //这里有个逻辑，就是nextStage是最后一个完成状态时，这时是不可能也不需要派工到完成状态的，所以不必担心会产生下面的记录
+        int pipeProcessingId = pipeProcessingService.add(pipeTable,nextStage,nextProcessIndex,workPlace.getId());
+        //更改PipeTable信息，推进管件到下一个工序
+        int pipeTableId =
+                pipeTableService.updatePipeToNextStage(pipeTable,nextStage,nextProcessIndex);
+        if(pipeProcessingId<=0||pipeTableId<=0)logger.error("管件"+pipeTable.getPipeId()+"派工到"+workPlace.getName()+"出错！");
+        else return 1;
+        return 0;
+    }
+
+    /**
+     *@Author: Ricardo
+     *@Description: 下料工序的的单元派工到工位,出错返回0，正常返回1 ，不需要产生单元派工记录！
+     *@Date: 19:13 2018/8/22
+     *@param: arranger:派工者， unitTable: 被派工的单元，workPlace：被派工工位, 对应的派工记录id
+     * 待实现: 此函数内的操作应保证数据完整性，故产生异常，则应该回滚！
+     **/
+    @Transactional
+    @Override
+    public int arrangeBatchUnitCut(UnitTable unitTable, Departments workPlace,int arrangeId) {
+
+        //构建unitProcessing
+        int unitProcessingId =  unitProcessingService.add(unitTable.getUnitId(),workPlace.getStageId(),1,
+                workPlace.getId(),unitTable.getPipeNumber(),arrangeId);
+        //更改UnitTable信息，推进单元到下一个工序
+        int unitTbaleId=  unitTableService.updateUnitToNextStage(unitTable,workPlace,true);
+        //获取单元下所有管件，进行管件派工
+        List<PipeTable> pipeTableList =
+                pipeTableRepository.findByBatchIdAndUnitName(unitTable.getBatchId(),unitTable.getUnitName());
+        for (PipeTable pipeTable: pipeTableList){
+            //检查管件当前状态是否正常
+            if(pipeTable.getProcessSate()!=10||pipeTable.getNextStage().intValue()!=workPlace.getStageId()){
+                //非未开工状态 下一工序和要派工工位所属工序不符合
+                logger.error(pipeTable.getPipeId()+"管件非未开工状态！请检查！");
+                continue;
+            }
+            // 管件派工
+            arrangePipe(pipeTable,workPlace,arrangeId);
+        }
+        if(unitProcessingId<=0||unitTbaleId<=0)
+            logger.error("下料单元"+unitTable.getUnitId()+"派工到"+workPlace.getName()+"出错！");
+        else return 1;
+        return 0;
+    }
+    /**
+     *@Author: Ricardo
+     *@Description: //除下料外其他的工序的单元派工 单元派工到工位,出错返回0，正常返回1
+     *@Date: 19:13 2018/8/22
+     *@param: arranger:派工者， unitTable: 被派工的单元，workPlace：被派工工位
+     * 待实现: 此函数内的操作应保证数据完整性，故产生异常，则应该回滚！
+     **/
+    @Transactional
+    @Override
+    public int arrangeUnitToWorkPlace(Workers arranger, UnitTable unitTable, Departments workPlace) {
+        //产生单元派工记录
+        int arrangeId = add(arranger,unitTable,workPlace);
+
+        //构建unitProcessing
+        int unitProcessingId =  unitProcessingService.add(unitTable.getUnitId(),workPlace.getStageId(),1,
+                workPlace.getId(),unitTable.getPipeNumber(),arranger.getId());
+        //更改UnitTable信息，推进单元到下一个工序
+        int unitTbaleId=  unitTableService.updateUnitToNextStage(unitTable,workPlace,false);
+        //获取单元下所有管件，进行管件派工
+        List<PipeTable> pipeTableList =
+                pipeTableRepository.findByBatchIdAndUnitName(unitTable.getBatchId(),unitTable.getUnitName());
+        for (PipeTable pipeTable: pipeTableList){
+
+            if(pipeTable.getNextStage().intValue()!=workPlace.getStageId().intValue()){//Integer的值比较
+                //非未开工状态 下一工序和要派工工位所属工序不符合
+                logger.error(pipeTable.getPipeId()+"管件非未开工状态！请检查！");
+                continue;
+            }
+            // 管件派工
+            arrangePipe(pipeTable,workPlace,arrangeId);
+        }
+        if(unitProcessingId<=0||unitTbaleId<=0)
+            logger.error("下料单元"+unitTable.getUnitId()+"派工到"+workPlace.getName()+"出错！");
+        else return 1;
+        return 0;
+    }
 }

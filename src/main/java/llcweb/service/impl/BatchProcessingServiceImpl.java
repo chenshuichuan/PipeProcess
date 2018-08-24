@@ -44,6 +44,26 @@ public class BatchProcessingServiceImpl implements BatchProcessingService {
         logger.info("service add");
     }
 
+    //根据信息新增batchProcessing记录
+    @Transactional
+    @Override
+    public int add(int batchId, String sectionName, int pipeNumber, int unitNumber, int arrangeId) {
+        BatchProcessing batchProcessing = new BatchProcessing();
+        batchProcessing.setBatchId(batchId);
+        batchProcessing.setSectionName(sectionName);
+        batchProcessing.setPipeNumber(pipeNumber);
+        batchProcessing.setUnitNumber(unitNumber);
+        batchProcessing.setUnitProcessingNumber(unitNumber);//初始为所有
+        batchProcessing.setUnitFinishedNumber(0);//初始为0
+        batchProcessing.setBatchArrangeId(arrangeId);
+        BatchProcessing batchProcessing1 = batchProcessingRepository.save(batchProcessing);
+        if(batchProcessing1!=null)return batchProcessing1.getId();
+        else{
+            logger.error("无法生成BatchProcessing记录！");
+            return 0;
+        }
+    }
+
     @Transactional
     @Override
     public void updateById(int id) {

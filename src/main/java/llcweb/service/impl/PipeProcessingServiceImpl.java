@@ -3,6 +3,7 @@ package llcweb.service.impl;
 import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.PipeProcessingRepository;
 import llcweb.domain.models.PipeProcessing;
+import llcweb.domain.models.PipeTable;
 import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.PipeProcessingService;
@@ -43,6 +44,21 @@ public class PipeProcessingServiceImpl implements PipeProcessingService {
     public void add() {
         logger.info("service add");
     }
+
+    @Transactional
+    @Override
+    public int add(PipeTable pipeTable,int processState,int processIndex,int processPlace) {
+        PipeProcessing pipeProcessing = new PipeProcessing();
+        pipeProcessing.setPipeId(pipeTable.getPipeId());
+        pipeProcessing.setProcessState(processState);
+        pipeProcessing.setProcessIndex(processIndex);
+        pipeProcessing.setProcessPlace(processPlace);
+        PipeProcessing temp  = pipeProcessingRepository.save(pipeProcessing);
+        if(temp==null)logger.error("pipeId="+pipeTable.getPipeId()+"无法生成pipeProcessing记录！请检查");
+        else return temp.getId();
+        return 0;
+    }
+
 
     @Transactional
     @Override

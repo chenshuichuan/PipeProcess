@@ -1,6 +1,7 @@
 package llcweb.service;
 
 import llcweb.domain.models.PipeProcessing;
+import llcweb.domain.models.PipeTable;
 import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,10 @@ public interface PipeProcessingService {
      *添加信息
      */
     void add();
+    /*
+    *添加信息
+    */
+    int add(PipeTable pipeTable, int processState, int processIndex, int processPlace);
     /*
     *更新信息
     */

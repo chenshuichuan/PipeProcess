@@ -132,27 +132,6 @@ $(function () {
         }
     })).api();//此处需调用api()方法,否则返回的是JQuery对象而不是DataTables的API对象
 
-    $("#btn-simple-search").click(function () {
-        planManage.fuzzySearch = true;
-        //reload效果与draw(true)或者draw()类似,draw(false)则可在获取新数据的同时停留在当前页码,可自行试验
-//		_table.ajax.reload();
-//		_table.draw(false);
-        _table.draw();
-    });
-
-    $("#btn-advanced-search").click(function () {
-        planManage.fuzzySearch = false;
-        _table.draw();
-    });
-
-    // $("#btn-save-add").click(function () {
-    //     planManage.addItemSubmit();
-    // });
-
-    $("#btn-save-edit").click(function () {
-        planManage.editItemSubmit();
-    });
-
     //行点击事件
     $("tbody", $table).on("click", "tr", function (event) {
         $(this).addClass("active").siblings().removeClass("active");
@@ -175,11 +154,12 @@ $(function () {
         //点击单元格即点击复选框
         !$(event.target).is(":checkbox") && $(":checkbox", this).trigger("click");
     }).on("click", ".btn-edit", function () {
-        //点击编辑按钮
+        //点击派工按钮
         var item = _table.row($(this).closest('tr')).data();
         $(this).closest('tr').addClass("active").siblings().removeClass("active");
         planManage.currentItem = item;
         planManage.editItemInit(item);
+        //表格里的单个派工 ，待完成 planManage.arrangePlan(item);
     });
 
     $("#toggle-advanced-search").click(function () {
@@ -191,6 +171,24 @@ $(function () {
         $("i", this).toggleClass("fa-minus fa-plus");
         $("span", this).toggle();
         $("#plan-view .info-content").slideToggle("fast");
+    });
+
+    $("#btn-simple-search").click(function () {
+        planManage.fuzzySearch = true;
+        //reload效果与draw(true)或者draw()类似,draw(false)则可在获取新数据的同时停留在当前页码,可自行试验
+//		_table.ajax.reload();
+//		_table.draw(false);
+        _table.draw();
+    });
+
+    $("#btn-advanced-search").click(function () {
+        planManage.fuzzySearch = false;
+        _table.draw();
+    });
+    //派工按钮
+    $("#btn-save-edit").click(function () {
+        planManage.editItemSubmit();
+        _table.draw();//重新加载表格数据
     });
 
     //信息详情页点击派工按钮
@@ -258,7 +256,7 @@ var planManage = {
         if (planManage.fuzzySearch) {
             param.fuzzy = $("#fuzzy-search").val();
         } else {
-            param.processPlace = $("#section-search").val()git ;
+            param.processPlace = $("#section-search").val();
             param.shipCode = $("#ship-search").val();
             param.isCutted = $("#isCutted-search").val();
         }
@@ -316,6 +314,28 @@ var planManage = {
     },
     editItemSubmit: function () {
         var id = $("#planId-edit").val();
+        var workPlaceId = $("#workPlace-edit").val();
+        var remark = $("#remark-edit").val();
+        //alert("workPlaceId="+workPlaceId);
+        //参数检查
+        if(workPlaceId===null||workPlaceId.length<=0){
+            Dialog.lockDialog("警告","请选择工位！")
+            $.dialog.tips("请选择工位！");
+            return;
+        }
+        $.post(urlArrangeBatchToWorkPlace,
+            {
+                "planId": id,"workPlaceId":workPlaceId,"remark":remark
+            },
+            function (data, status) {
+                $.dialog.tips(data.message);
+                //要不要重新加载页面呢？不用，在调用监听处重新加载表格数据，而不是刷新
+            });
+    },
+    //表格里面的单个plan派工
+    //待完成
+    arrangePlan: function (item) {
+        var id = $("#planId-edit").val();
         var workPlace = $("#workPlace-edit").val();
         var remark = $("#remark-edit").val();
         //参数检查
@@ -325,7 +345,6 @@ var planManage = {
             },
             function (data, status) {
                 $.dialog.tips(data.message);
-                //要不要重新加载页面呢？
             });
     }
 };

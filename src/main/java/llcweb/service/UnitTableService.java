@@ -1,6 +1,7 @@
 package llcweb.service;
 
 import llcweb.domain.entities.Units;
+import llcweb.domain.models.Departments;
 import llcweb.domain.models.UnitProcessing;
 import llcweb.domain.models.UnitTable;
 import llcweb.tools.PageParam;
@@ -51,4 +52,10 @@ public interface UnitTableService {
     List<UnitTable> findByPlanId(int planId);
     List<Units> findUnitsByPlanId(int planId);
     List<UnitTable> getUnitsByStageId(int stageId);
+
+    //判断单元是否完成
+    boolean isFinished(UnitTable unitTable);
+
+    //单元派工时更改单元信息 type==1时，是下料派工，要更改管件信息，其他工序不需要更改管件数量信息
+    int updateUnitToNextStage(UnitTable unitTable, Departments workPlace, boolean isCut);
 }

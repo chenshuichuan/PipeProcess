@@ -1,5 +1,7 @@
 package llcweb.domain.models;
 
+import llcweb.tools.DateUtil;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -35,7 +37,8 @@ public class ArrangeTable {
 
     private Date finishedTime;
     public ArrangeTable() {
-
+        this.isFinished=0;
+        this.updateTime = new Date();
     }
     public ArrangeTable(Integer arrangeType, String name, Integer planId, String section,
                         String stage, String workplace) {

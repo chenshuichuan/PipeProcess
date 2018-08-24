@@ -30,4 +30,9 @@ public interface ProcessOrderService {
     * */
     void deleteById(int id);
 
+    //根据跟定的加工工序id，以及当前工序id，获得下一工序id
+    //加工工序就是由一系列工序id组成的字符串，并包含未开始、已完工两个标志工序
+    int nextStage(int processOrderId, int currentStage);
+    int nextStage(String processOrderList, int currentStage);
+    int currentStageIndex(int processOrderId, int currentStage);
 }
