@@ -22,6 +22,7 @@ public interface DepartmentsRepository extends JpaRepository<Departments,Integer
         , JpaSpecificationExecutor<Departments> {
     Page<Departments> findAll(Specification<Departments> spec, Pageable pageable);
     Departments findByName(String name);
+    //根据上级id找其所有下级
     List<Departments> findByUpDepartment(int upDepartment);
     Departments findByUpDepartmentAndLevelAndStageId(int upDepartment,int level,int stageId);
     List<Departments> findByLevel(int level);

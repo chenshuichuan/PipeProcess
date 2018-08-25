@@ -24,4 +24,5 @@ public interface BatchTableRepository extends JpaRepository<BatchTable,Integer>
     Page<BatchTable> findAll(Specification<BatchTable> spec, Pageable pageable);
     BatchTable findByBatchName(String batchName);
     BatchTable findByShipCodeAndBatchName(String shipCode, String batchName);
+    List<BatchTable> findByShipCode(String shipCode);
 }

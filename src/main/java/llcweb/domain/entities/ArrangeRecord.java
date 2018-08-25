@@ -45,6 +45,7 @@ public class ArrangeRecord {
         this.workplace =arrangeTable.getWorkplace();
         this.updateTime = arrangeTable.getUpdateTime();
         this.isFinished = arrangeTable.getIsFinished();
+        this.finishedTime = arrangeTable.getFinishedTime();
     }
     public ArrangeRecord(Integer arrangeType, String name, String plan, String section,
                          String stage, String workplace) {

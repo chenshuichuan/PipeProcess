@@ -6,6 +6,7 @@ import llcweb.domain.models.*;
 import llcweb.service.*;
 import llcweb.tools.DateUtil;
 import llcweb.tools.PageParam;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,8 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
 
     @Autowired
     private ProcessOrderService processOrderService;
+    @Autowired
+    private UsersService usersService;
 
     @Transactional
     @Override
@@ -70,15 +73,22 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         logger.info("service add");
     }
 
-    //构建批次派工记录
+
+    /**
+     *@Author: Ricardo
+     *@Description: 构建批次派工记录
+     *@Date: 13:50 2018/8/24
+     *@param:
+     **/
     @Transactional
     @Override
     public int add(Workers arranger, PlanTable planTable, Departments workPlace) {
         ArrangeTable arrangeTable = new ArrangeTable();
         arrangeTable.setArrangeType(1);//1代表单元派工
-        arrangeTable.setName(planTable.getBatchName()+"---"+planTable.getProcessPlace());
+        arrangeTable.setName(planTable.getBatchName());
         arrangeTable.setPlanId(planTable.getId());
         arrangeTable.setSection(planTable.getProcessPlace());
+        arrangeTable.setWorkplace(workPlace.getName());
         Departments stage = departmentsRepository.findOne(workPlace.getUpDepartment());
         if(stage!=null){
             arrangeTable.setStage(stage.getName());
@@ -106,6 +116,7 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         arrangeTable.setName(unitTable.getBatchName()+"---"+unitTable.getUnitName());
         arrangeTable.setPlanId(unitTable.getPlanId());
         Departments section = departmentsRepository.findOne(unitTable.getSection());
+        arrangeTable.setWorkplace(workPlace.getName());
         if(section!=null){
             arrangeTable.setSection(section.getName());
         }
@@ -152,10 +163,7 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
     public Page<ArrangeTable> getPage(PageParam pageParam, ArrangeTable example) {
         //规格定义
         Specification<ArrangeTable> specification = new Specification<ArrangeTable>() {
-
             /**
-             * 构造断言
-             *
              * @param root  实体对象引用
              * @param query 规则查询对象
              * @param cb    规则构建对象
@@ -164,10 +172,38 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
             @Override
             public Predicate toPredicate(Root<ArrangeTable> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>(); //所有的断言
-//                if (StringUtils.isNotBlank(example.getName())) { //添加断言
-//                    Predicate likeName = cb.like(root.get("name").as(String.class), "%" + example.getName() + "%");
-//                    predicates.add(likeName);
-//                }
+                if (StringUtils.isNotBlank(example.getName())) { //添加断言
+                    Predicate likeName = cb.like(root.get("name").as(String.class), "%" + example.getName() + "%");
+                    predicates.add(likeName);
+                }
+                if (example.getArrangeType()!=null) { //添加断言
+                    Predicate predicate = cb.equal(root.get("arrangeType").as(Integer.class), example.getArrangeType());
+                    predicates.add(predicate);
+                }
+                if (StringUtils.isNotBlank(example.getSection())) { //添加断言
+                    Predicate predicate = cb.equal(root.get("section").as(String.class), example.getSection());
+                    predicates.add(predicate);
+                }
+                else{//默认仅显示用户管理的部门
+                    CriteriaBuilder.In<Object> in = cb.in(root.get("section"));
+                    List<Departments> sectionList =  usersService.getSections(usersService.getCurrentUser());
+                    for (Departments section: sectionList){
+                        in.value(section.getName());
+                    }
+                    predicates.add(in);
+                }
+                if (StringUtils.isNotBlank(example.getStage())) { //添加断言
+                    Predicate predicate = cb.equal(root.get("stage").as(String.class), example.getStage());
+                    predicates.add(predicate);
+                }
+                if (example.getIsFinished()!=null) { //添加断言
+                    Predicate predicate = cb.equal(root.get("isFinished").as(Integer.class), example.getIsFinished());
+                    predicates.add(predicate);
+                }
+                if (example.getWorkerId()!=null) { //添加断言
+                    Predicate predicate = cb.equal(root.get("workerId").as(Integer.class), example.getWorkerId());
+                    predicates.add(predicate);
+                }
                 return cb.and(predicates.toArray(new Predicate[0]));
             }
         };
@@ -184,20 +220,22 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         PlanTable planTable = planTableRepository.findOne(arrangeTable.getPlanId());
         String plan = "";
         if (planTable!=null)
-            plan = planTable.getBatchName()+"--"+ planTable.getBatchDescription()+"--"+planTable.getProcessPlace();
+            plan = planTable.getBatchName()+"-->"+ planTable.getBatchDescription()+"-->"+planTable.getProcessPlace();
         else {
             plan = "派工记录对应批次未找到！请检查数据库";
             logger.error(plan);
         }
         arrangeRecord.setPlan(plan);
-
-        Workers workers = workersRepository.findOne(arrangeTable.getWorkerId());
         String worker ="";
-        if (workers!=null)
-            worker = workers.getCode()+"-"+workers.getName();
-        else{
-            worker = "暂无";
+        Workers workers ;
+        if(arrangeTable.getWorkerId()!=null){
+            //新的派工记录，没有工人领取，则此处workerId为空，查找会出错！
+            workers = workersRepository.findOne(arrangeTable.getWorkerId());
+            if (workers!=null)
+                worker = workers.getCode()+"-"+workers.getName();
+            else worker = "暂无工人领取该派工";
         }
+        else worker = "暂无工人领取该派工";
         arrangeRecord.setWorker(worker);
 
         workers = workersRepository.findOne(arrangeTable.getArrangerId());
@@ -210,6 +248,17 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         }
         arrangeRecord.setArranger(worker);
         return arrangeRecord;
+    }
+
+    //封装派工记录
+    @Override
+    public List<ArrangeRecord> arrangeTableToArrangeRecord(List<ArrangeTable> arrangeTableList){
+        List<ArrangeRecord> arrangeRecordList = new ArrayList<>();
+        for (ArrangeTable arrangeTable: arrangeTableList){
+            ArrangeRecord arrangeRecord = getRecord(arrangeTable);
+            arrangeRecordList.add(arrangeRecord);
+        }
+        return arrangeRecordList;
     }
 
     @Override

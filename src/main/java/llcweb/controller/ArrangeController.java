@@ -1,13 +1,8 @@
 package llcweb.controller;
 
-import llcweb.dao.repository.ArrangeTableRepository;
-import llcweb.dao.repository.DepartmentsRepository;
-import llcweb.dao.repository.PlanTableRepository;
-import llcweb.dao.repository.ShipTableRepository;
-import llcweb.domain.models.ArrangeTable;
-import llcweb.domain.models.Departments;
-import llcweb.domain.models.PlanTable;
-import llcweb.domain.models.ShipTable;
+import llcweb.dao.repository.*;
+import llcweb.domain.entities.ArrangeRecord;
+import llcweb.domain.models.*;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.DepartmentsService;
 import llcweb.service.PlanTableService;
@@ -49,7 +44,8 @@ public class ArrangeController {
     private DepartmentsService departmentsService;
     @Autowired
     private DepartmentsRepository departmentsRepository;
-
+    @Autowired
+    private WorkersRepository workersRepository;
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
     @ResponseBody
@@ -73,19 +69,59 @@ public class ArrangeController {
 
             }
         }
+        //高级查找
        else{
             //工段
-            String processPlace = request.getParameter("processPlace");
-            if (processPlace!=null&&!processPlace.equals("")) {
-                //planTable.setProcessPlace(processPlace);
+            String section = request.getParameter("section");
+            if (section!=null&&!section.equals("")) {
+               arrangeTable.setSection(section);
+            }
+            //工序
+            String stage = request.getParameter("stage");
+            if (stage!=null&&!stage.equals("")) {
+                arrangeTable.setStage(stage);
+            }
+            //船名
+            String shipCode = request.getParameter("shipCode");
+            if (shipCode!=null&&!shipCode.equals("")) {
+                //arrangeTable.setSection(section);
+            }
+            //批次
+            String batch = request.getParameter("batch");
+            if (batch!=null&&!batch.equals("")) {
+                arrangeTable.setName(batch);//name里面包含batch字段
+            }
+            //派工类别
+            String arrangeType = request.getParameter("arrangeType");
+            if (arrangeType!=null&&!arrangeType.equals("")) {
+                arrangeTable.setArrangeType(Integer.parseInt(arrangeType));
+            }
+            //是否完工
+            String isFinished = request.getParameter("isFinished");
+            if (isFinished!=null&&!isFinished.equals("")) {
+                arrangeTable.setIsFinished(Integer.parseInt(isFinished));
+            }
+            //派工时间
+            String updateTime = request.getParameter("updateTime");
+            if (updateTime!=null&&!updateTime.equals("")) {
+                //arrangeTable.setSection(section);
+            }
+            //工人姓名这个可能会存在两个同名工人？
+            //首先按照工号(唯一)去查，查不到则查姓名
+            String worker = request.getParameter("worker");
+            if (worker!=null&&!worker.equals("")) {
+                List<Workers> workersList = workersRepository.findByNameOrCode(worker,worker);
+                if (workersList.size()>0)arrangeTable.setWorkerId(workersList.get(0).getId());
             }
 
         }
         Page<ArrangeTable> arrangeTablePage = arrangeTableService.getPage(new PageParam(currentPage,size),arrangeTable);
-        List<ArrangeTable> arrangeTableList = arrangeTablePage.getContent();
+        List<ArrangeRecord> arrangeRecordList =
+                arrangeTableService.arrangeTableToArrangeRecord(arrangeTablePage.getContent());
+
         //总记录数
         long total = arrangeTablePage.getTotalElements();
-        map.put("pageData", arrangeTableList);
+        map.put("pageData", arrangeRecordList);
         map.put("total", total);
         map.put("draw", draw);
         return map;

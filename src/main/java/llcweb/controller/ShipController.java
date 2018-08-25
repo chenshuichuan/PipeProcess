@@ -9,10 +9,7 @@ import llcweb.tools.PageParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +46,20 @@ public class ShipController {
         Map<String,Object> map =new HashMap<String,Object>();
         List<ShipTable> shipTableList =  shipTableService.getAllShipNameByState(0);
         map.put("data",shipTableList);
+        return map;
+    }
+
+    //获取shipCode下的所有批次
+    @RequestMapping(value = "/getBatchNameByShipCode",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> getBatchNameByShipCode(@RequestParam("shipCode")String shipCode){
+        Map<String,Object> map =new HashMap<String,Object>();
+
+        List<ShipTable> shipTableList =  shipTableService.getAllShipNameByState(0);
+        map.put("data",shipTableList);
+        map.put("result",0);
+        map.put("message","");
+        logger.info("");
         return map;
     }
 }

@@ -21,6 +21,8 @@
 
     <link href="../../static/fortable/css/table-manage.css"
           th:href="@{/fortable/css/table-manage.css}" rel="stylesheet">
+    <link href="../../static/assets/plugins/selector/css/bootstrap-select.min.css"
+          th:href="@{/assets/plugins/selector/css/bootstrap-select.min.css}" rel="stylesheet">
 </head>
 
 <body>
@@ -47,30 +49,60 @@
             </div>
             <!--高级查找-->
             <div class="row-fluid" style="display:none;" id="div-advanced-search">
-                <form class="form-inline well">
-                    <span>姓名:</span>
-                    <input type="text" class="input-medium" placeholder="姓名" id="name-search">
-                    <span>工号:</span>
-                    <input type="text" class="input-medium" placeholder="工号" id="code-search">
-                    <span>职务:</span>
-                    <input type="text" class="input-medium" placeholder="职务" id="job-search">
-                    <span>所属部门:</span>
-                    <input type="text" class="input-medium" placeholder="所属部门" id="departments-search">
+                <!--信息详情-->
+                <div class="block info-block">
+                    <div class="navbar navbar-inner block-header">
+                        <div class="block-title">高级查询</div>
+                    </div>
+                    <div class="block-content info-content clearfix">
+                        <!--当前用户管理的工段-->
+                        <span>工段:</span>
+                        <select id="section-search" class=" selectpicker" title="选择工段">
+                            <option value="-1">示例选择1</option>
+                            <option value="0">示例选择2</option>
+                        </select>
+                        <span>工序:</span>
+                        <select id="stage-search" class=" selectpicker" title="选择工序">
+                            <option value="" >所有</option>
+                            <option value="下料">下料</option>
+                            <option value="弯管">弯管</option>
+                            <option value="校管">校管</option>
+                            <option value="焊接">焊接</option>
+                        </select>
+                        <!--所有船名-->
+                        <span>船名:</span>
+                        <select id="ship-search" class=" selectpicker" title="选择船名">
+                            <option value="-1">示例选择1</option>
+                            <option value="0">示例选择2</option>
+                        </select>
+                        <span>批次:</span>
+                        <select id="batch-search" class=" selectpicker" title="选择批次">
 
-                    <span>工作状态:</span>
-                    <select class="input-small" id="state-search">
-                        <option value="">全部</option>
-                        <option value="1">在线</option>
-                        <option value="0">离线</option>
-                    </select>
-                    <span>角色:</span>
-                    <select class="input-small" id="role-search">
-                        <option value="">全部</option>
-                        <option value="1">管理员</option>
-                        <option value="0">操作员</option>
-                    </select>
-                    <button type="button" class="btn" id="btn-advanced-search"><i class="fa fa-search"></i> 查询</button>
-                </form>
+                        </select>
+                        <div style="margin-top: 15px;"></div>
+                        <span>派工类型:</span>
+                        <select id="arrangeType-search" class=" selectpicker" title="派工类型">
+                            <option value="" >所有</option>
+                            <option value="1" data-content="<span class='label label-success'>批次派工</span>">批次派工</option>
+                            <option value="2" data-content="<span class='label label-warning'>单元派工</span>">单元派工</option>
+                        </select>
+                        <span>是否完工:</span>
+                        <select id="isFinished-search" class=" selectpicker" title="下料状态">
+                            <option value="" >所有</option>
+                            <option value="1" data-content="<span class='label label-success'>完工</span>">完工</option>
+                            <option value="0" data-content="<span class='label label-warning'>未完工</span>">未完工</option>
+                        </select>
+
+                        <!--<span>派工时间:</span>-->
+                        <!--<input type="text" class="input-medium" placeholder="派工时间" id="time-search">-->
+                        <span>加工工人:</span>
+                        <input type="text" class="input-medium" placeholder="加工工人" id="worker-search">
+
+                        <button style="margin-left: 10px;" class="btn btn-lg" id="btn-advanced-search"><i class="fa fa-search"></i> 查询</button>
+                        <button style="margin-left: 30px;color: #e1d43c;" class="btn" id="btn-reset-search">
+                            <i class="fa fa-refresh"></i> 重置搜索</button>
+                    </div>
+                </div>
             </div>
             <!--信息详情-->
             <div class="block info-block" id="arrange-view">
@@ -79,11 +111,11 @@
                 </div>
                 <div class="block-content info-content clearfix">
                     <div class="row-fluid">
-                        <div class="span3">
+                        <div class="span2">
                             <label class="prop-name">派工序号:</label>
                             <div class="prop-value" id="arrangeId-view"></div>
                         </div>
-                        <div class="span3">
+                        <div class="span2">
                             <label class="prop-name">类型:</label>
                             <div class="prop-value" id="arrangeType-view"></div>
                         </div>
@@ -91,7 +123,7 @@
                             <label class="prop-name">名称:</label>
                             <div class="prop-value" id="name-view"></div>
                         </div>
-                        <div class="span3">
+                        <div class="span5">
                             <label class="prop-name">对应计划:</label>
                             <div class="prop-value" id="plan-view"></div>
                         </div>
@@ -149,6 +181,7 @@
                            cellspacing="0" width="100%">
                         <thead>
                         <tr>
+                            <th></th>
                             <th>派工序号</th>
                             <th>类型</th>
                             <th>名称</th>
@@ -159,10 +192,12 @@
                             <th>是否完工</th>
                             <th>操作</th>
                             <th></th>
+
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
+                            <td></td>
                             <td>派工序号</td>
                             <td>类型</td>
                             <td>名称</td>
@@ -172,9 +207,10 @@
                             <td>加工者</td>
                             <td>是否完工</td>
                             <td>撤销</td>
-                            <td>撤销</td>
+
                         </tr>
                         <tr>
+                            <td></td>
                             <td>派工序号</td>
                             <td>类型</td>
                             <td>名称</td>
@@ -184,9 +220,10 @@
                             <td>加工者</td>
                             <td>是否完工</td>
                             <td>撤销</td>
-                            <td>撤销</td>
+
                         </tr>
                         <tr>
+                            <td></td>
                             <td>派工序号</td>
                             <td>类型</td>
                             <td>名称</td>
@@ -196,7 +233,7 @@
                             <td>加工者</td>
                             <td>是否完工</td>
                             <td>撤销</td>
-                            <td>撤销</td>
+
                         </tr>
                         </tbody>
 
@@ -226,6 +263,9 @@
 <script src="../../static/fortable/lib/dataTables-1.10.7/plugins/integration/bootstrap/2/dataTables.bootstrap.js"
         th:src="@{/fortable/lib/dataTables-1.10.7/plugins/integration/bootstrap/2/dataTables.bootstrap.js}"></script>
 <!-- DataTables JS end-->
+<script src="../../static/assets/plugins/selector/js/bootstrap-select.min.js"
+        th:src="@{/assets/plugins/selector/js/bootstrap-select.min.js}"></script>
+
 <script src="../../static/fortable/js/constant.js"
         th:src="@{/fortable/js/constant.js}"></script>
 <script src="../../static/fortable/js/arrange_record.js"

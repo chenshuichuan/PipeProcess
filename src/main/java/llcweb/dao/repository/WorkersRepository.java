@@ -8,6 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -20,5 +22,7 @@ public interface WorkersRepository extends JpaRepository<Workers,Integer>
     Page<Workers> findAll(Specification<Workers> spec, Pageable pageable);
     //工号应该是唯一的，应该对应工人码？就是工人码？
     Workers findByNameAndCode(String name,String code);
+    //工号应该是唯一的，应该对应工人码？就是工人码？
+    List<Workers> findByNameOrCode(String name, String code);
     Workers findByCode(String code);
 }

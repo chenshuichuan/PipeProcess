@@ -10,6 +10,11 @@ var urlGetUserManageSections = "/users/getUserManageSections";
 ////获取当前未完工的船名和shipCode
 var urlGetAllUnfinishedShip = "/ship/getAllUnfinishedShip";
 
+//根据查找工段下所有工序
+var urlGetStageBySection = "/department/getStageBySection";
+//查找船下所有的批次名
+var urlGetBatchNameByShipCode = "/batch/getBatchNameByShipCode";
+
 /*常量*/
 Date.prototype.toLocaleString = function() {
     return this.getFullYear() + "/" + (this.getMonth() + 1) + "/" + this.getDate();
@@ -205,6 +210,36 @@ function getAllUnfinishedShip() {
     });
     return ships;
 }
+////获取shipCode下的所有批次名列表
+function getBatchNameByShipCode(shipCode) {
+    var batchList =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetBatchNameByShipCode,
+        data :"shipCode="+shipCode,
+        async : false,
+        success : function(data){
+            batchList = data.data;
+        }
+    });
+    return batchList;
+}
+////获取section下的所有工序
+function getStageBySection(section) {
+    var stageList =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetStageBySection,
+        data :"section="+section,
+        async : false,
+        success : function(data){
+            stageList = data.data;
+        }
+    });
+    return stageList;
+}
 
 //根据工段列表渲染工段选择框
 function initSectionSeletor() {
@@ -212,7 +247,7 @@ function initSectionSeletor() {
     //根据的得到的工位列表渲染选择框
     var selector =  $("#section-search");
     selector.empty();
-    var options = "";
+    var options = "<option value=''>所有</option>";
     for (var i=0; i<sectionList.length;i++){
         //这里的是否空闲渲染存在问题
         options+= "<option"+
@@ -230,7 +265,7 @@ function initShipSeletor() {
     //根据的得到的工位列表渲染选择框
     var selector =  $("#ship-search");
     selector.empty();
-    var options = "";
+    var options = "<option value=''>所有</option>";
     for (var i=0; i<shipList.length;i++){
         //这里的是否空闲渲染存在问题
         options+= "<option"+

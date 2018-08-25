@@ -49,7 +49,7 @@ public interface ArrangeTableService {
    *将arrangeTable封装为arrangeRecord
    * */
     ArrangeRecord getRecord(ArrangeTable arrangeTable);
-
+    List<ArrangeRecord> arrangeTableToArrangeRecord(List<ArrangeTable> arrangeTableList);
     List<ArrangeTable> findArrangeByWorkplace(String section,String stage,String workplace,int isFinished);
     boolean isWorkpalceVacancy(Departments departments);
 

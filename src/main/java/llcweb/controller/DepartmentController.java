@@ -191,4 +191,27 @@ public class DepartmentController {
         }
         return map;
     }
+    //查找工段下所有工序
+    @RequestMapping(value = "/getStageBySection",method = RequestMethod.GET)
+    public Map<String,Object> getStageBySection(@RequestParam("section")String section){
+        Map<String,Object> map =new HashMap<String,Object>();
+
+        Departments sectionDepartment = departmentsRepository.findByName(section);
+        if (sectionDepartment!=null&&sectionDepartment.getLevel()==0) {//保证传入的是部门工段
+           List<Departments> departmentsList = departmentsRepository.findByUpDepartment(sectionDepartment.getId());
+            map.put("result",1);
+            map.put("data",departmentsList);
+            map.put("message","获取成功");
+            logger.info("获取成功");
+        }
+        else{
+            String message = "未找到相关信息！请检查数据";
+            map.put("result",0);
+            map.put("data",null);
+            map.put("message",message);
+            logger.info(message);
+        }
+        return map;
+    }
+
 }
