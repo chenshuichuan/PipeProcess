@@ -1,8 +1,13 @@
 package llcweb.service.impl;
 
-import llcweb.dao.repository.ShipTableRepository;
+import llcweb.dao.repository.*;
 import llcweb.domain.models.PlanTable;
+import llcweb.domain.models.ProcessOrder;
+import llcweb.domain.models.UnitTable;
+import llcweb.domain.models.Workstage;
 import llcweb.service.PlanTableService;
+import llcweb.service.ProcessOrderService;
+import llcweb.service.UnitTableService;
 import llcweb.tools.PageParam;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 
 /**
@@ -32,7 +38,26 @@ public class PlanTableServiceImplTest {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private PlanTableService planTableService;
-
+    @Autowired
+    private PlanTableRepository planTableRepository;
+    @Autowired
+    private ArrangeTableRepository arrangeTableRepository;
+    @Autowired
+    private PipeTableRepository pipeTableRepository;
+    @Autowired
+    private BatchTableRepository batchTableRepository;
+    @Autowired
+    private UnitTableRepository unitTableRepository;
+    @Autowired
+    private ProcessOrderService processOrderService;
+    @Autowired
+    private WorkstageRepository workstageRepository;
+    @Autowired
+    private ProcessOrderRepository processOrderRepository;
+    @Autowired
+    private PipeTableServiceImpl pipeTableService;
+    @Autowired
+    private UnitTableService unitTableService;
     @Test
     public void findById() throws Exception {
     }
@@ -54,5 +79,13 @@ public class PlanTableServiceImplTest {
     @Test
     public void isPlanFinished() throws Exception {
     }
+    @Test
+    public void calUnitsOfPlanProcessOrder() throws Exception {
 
+        List<PlanTable> planTableList = planTableRepository.findAll();
+        for (PlanTable planTable:planTableList){
+            planTableService.calUnitsOfPlanProcessOrder(planTable);
+        }
+
+    }
 }

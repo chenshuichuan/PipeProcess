@@ -14,5 +14,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  //Integer 是id 的类型
 public interface ProcessOrderRepository extends JpaRepository<ProcessOrder,Integer>
         , JpaSpecificationExecutor<ProcessOrder> {
-
+    ProcessOrder findByOrderList(String OrderList);
 }

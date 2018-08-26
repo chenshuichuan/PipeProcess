@@ -311,6 +311,8 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         //进行单元派工
         for (int i=0; i<unitTableList.size();++i){
             unitTable = unitTableList.get(i);
+            if(unitTable.getPipeNumber()<=0)
+                continue;//跳过这类单元 应产生一个异常记录！
             if(unitTableService.isFinished(unitTable)||unitTable.getProcessState()!=10){
                 logger.error("批次："+planTable.getBatchName()+"的单元："+unitTable.getUnitName()+"已经完工！不处于未加工状态请检查数据库！");
             }
@@ -319,6 +321,9 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
 
             pipeNumber+=unitTable.getPipeNumber();
         }
+
+        planTable.setIsCutted(0);//设置计划为下料派工状态
+        planTableRepository.save(planTable);
         //构建batchProcessing记录
         return batchProcessingService.add(unitTable.getBatchId(),planTable.getProcessPlace(),
                 pipeNumber,unitTableList.size(),arrangeId);
@@ -370,7 +375,7 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
                 pipeTableRepository.findByBatchIdAndUnitName(unitTable.getBatchId(),unitTable.getUnitName());
         for (PipeTable pipeTable: pipeTableList){
             //检查管件当前状态是否正常
-            if(pipeTable.getProcessSate()!=10||pipeTable.getNextStage().intValue()!=workPlace.getStageId()){
+            if(pipeTable.getProcessState()!=10||pipeTable.getNextStage().intValue()!=workPlace.getStageId()){
                 //非未开工状态 下一工序和要派工工位所属工序不符合
                 logger.error(pipeTable.getPipeId()+"管件非未开工状态！请检查！");
                 continue;
@@ -398,7 +403,7 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
 
         //构建unitProcessing
         int unitProcessingId =  unitProcessingService.add(unitTable.getUnitId(),workPlace.getStageId(),1,
-                workPlace.getId(),unitTable.getPipeNumber(),arranger.getId());
+                workPlace.getId(),unitTable.getPipeNumber(),arrangeId);
         //更改UnitTable信息，推进单元到下一个工序
         int unitTbaleId=  unitTableService.updateUnitToNextStage(unitTable,workPlace,false);
         //获取单元下所有管件，进行管件派工

@@ -40,7 +40,7 @@ public class PipeTable {
     private Integer outfield;
 
     private Integer processOrder;
-    private Integer processSate;
+    private Integer processState;
     private Integer processIndex;
 
     public Integer getNextStage() {
@@ -97,12 +97,12 @@ public class PipeTable {
         this.processOrder = processOrder;
     }
 
-    public Integer getProcessSate() {
-        return processSate;
+    public Integer getProcessState() {
+        return processState;
     }
 
-    public void setProcessSate(Integer processSate) {
-        this.processSate = processSate;
+    public void setProcessState(Integer processState) {
+        this.processState = processState;
     }
 
     public Integer getProcessIndex() {

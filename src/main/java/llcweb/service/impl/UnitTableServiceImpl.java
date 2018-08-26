@@ -1,9 +1,11 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.*;
+import llcweb.domain.entities.UnitTableInfo;
 import llcweb.domain.entities.Units;
 import llcweb.domain.models.*;
 import llcweb.service.ArrangeTableService;
+import llcweb.service.PipeTableService;
 import llcweb.service.ProcessOrderService;
 import llcweb.service.UnitTableService;
 import llcweb.tools.PageParam;
@@ -39,6 +41,9 @@ public class UnitTableServiceImpl implements UnitTableService {
     @Autowired
     private UnitTableRepository unitTableRepository;
     @Autowired
+    private UnitProcessingRepository unitProcessingRepository;
+
+    @Autowired
     private BatchTableRepository batchTableRepository;
     @Autowired
     private PipeTableRepository pipeTableRepository;
@@ -49,6 +54,12 @@ public class UnitTableServiceImpl implements UnitTableService {
     private DepartmentsRepository departmentsRepository;
     @Autowired
     private ProcessOrderService processOrderService;
+    @Autowired
+    private ProcessOrderRepository processOrderRepository;
+    @Autowired
+    private WorkstageRepository workstageRepository;
+    @Autowired
+    private PipeTableService pipeTableService;
 
 
     @Transactional
@@ -256,8 +267,21 @@ public class UnitTableServiceImpl implements UnitTableService {
             @Override
             public Predicate toPredicate(Root<UnitTable> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>(); //所有的断言
+
+                if (example.getSection()>0) { //添加断言
+                    Predicate likeName = cb.equal(root.get("section").as(Integer.class),example.getSection());
+                    predicates.add(likeName);
+                }
                 if (StringUtils.isNotBlank(example.getBatchName())) { //添加断言
                     Predicate likeName = cb.like(root.get("batchName").as(String.class), "%" + example.getBatchName() + "%");
+                    predicates.add(likeName);
+                }
+                if (StringUtils.isNotBlank(example.getUnitName())) { //添加断言
+                    Predicate likeName = cb.like(root.get("unitName").as(String.class), "%" + example.getUnitName() + "%");
+                    predicates.add(likeName);
+                }
+                if (example.getNextStage()>0) { //添加断言
+                    Predicate likeName = cb.equal(root.get("nextStage").as(Integer.class), example.getNextStage());
                     predicates.add(likeName);
                 }
                 return cb.and(predicates.toArray(new Predicate[0]));
@@ -345,5 +369,71 @@ public class UnitTableServiceImpl implements UnitTableService {
         }
         else return temp.getUnitId();
         return 0;
+    }
+
+    /**
+     *@Author: Ricardo
+     *@Description: 解析单元的加工顺序，以单元内管件最复杂(工序数量，多的)的加工顺序为单元加工顺序
+     *@Date: 10:04 2018/8/25
+     *@param:
+     **/
+    @Override
+    public String calUnitProcessOrder(UnitTable unitTable,Workstage underStart,Workstage cut,
+                                      Workstage bend,Workstage proofread,Workstage weld,
+                                      Workstage polish,Workstage surface,Workstage finished,boolean saveToDataBase) {
+        List<PipeTable> pipeTableList =
+                pipeTableRepository.findByBatchIdAndUnitName(unitTable.getBatchId(),unitTable.getUnitName());
+       if(pipeTableList.size()>0){
+           String processOrder = "";
+           for (PipeTable pipeTable:pipeTableList){
+               String order = pipeTableService.calPipeProcessOrder(pipeTable,underStart,cut,bend,proofread,
+                       weld,polish,surface,finished,saveToDataBase);
+               //找到工序最多的
+               if(order.split(",").length>processOrder.split(",").length)
+                   processOrder=order;
+           }
+           //保存到数据库
+           if(saveToDataBase){
+               ProcessOrder processOrder1 = processOrderRepository.findByOrderList(processOrder);
+               if(processOrder1==null){
+                   processOrder1 =new ProcessOrder(processOrderService.getProcessOrderString(processOrder),processOrder);
+                   processOrder1 = processOrderRepository.save(processOrder1);
+               }
+               unitTable.setProcessOrder(processOrder1.getId());
+               unitTableRepository.save(unitTable);
+           }
+           logger.info("批次"+unitTable.getBatchName()+"单元"+unitTable.getUnitName()+":加工顺序为");
+           return processOrder;
+       }
+        else return null;
+    }
+
+    @Override
+    public List<UnitTableInfo> unitToUnitInfo(List<UnitTable> unitTableList,Departments section) {
+        List<UnitTableInfo> unitTableInfoList = new ArrayList<>();
+        for (UnitTable unitTable: unitTableList){
+            UnitTableInfo unitTableInfo = new UnitTableInfo(unitTable);
+            unitTableInfo.setSection(section.getName());
+            unitTableInfo.setProcessOrder(processOrderService.getProcessOrderString(unitTable.getProcessOrder()));
+            Workstage workstage = workstageRepository.findOne(unitTable.getProcessState());
+            if (workstage!=null){
+                unitTableInfo.setProcessState(workstage.getName());
+                //获取当前工序加工情况
+                if(workstage.getId()!=10&&workstage.getId()!=11){
+                    List<UnitProcessing> unitProcessingList =
+                            unitProcessingRepository.findByUnitIdAndProcessState(unitTable.getUnitId(),unitTable.getProcessState());
+                    if(unitProcessingList.size()!=1)logger.info("单元加工信息异常！unitId="+unitTable.getUnitId());
+                    if(unitProcessingList.size()>1){
+                        unitTableInfo.setPipeProcessingNumber(unitProcessingList.get(0).getPipeProcessingNumber());
+                        unitTableInfo.setPipeFinishedNumber(unitProcessingList.get(0).getPipeFinishedNumber());
+                    }
+                    //否则默认就用unittable里的
+                }
+            }
+             workstage = workstageRepository.findOne(unitTable.getNextStage());
+            if (workstage!=null)unitTableInfo.setNextStage(workstage.getName());
+            unitTableInfoList.add(unitTableInfo);
+        }
+        return unitTableInfoList;
     }
 }

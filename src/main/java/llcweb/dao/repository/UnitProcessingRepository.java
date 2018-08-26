@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
+
 /**
  * Created by:Ricardo
  * Description:
@@ -19,4 +21,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface UnitProcessingRepository extends JpaRepository<UnitProcessing,Integer>
         , JpaSpecificationExecutor<UnitProcessing> {
     Page<UnitProcessing> findAll(Specification<UnitProcessing> spec, Pageable pageable);
+    List<UnitProcessing> findByUnitIdAndProcessState(int unitId,int state);
+    List<UnitProcessing> findByUnitId(int unitId);
 }

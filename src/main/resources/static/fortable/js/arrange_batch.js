@@ -119,7 +119,8 @@ $(function () {
             //给当前行某列加样式
             $('td', row).eq(9).addClass(classIsCutted(data.isCutted));
             //不使用render，改用jquery文档操作呈现单元格
-            var $btnEdit = $('<button type="button" class="btn btn-small btn-info btn-edit">派工</button>');
+            var $btnEdit = $('<button type="button" class="btn btn-small btn-info btn-edit"'+
+                (data.isCutted===-1?"":"disabled='disabled'")+'>派工</button>');
             $('td', row).eq(10).append($btnEdit);
 
         },
@@ -159,7 +160,7 @@ $(function () {
         $(this).closest('tr').addClass("active").siblings().removeClass("active");
         planManage.currentItem = item;
         planManage.editItemInit(item);
-        //表格里的单个派工 ，待完成 planManage.arrangePlan(item);
+        //planManage.arrangePlan(item);
     });
 
     $("#toggle-advanced-search").click(function () {
@@ -199,6 +200,9 @@ $(function () {
     $(".btn-cancel").click(function () {
         planManage.showItemDetail(planManage.currentItem);
     });
+    $(".btn-edit").click(function () {
+        planManage.arrangePlan(planManage.currentItem);
+    });
     $("#btn-refresh").click(function () {
         window.location.reload();
     });
@@ -206,7 +210,7 @@ $(function () {
     initSectionSeletor();
     //初始化船名选择框
     initShipSeletor();
-
+    //document.getElementById("btn-save-edit").style.display="none";
 });
 
 
@@ -253,8 +257,9 @@ var planManage = {
         // }
         //组装查询参数
         param.fuzzySearch = planManage.fuzzySearch;
-        if (planManage.fuzzySearch) {
+        if (planManage.fuzzySearch) {//页面载入，fuzzySearch: true,
             param.fuzzy = $("#fuzzy-search").val();
+            param.isCutted = "-1";//默认展示未下料的
         } else {
             param.processPlace = $("#section-search").val();
             param.shipCode = $("#ship-search").val();
@@ -300,7 +305,7 @@ var planManage = {
             return;
         }
         initSelector(item.processPlace);
-        $("#workPlace-edit").append();
+        //$("#workPlace-edit").append();
         $("#form-edit")[0].reset();
         $("#title-edit").text(item.planName);
         $("#serial-view2").text(item.serialNumber);
@@ -316,36 +321,38 @@ var planManage = {
         var id = $("#planId-edit").val();
         var workPlaceId = $("#workPlace-edit").val();
         var remark = $("#remark-edit").val();
-        //alert("workPlaceId="+workPlaceId);
         //参数检查
         if(workPlaceId===null||workPlaceId.length<=0){
-            Dialog.lockDialog("警告","请选择工位！")
+            Dialog.lockDialog("警告","请选择工位！");
             $.dialog.tips("请选择工位！");
             return;
         }
-        $.post(urlArrangeBatchToWorkPlace,
-            {
-                "planId": id,"workPlaceId":workPlaceId,"remark":remark
-            },
-            function (data, status) {
-                $.dialog.tips(data.message);
-                //要不要重新加载页面呢？不用，在调用监听处重新加载表格数据，而不是刷新
-            });
+         $.dialog.confirm("确定要将该计划批次派工给该工位吗？", function () {
+             $.ajax({
+                 type : "get",
+                 url : urlArrangeBatchToWorkPlace,
+                 data : "planId="+id+"&workPlaceId="+workPlaceId+"&remark="+remark,
+                 async : true,
+                 success : function(data){
+                     $.dialog.tips(data.message);
+                     //要不要重新加载页面呢？不用，在调用监听处重新加载表格数据，而不是刷新
+                 }
+             });
+         });
+        //document.getElementById("btn-save-edit").style.display="none";
     },
     //表格里面的单个plan派工
     //待完成
     arrangePlan: function (item) {
-        var id = $("#planId-edit").val();
-        var workPlace = $("#workPlace-edit").val();
-        var remark = $("#remark-edit").val();
+        var workPlaceId = $("#workPlace-edit").val();
+
+        //alert("id="+id+",workPlaceId="+workPlaceId);
         //参数检查
-        $.post(urlArrangeBatchToWorkPlace,
-            {
-                "planId": id,"workPlace":workPlace,"remark":remark
-            },
-            function (data, status) {
-                $.dialog.tips(data.message);
-            });
+        if(workPlaceId===null||workPlaceId.length<=0){
+            Dialog.lockDialog("警告","请选择工位！")
+            $.dialog.tips("请选择工位！");
+        }
+       // document.getElementById("btn-save-edit").style.display="block";
     }
 };
 //根据的得到的工位列表渲染选择框

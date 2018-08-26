@@ -1,6 +1,5 @@
 package llcweb.controller;
 
-import llcweb.domain.User;
 import llcweb.domain.models.Departments;
 import llcweb.domain.models.Users;
 import llcweb.service.UsersService;

@@ -42,4 +42,5 @@ public interface UsersService {
 
     Users getCurrentUser();
     List<Departments> getSections(Users users);
+    Departments getOneStage(Users users);
 }

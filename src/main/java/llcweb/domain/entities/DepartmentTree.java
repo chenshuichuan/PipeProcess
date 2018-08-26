@@ -18,7 +18,7 @@ public class DepartmentTree {
     private Integer pId;//upDepartment
 
     private String iconSkin;
-
+    private  Integer level;
     private boolean open;
 
     public DepartmentTree() {
@@ -28,6 +28,15 @@ public class DepartmentTree {
         this.id = departments.getId();
         this.name = departments.getName();
         this.pId = departments.getUpDepartment();
+        this.level = departments.getLevel();
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     public Integer getId() {

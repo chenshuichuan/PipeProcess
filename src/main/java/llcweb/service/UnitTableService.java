@@ -1,9 +1,8 @@
 package llcweb.service;
 
+import llcweb.domain.entities.UnitTableInfo;
 import llcweb.domain.entities.Units;
-import llcweb.domain.models.Departments;
-import llcweb.domain.models.UnitProcessing;
-import llcweb.domain.models.UnitTable;
+import llcweb.domain.models.*;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
 
@@ -58,4 +57,11 @@ public interface UnitTableService {
 
     //单元派工时更改单元信息 type==1时，是下料派工，要更改管件信息，其他工序不需要更改管件数量信息
     int updateUnitToNextStage(UnitTable unitTable, Departments workPlace, boolean isCut);
+
+    //计算某单元的加工顺序
+    String calUnitProcessOrder(UnitTable unitTable, Workstage underStart, Workstage cut,
+                               Workstage bend, Workstage proofread, Workstage weld,
+                               Workstage polish, Workstage surface, Workstage finished,boolean saveToDataBase);
+    //UnitTable转换为UnitTableInfo
+    List<UnitTableInfo> unitToUnitInfo(List<UnitTable> unitTableList,Departments section);
 }

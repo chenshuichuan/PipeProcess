@@ -1,7 +1,6 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.UsersRepository;
-import llcweb.domain.User;
 import llcweb.domain.models.Users;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;

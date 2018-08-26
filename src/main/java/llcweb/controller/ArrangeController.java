@@ -3,10 +3,7 @@ package llcweb.controller;
 import llcweb.dao.repository.*;
 import llcweb.domain.entities.ArrangeRecord;
 import llcweb.domain.models.*;
-import llcweb.service.ArrangeTableService;
-import llcweb.service.DepartmentsService;
-import llcweb.service.PlanTableService;
-import llcweb.service.UsersService;
+import llcweb.service.*;
 import llcweb.tools.DateUtil;
 import llcweb.tools.PageParam;
 import org.slf4j.Logger;
@@ -46,6 +43,10 @@ public class ArrangeController {
     private DepartmentsRepository departmentsRepository;
     @Autowired
     private WorkersRepository workersRepository;
+    @Autowired
+    private UnitTableService unitTableService;
+    @Autowired
+    private UnitTableRepository unitTableRepository;
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
     @ResponseBody
@@ -160,6 +161,7 @@ public class ArrangeController {
         String planId = request.getParameter("planId");
         String workPlaceId = request.getParameter("workPlaceId");
         String remark = request.getParameter("remark");
+        logger.info("planId="+planId+",workPlaceId="+workPlaceId+",remark="+remark);
         String message ="";
         int result = 1;
         if(planId!=null&&planId.length()>0&&workPlaceId!=null&&workPlaceId.length()>0){
@@ -171,7 +173,11 @@ public class ArrangeController {
             }
             //派工
             else{
-
+                Users users = usersService.getCurrentUser();
+                Workers arranger= workersRepository.findOne(users.getWorkerId());
+                arrangeTableService.arrangeBatchToWorkPlace(arranger,planTable,workPlace);
+                message = "派工成功！";
+                result=0;
             }
         }
         else{
@@ -192,24 +198,29 @@ public class ArrangeController {
         Map<String,Object> map =new HashMap<String,Object>();
 
         String unitId = request.getParameter("unitId");
-        String workPlaceId = request.getParameter("workPlaceId");
+        String workplace = request.getParameter("workplaceId");
         String remark = request.getParameter("remark");
+        logger.info("unitId="+unitId+",workplace="+workplace);
         String message ="";
         int result = 1;
-        if(unitId!=null&&unitId.length()>0&&workPlaceId!=null&&workPlaceId.length()>0){
-            PlanTable planTable = planTableRepository.findOne(Integer.parseInt(unitId));
-            Departments workPlace = departmentsRepository.findOne(Integer.parseInt(workPlaceId));
-            if(planTable==null||workPlace==null){
-                message = "单元"+unitId+"或工位"+workPlaceId+"不存在！请检查！";
+        if(unitId!=null&&unitId.length()>0&&workplace!=null&&workplace.length()>0){
+            UnitTable unitTable = unitTableRepository.findOne(Integer.parseInt(unitId));
+            Departments workPlace = departmentsRepository.findOne(Integer.parseInt(workplace));
+            if(unitTable==null||workPlace==null){
+                message = "单元"+unitId+"或工位"+workplace+"不存在！请检查！";
                 result=0;
             }
             //单元派工
             else{
-
+                Users users = usersService.getCurrentUser();
+                Workers arranger= workersRepository.findOne(users.getWorkerId());
+                arrangeTableService.arrangeUnitToWorkPlace(arranger,unitTable,workPlace);
+                message = "派工成功！";
+                result=0;
             }
         }
         else{
-            message = "传入参数错误！单元"+unitId+"或工位"+workPlaceId+"请检查！";
+            message = "传入参数错误！单元"+unitId+"或工位"+workplace+"请检查！";
             result=0;
         }
         map.put("result",result);

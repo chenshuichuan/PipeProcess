@@ -47,4 +47,6 @@ public interface DepartmentsService {
     List<Departments> getDepartments(Users users);
     DepartmentInfo getDepartmentInfo(int id);
     List<WorkplaceInfo> getWorkPlaceByStage(int stageId);
+
+    Departments getSectionByWorkplace(Departments workplace );
 }

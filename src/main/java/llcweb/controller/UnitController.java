@@ -3,10 +3,12 @@ package llcweb.controller;
 import llcweb.dao.repository.DepartmentsRepository;
 import llcweb.dao.repository.PlanTableRepository;
 import llcweb.dao.repository.UnitTableRepository;
+import llcweb.domain.entities.UnitTableInfo;
 import llcweb.domain.entities.Units;
 import llcweb.domain.models.Departments;
 import llcweb.domain.models.PlanTable;
 import llcweb.domain.models.UnitTable;
+import llcweb.service.DepartmentsService;
 import llcweb.service.PlanTableService;
 import llcweb.service.UnitTableService;
 import llcweb.service.UsersService;
@@ -36,6 +38,8 @@ public class UnitController {
     private UnitTableService unitTableService;
     @Autowired
     private UnitTableRepository unitTableRepository;
+    @Autowired
+    private DepartmentsService departmentsService;
     @Autowired
     private DepartmentsRepository departmentsRepository;
     @Autowired
@@ -138,15 +142,48 @@ public class UnitController {
     //根据部门工序获取可派给该部门工序的所有单元
     @RequestMapping(value = "/getUnitsByStageId",method = RequestMethod.GET)
     @ResponseBody
-    public Map<String,Object> getUnitsByStageId(@RequestParam("stageId")int stageId){
+    public Map<String,Object> getUnitsByStageId(HttpServletRequest request, HttpServletResponse response){
         Map<String,Object> map =new HashMap<String,Object>();
 
-        List<UnitTable> unitsList = unitTableService.getUnitsByStageId(stageId);
-        map.put("data",unitsList);
-        //String message = "更改序号的信息失败！请检查数据";
-        map.put("result",0);
-        map.put("message","");
-        logger.info("");
+        //直接返回前台
+        String draw = request.getParameter("draw");
+        //当前数据的起始位置 ，如第10条
+        String startIndex = request.getParameter("startIndex");
+        //数据长度
+        String pageSize = request.getParameter("pageSize");
+        //数据长度
+        String stageId = request.getParameter("stageId");
+        Departments stage;
+        int size = Integer.parseInt(pageSize);
+        int currentPage = Integer.parseInt(startIndex)/size+1;
+        if(stageId!=null&&stageId.length()>0)stage = departmentsRepository.findOne(Integer.parseInt(stageId));
+        else stage= usersService.getOneStage(usersService.getCurrentUser());
+        if(stage!=null){
+            logger.info("stage="+stage.getName());
+            UnitTable unitTable = new UnitTable();
+            unitTable.setNextStage(stage.getStageId());
+            Departments section = departmentsRepository.findOne(stage.getUpDepartment());
+            if(section!=null){
+                unitTable.setSection(section.getId());
+            }
+
+            Page<UnitTable> unitTablePage = unitTableService.getPage(new PageParam(currentPage,size),unitTable);
+            List<UnitTableInfo> unitTableInfoList = unitTableService.unitToUnitInfo(unitTablePage.getContent(),section);
+            //总记录数
+            long total = unitTablePage.getTotalElements();
+            map.put("pageData", unitTableInfoList);
+            map.put("total", total);
+            map.put("draw", draw);
+            map.put("result", 1);
+            map.put("message", "获取数据成功");
+        }
+        else {
+            map.put("result", 0);
+            map.put("message", "要查找的工位不存在！");
+            map.put("pageData", null);
+            map.put("total", 0);
+            map.put("draw", draw);
+        }
         return map;
     }
 }

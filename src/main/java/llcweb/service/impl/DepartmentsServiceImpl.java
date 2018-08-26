@@ -220,4 +220,22 @@ public class DepartmentsServiceImpl implements DepartmentsService {
         }
         return workplaceInfoList;
     }
+
+    /**
+     *@Author: Ricardo
+     *@Description: 根据工位获取所属工段
+     *@Date: 20:55 2018/8/17
+     **/
+    @Override
+    public Departments getSectionByWorkplace(Departments workplace ) {
+
+        if(workplace!=null&&workplace.getLevel()==2){//工位
+            Departments stage = departmentsRepository.findOne(workplace.getUpDepartment());
+            if (stage!=null){
+                return departmentsRepository.findOne(stage.getUpDepartment());
+            }
+            return null;
+        }
+        return null;
+    }
 }

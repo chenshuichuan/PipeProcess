@@ -37,4 +37,6 @@ public interface PlanTableService {
     Page<PlanTable> getPage(PageParam pageParam, PlanTable example);
 
     boolean isPlanFinished(PlanTable planTable);
+    //计算某计划下单元的加工顺序，保存到单元内
+    void calUnitsOfPlanProcessOrder(PlanTable planTable);
 }

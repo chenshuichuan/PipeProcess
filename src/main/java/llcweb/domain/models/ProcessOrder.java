@@ -15,6 +15,8 @@ public class ProcessOrder {
 
     }
     public ProcessOrder(String name, String orderList) {
+        this.name = name;
+        this.orderList = orderList;
     }
     public ProcessOrder(Integer id, String name, String orderList) {
         this.id = id;

@@ -53,6 +53,7 @@ public class UnitProcessingServiceImpl implements UnitProcessingService {
        unitProcessing.setProcessIndex(processIndex);
        unitProcessing.setProcessPlace(processPlace);
        unitProcessing.setPipeProcessingNumber(pipeNumber);
+       unitProcessing.setPipeFinishedNumber(0);
        unitProcessing.setArrangeId(arrangeId);
        UnitProcessing temp = unitProcessingRepository.save(unitProcessing);
        if(temp!=null) return temp.getId();

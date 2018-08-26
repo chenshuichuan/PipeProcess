@@ -144,4 +144,47 @@ public class UsersServiceImpl implements UsersService {
         return departmentsList;
     }
 
+    ///获取users管理下的第一个非下料工序，用于单元派工
+    @Override
+    public Departments getOneStage(Users users) {
+        if (users==null||users.getRole()>=2){
+            logger.error("获取部门树失败！");
+            return null;
+        }
+        Departments dSection;
+        List<Departments> departmentsList= new ArrayList<>();
+        //管理员，查看全部工段
+        if(users.getRole()==0){
+            departmentsList = departmentsRepository.findByLevel(0);
+             dSection = departmentsList.get(0);
+            List<Departments>stageList1 = departmentsRepository.findByUpDepartment(dSection.getId());
+            return stageList1.get(stageList1.size()-1);
+        }
+        //工段长，根据workers表管理的部门进行查找
+        else if (users.getRole()==1){
+            Workers workers =workersRepository.findOne(users.getWorkerId());
+            if (workers==null){
+                logger.error("用户："+users.getUsername()+"未找到对应工段长信息！请检查数据！");
+                return null;
+            }
+            //管理的工段id列表
+            String [] dList = workers.getDepartments().split(",");
+            logger.info("管理部门="+dList.toString());
+            if(dList.length>0){
+                String str=dList[0];//取第一个部门
+                int sectionId = Integer.parseInt(str);
+                //某工段
+                 dSection = departmentsRepository.findOne(sectionId);
+                if (dSection==null||dSection.getLevel()!=0){
+                    logger.error("找到用户管理的部门不是工段！不合法！请检查");
+                    return  null;
+                }
+                else{
+                    List<Departments>stageList1 = departmentsRepository.findByUpDepartment(dSection.getId());
+                    return stageList1.get(stageList1.size()-1);
+                }
+            }
+        }
+        return null;
+    }
 }

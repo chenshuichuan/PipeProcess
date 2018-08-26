@@ -53,6 +53,7 @@ public class PipeProcessingServiceImpl implements PipeProcessingService {
         pipeProcessing.setProcessState(processState);
         pipeProcessing.setProcessIndex(processIndex);
         pipeProcessing.setProcessPlace(processPlace);
+        pipeProcessing.setIsFinished(0);
         PipeProcessing temp  = pipeProcessingRepository.save(pipeProcessing);
         if(temp==null)logger.error("pipeId="+pipeTable.getPipeId()+"无法生成pipeProcessing记录！请检查");
         else return temp.getId();

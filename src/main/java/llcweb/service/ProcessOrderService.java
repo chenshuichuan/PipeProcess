@@ -35,4 +35,8 @@ public interface ProcessOrderService {
     int nextStage(int processOrderId, int currentStage);
     int nextStage(String processOrderList, int currentStage);
     int currentStageIndex(int processOrderId, int currentStage);
+    //根据加工工序id列表 1,,2,3,4 等解析其名字列表 下料,弯管,校管
+    String getProcessOrderString(String orderList);
+    //根据加工工序id列表 1,,2,3,4 等解析其名字列表 去掉10,11两个工序
+    String getProcessOrderString(int processOrderId);
 }

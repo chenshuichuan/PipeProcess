@@ -16,7 +16,9 @@ var $wrapper = $('#div-table-container');
 $(function () {
     var $table = $('#table-plan');
 
-    var _table = $table.dataTable($.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
+    var _table = $table.dataTable(
+        $.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION,
+        {
         ajax: function (data, callback, settings) {//ajax配置为function,手动调用异步查询
             //手动控制遮罩
             $wrapper.spinModal();

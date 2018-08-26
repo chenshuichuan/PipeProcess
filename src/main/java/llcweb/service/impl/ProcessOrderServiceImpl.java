@@ -2,7 +2,9 @@ package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.ProcessOrderRepository;
+import llcweb.dao.repository.WorkstageRepository;
 import llcweb.domain.models.ProcessOrder;
+import llcweb.domain.models.Workstage;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.ProcessOrderService;
 import org.slf4j.Logger;
@@ -23,6 +25,8 @@ public class ProcessOrderServiceImpl implements ProcessOrderService {
     private  final  Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     @Autowired
     private ProcessOrderRepository processOrderRepository;
+    @Autowired
+    private WorkstageRepository workstageRepository;
 
     @Transactional
     @Override
@@ -121,6 +125,33 @@ public class ProcessOrderServiceImpl implements ProcessOrderService {
         else logger.error("查找的工序id"+processOrderId+"不存在或其加工工序列表为空！请检查数据库！");
 
         return 0;
+    }
+
+    @Override
+    public String getProcessOrderString(String orderList) {
+        //根据加工工序id列表 1,,2,3,4 等解析其名字列表 下料,弯管,校管
+        String nameList ="";
+        String[] idList= orderList.split(",");
+        for (int i=0;i<idList.length;i++){
+            String id = idList[i];
+            Workstage workstage = workstageRepository.findOne(Integer.parseInt(id));
+            if(i==0)nameList += workstage.getName();
+            else nameList +=","+ workstage.getName();
+        }
+        return nameList;
+    }
+
+    //返回除去未开始，已完成两个工序的字符串
+    @Override
+    public String getProcessOrderString(int processOrderId) {
+        ProcessOrder processOrder = processOrderRepository.findOne(processOrderId);
+        if(processOrder!=null){
+            String order = processOrder.getName();
+            int first = order.indexOf(",");
+            int last =order.lastIndexOf(",");
+            return order.substring(first+1,last);
+        }
+        return "";
     }
 
 }

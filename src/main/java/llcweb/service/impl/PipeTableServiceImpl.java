@@ -1,12 +1,7 @@
 package llcweb.service.impl;
 
-import llcweb.dao.repository.ArrangeTableRepository;
-import llcweb.dao.repository.BatchTableRepository;
-import llcweb.dao.repository.PipeTableRepository;
-import llcweb.dao.repository.UnitTableRepository;
-import llcweb.domain.models.BatchTable;
-import llcweb.domain.models.PipeTable;
-import llcweb.domain.models.UnitTable;
+import llcweb.dao.repository.*;
+import llcweb.domain.models.*;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.PipeTableService;
 import llcweb.service.ProcessOrderService;
@@ -47,7 +42,10 @@ public class PipeTableServiceImpl implements PipeTableService {
     private UnitTableRepository unitTableRepository;
     @Autowired
     private ProcessOrderService processOrderService;
-
+    @Autowired
+    private WorkstageRepository workstageRepository;
+    @Autowired
+    private ProcessOrderRepository processOrderRepository;
     @Transactional
     @Override
     public void add() {
@@ -63,7 +61,7 @@ public class PipeTableServiceImpl implements PipeTableService {
     //更新PipeTable 的 当前工序信息
     @Override
     public int updatePipeToNextStage(PipeTable pipeTable, int processState, int processIndex) {
-        pipeTable.setProcessSate(processState);
+        pipeTable.setProcessState(processState);
         pipeTable.setProcessIndex(processIndex);
         int nextStage = processOrderService.nextStage(pipeTable.getProcessOrder(),processState);
         pipeTable.setNextStage(nextStage);
@@ -123,7 +121,7 @@ public class PipeTableServiceImpl implements PipeTableService {
 
     /**
      *@Author: Ricardo
-     *@Description: 将某批次内的管件
+     *@Description: 将某批次内的管件，对应的单元信息补全
      *@Date: 10:16 2018/8/10
      *@param:
      **/
@@ -164,4 +162,71 @@ public class PipeTableServiceImpl implements PipeTableService {
         }
 
     }
+
+    /**
+     *@Author: Ricardo
+     *@Description: 解析管件的加工顺序并返回
+     *@Date: 9:44 2018/8/25
+     *@param:
+     **/
+    @Override
+    public String calPipeProcessOrder(PipeTable pipeTable,Workstage underStart,Workstage cut,
+                                      Workstage bend,Workstage proofread,Workstage weld,
+                                      Workstage polish,Workstage surface,Workstage finished,boolean saveToDataBase) {
+
+        String unitName = pipeTable.getUnitName();
+        //开始必有下料
+        String processOrder=""+underStart.getId()+","+cut.getId()+",";
+        String processNames=underStart.getName()+","+cut.getName()+",";
+        if(unitName.contains("F")){//先焊后弯  有F
+            //焊接
+            processOrder+=weld.getId()+",";
+            processNames+=weld.getName()+",";
+            if(pipeTable.getPipeShape().contains("弯")){
+                //弯管
+                processOrder+=bend.getId()+",";
+                processNames+=bend.getName()+",";
+            }
+            //校管
+            processOrder+=proofread.getId()+",";
+            processNames+=proofread.getName()+",";
+        }
+        else{//先弯后焊  默认
+            if(pipeTable.getPipeShape().contains("弯")){
+                //弯管
+                processOrder+=bend.getId()+",";
+                processNames+=bend.getName()+",";
+            }
+            //校管
+            processOrder+=proofread.getId()+",";
+            processNames+=proofread.getName()+",";
+            //焊接
+            processOrder+=weld.getId()+",";
+            processNames+=weld.getName()+",";
+        }
+        //打磨
+        processOrder+=polish.getId()+",";
+        processNames+=polish.getName()+",";
+        //表面处理
+        if(pipeTable.getSurfaceTreat()!=null&&pipeTable.getSurfaceTreat().length()>0){
+            processOrder+=surface.getId()+",";
+            processNames+=surface.getName()+",";
+        }
+        //最后是完成工序
+        processOrder+=finished.getId();
+        processNames+=finished.getName();
+        if(saveToDataBase){//保存到数据库
+            ProcessOrder processOrder1 = processOrderRepository.findByOrderList(processOrder);
+            if(processOrder1==null){
+                logger.info("processOrder1==null!");
+                processOrder1= new ProcessOrder(processNames,processOrder);
+                processOrder1 = processOrderRepository.save(processOrder1);
+            }
+            //保存pipe的加工工序
+            pipeTable.setProcessOrder(processOrder1.getId());
+            pipeTableRepository.save(pipeTable);
+        }
+        return processOrder;
+    }
+
 }

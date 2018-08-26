@@ -2,10 +2,8 @@ package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.PlanTableRepository;
-import llcweb.domain.models.Departments;
-import llcweb.domain.models.PlanTable;
-import llcweb.domain.models.UnitTable;
-import llcweb.domain.models.Workers;
+import llcweb.dao.repository.WorkstageRepository;
+import llcweb.domain.models.*;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.PlanTableService;
 import llcweb.service.UnitTableService;
@@ -45,6 +43,8 @@ public class PlanTableServiceImpl implements PlanTableService {
     private UnitTableService unitTableService;
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private WorkstageRepository workstageRepository;
 
     @Transactional
     @Override
@@ -119,5 +119,25 @@ public class PlanTableServiceImpl implements PlanTableService {
         if(planTable!=null&&planTable.getActuralEnd()!=null)
             return true;
         return false;
+    }
+
+    //根据解析规则，计算计划下单元，再到管件的加工工序
+    @Override
+    public void calUnitsOfPlanProcessOrder(PlanTable planTable) {
+        //
+        Workstage underStart = workstageRepository.findByName("未开始");//未开始
+        Workstage cut = workstageRepository.findByName("下料");
+        Workstage bend = workstageRepository.findByName("弯管");
+        Workstage proofread = workstageRepository.findByName("校管");
+        Workstage weld = workstageRepository.findByName("焊接");
+        Workstage polish = workstageRepository.findByName("打磨");
+        Workstage surface = workstageRepository.findByName("表处");
+        Workstage finished = workstageRepository.findByName("已完成");
+
+        List<UnitTable> unitTableList = unitTableService.findByPlanId(planTable.getId());
+        for (UnitTable unitTable: unitTableList){
+            unitTableService.calUnitProcessOrder(unitTable,underStart,cut,bend,
+                    proofread,weld,polish,surface,finished,true);
+        }
     }
 }

@@ -122,7 +122,7 @@ function showPanel(department) {
 //渲染添加信息的面板
 function addPanel() {
     $("#add-panel").show().siblings(".panel").hide();
-    $("#")
+
 }
 
 //渲染修改信息的面板
