@@ -61,7 +61,8 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
     private BatchProcessingRepository batchProcessingRepository;
     @Autowired
     private BatchProcessingService batchProcessingService;
-
+    @Autowired
+    private ScannerTableRepository scannerTableRepository;
     @Autowired
     private ProcessOrderService processOrderService;
     @Autowired
@@ -424,4 +425,46 @@ public class ArrangeTableServiceImpl implements ArrangeTableService {
         else return 1;
         return 0;
     }
+
+    /**
+     *@Author: Ricardo
+     *@Description: //根据当前登录用户获取其可以查看的派工记录
+     *@Date: 14:32 2018/8/27
+     *@param:
+     **/
+    @Override
+    public List<ArrangeTable> getUsersArrangeTable(int arrangeType, int isFinished) {
+        Users users = usersService.getCurrentUser();
+        List<ArrangeTable> arrangeTableList = new ArrayList<>();
+        if(users.getRole()<2){//非工人,根据管理的工段获取
+            logger.info("管理员查看派工情况");
+            //得到管理的工段
+            List<Departments> sectionList =  usersService.getSections(users);
+            for (Departments section: sectionList){
+                //得到工段下相关的所有下料派工记录
+                List<ArrangeTable> temp =
+                        arrangeTableRepository.findBySectionAndArrangeTypeAndIsFinished(section.getName(),arrangeType,isFinished);
+                arrangeTableList.addAll(temp);
+                logger.info("1temp.size="+temp.size());
+            }
+        }else {
+            logger.info("工人查看派工情况");
+            //工人，看其是否绑定工位，根据工位是否被派工记录获取
+            ScannerTable scannerTable = scannerTableRepository.findByWorkerId(users.getWorkerId());
+            if(scannerTable!=null){
+                //找到该工位
+                Departments workPlace = departmentsRepository.findOne(scannerTable.getWorkplaceId());
+                if(workPlace!=null&&workPlace.getLevel()==2){
+                    List<ArrangeTable> temp = arrangeTableRepository.
+                            findByWorkplaceAndArrangeTypeAndIsFinished(workPlace.getName(),arrangeType,isFinished);
+                    arrangeTableList.addAll(temp);
+                    logger.info("1temp.size="+temp.size());
+                }
+                else logger.error("扫码枪未绑定到工位！");
+            }
+
+        }
+        return arrangeTableList;
+    }
+
 }

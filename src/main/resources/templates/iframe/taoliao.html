@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>套料</title>
+    <link rel="stylesheet"  th:href="@{/assets/plugins/taoliao/perfect-scrollbar.min.css}"
+          href="../../static/assets/plugins/taoliao/perfect-scrollbar.min.css">
+    <link rel="stylesheet"  th:href="@{/assets/plugins/bigautocomplete/jquery.bigautocomplete.css}"
+          href="../../static/assets/plugins/bigautocomplete/jquery.bigautocomplete.css" type="text/css"/>
+
+    <link rel="stylesheet" th:href="@{/assets/plugins/taoliao/common.css}"
+          href="../../static/assets/plugins/taoliao/common.css">
+    <link rel="stylesheet"  th:href="@{/assets/plugins/taoliao/table.css}"
+          href="../../static/assets/plugins/taoliao/table.css">
+    <link rel="stylesheet" th:href="@{/assets/plugins/taoliao/taoliao.css}"
+          href="../../static/assets/plugins/taoliao/taoliao.css">
+    <link  th:href="@{/assets/plugins/taoliao/printShou.css}"
+           href="../../static/assets/plugins/taoliao/printShou.css" rel="stylesheet" type="text/css" media="print"/>
+
+</head>
+<body>
+<div class="middle container">
+    <div class="section">
+        <div class="content">
+            <!--中间-->
+            <div class="doc_nav tl-doc_nav" id="iframe_doc_nav">
+                <div class="btnbartitle">
+                    管材列表
+                </div>
+                <div class="zTree_left">
+                    <div class="bbbit-tree-bwrap">
+                        <div class="bbit-tree-body">
+                            <ul id="treeDemo" class="ztree bbit-tree-root bbit-tree-lines"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--右边-->
+            <div class="main tl-main" id="iframe_main">
+                <div class="tools_bar top">
+                    <div class="PartialButton">
+                        <a onclick="window.location.reload()" class="tools_btn "><span><b class="tools_refresh">刷新</b></span></a>
+                        <div class="tools_separator"></div>
+                        <a id="add" class="tools_btn "><span><b class="tools_add">添加</b></span></a>
+                        <a id="delete" class="tools_btn "><span><b class="tools_delete">删除</b></span></a>
+                        <div class="tools_separator"></div>
+                        <a id="sure" class="tools_btn " onclick='util.typeByClick(JackingApp.sureFill)'><span><b class="tools_edit">输入</b></span></a>
+                        <a id="taoliao" class="tools_btn "><span><b class="tools_details">开始套料</b></span></a>
+                        <a id="search" class="tools_btn" style="margin-right: 25px"
+                           onclick='util.typeByClick(JackingApp.sureSearch)'><span><b class="tools_search">搜索管号</b>
+                            </span>
+                        </a>
+                        <div class="search_btn">
+                            <input type="text" class="txt" style="border-radius:5px;width:240px;margin-top: 9px"
+                                   placeholder="输入需要打印的管号……"
+                                   id="pipe_id"
+                                   onkeydown='util.typeByEnter(event, "sure", JackingApp.sureSearch)'>
+                        </div>
+                    </div>
+                </div>
+                <div class="search_bar">
+                    <div class="search_top">
+                        <div class='g_pipe_name'>
+                            <span>管材：</span>
+                            <input type="text" class="txt" style="border-radius:5px;width:140px" id="name"
+                                   disabled="disabled">
+                        </div>
+                        <div class="g_pipe_length">
+                            <span>管材长度：</span>
+                            <input type="text" disabled="disabled" id="g-length" style="border-radius:5px;width: 80px">
+                        </div>
+                        <div class="y_pipe_length">
+                            <span>原材料长度：</span>
+                            <input type="text" id="y-length" name='sure' style="border-radius:5px;width: 80px"
+                                   onkeydown='util.typeByEnter(event, "sure", JackingApp.sureFill)'
+                                   onKeypress="return (/[0-9.]/.test(String.fromCharCode(event.keyCode)))">
+                        </div>
+                        <div class="y_pipe_num">
+                            <span>原材料数量：</span>
+                            <input type="text" id="y-num" name='number' value="1" style="border-radius:5px;width: 80px"
+                                   onkeydown='util.typeByEnter(event, "number", JackingApp.sureFill)'
+                                   onKeypress="return (/[0-9.]/.test(String.fromCharCode(event.keyCode)))">
+                        </div>
+                        <div class="s_pipe_length">
+                            <span>剩余长度：</span>
+                            <input type="text" disabled="disabled" id="s-length" style="border-radius:5px;width: 80px">
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom">
+
+                    <!--左表-->
+                    <div class="xl_table">
+                        <div class="ui-state-default ui-jqgrid-hdiv">
+                            <div class="ui-jqgrid-hbox">
+                                <table class="table" rules="cols">
+                                    <thead>
+                                    <tr>
+                                        <th align="left" width="10%">编号</th>
+                                        <th align="left" width="30%">管材</th>
+                                        <th align="left" width="20%">管材总长度</th>
+                                        <th align="left" width="10%">数量</th>
+                                        <th align="left" width="10%">操作</th>
+                                        <th align="left" width="20%">是否已经下料</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="ui-jqgrid-bdiv ui-state-default">
+                            <div style="position:relative;">
+                                <table class="table" rules="cols" id="not-table">
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--右表-->
+                    <div class="tl_choice">
+                        <div class="ui-state-default ui-jqgrid-hdiv">
+                            <div class="ui-jqgrid-hbox">
+                                <table class="table" rules="cols">
+                                    <thead>
+                                    <tr>
+                                        <!--<th width="10%"></th>-->
+                                        <th width="35%">管材</th>
+                                        <th width="20%">管材长度</th>
+                                        <th width="30%">原材料长度</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="ui-jqgrid-bdiv ui-state-default">
+                            <div style="position:relative;">
+                                <table class="table" rules="cols" id="yuchuli">
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--右表-->
+            </div>
+            <!--下表-->
+            <div class="tl-result disappear" id="result">
+                <ul id="tree" class="filetree">
+                </ul>
+                <div class="r-table">
+                    <div class="title-bar">
+                        <div>
+                            <span class='STYLE446'>管件长度：</span><span id='pipeLength'><!--31328012--></span>
+                        </div>
+                        <div>
+                            <span class='STYLE446'>余料长度：</span><span id='cloutLength'><!--31328012--></span>
+                        </div>
+                        <div id="print">
+                            <a class="tools_btn"
+                               onclick="JackingApp.printResult(JackingApp.ResultArr[JackingApp.ResultArrIndex])">
+                                <i class="tools_print"></i>
+                                <span>打印</span>
+                            </a>
+                        </div>
+
+                    </div>
+                    <table class="table result-table" rules="cols" frame="border" id="r1">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>批次</th>
+                            <th>集配号</th>
+                            <th>表面处理</th>
+                            <th>形态</th>
+                            <th>不校装</th>
+                            <th>管材</th>
+                            <th>管材长度</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="barCodeConfirm" class="disappear"
+                 style="position:absolute;left:397px;top:0;width:100%;background:#fff;opacity:1;filter:alpha(opacity=80);z-index:100000;">
+                <span style="width: 100%">是否打印成功？</span>
+                <div style="overflow: hidden">
+                    <button id="print_success">成功</button>
+                    <button id="print_failure">失败</button>
+                </div>
+            </div>
+            <div id="barCode" class="disappear"
+                 style="position:absolute;width:100%;height:100%;top:0;background:#fff;opacity:1;filter:alpha(opacity=80);z-index:10000;overflow: hidden;">
+                <div id="barCodeDiv"
+                     style="position:absolute;left:0;width:73mm;top:0;background:#fff;opacity:1;filter:alpha(opacity=80);z-index:10000;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../static/assets/js/jquery-1.10.2.js"
+        th:src="@{/assets/js/jquery-1.10.2.js}"></script>
+
+<script src="../../static/assets/plugins/jqprint/json2.js"
+        th:src="@{/assets/plugins/jqprint/json2.js}"></script>
+<!-- 打印所需要的js-->
+<script src="../../static/assets/plugins/jqprint/jquery-migrate-1.2.1.min.js"
+        th:src="@{/assets/plugins/jqprint/jquery-migrate-1.2.1.min.js}"></script>
+<script language="javascript" src="../../static/assets/plugins/jqprint/jquery.jqprint-0.3.js"
+        th:src="@{/assets/plugins/jqprint/jquery.jqprint-0.3.js}"></script>
+
+<script src="../../static/assets/plugins/jqprint/jquery-barcode.min.js"
+        th:src="@{/assets/plugins/jqprint/jquery-barcode.min.js}"></script>
+
+<script src="../../static/assets/plugins/jqprint/perfect-scrollbar.min.js"
+        th:src="@{/assets/plugins/jqprint/perfect-scrollbar.min.js}"></script>
+
+<script type="text/javascript" src="../../static/assets/plugins/bigautocomplete/jquery.bigautocomplete.js"
+        th:src="@{/assets/plugins/bigautocomplete/jquery.bigautocomplete.js}"></script>
+
+<!--弹出框-->
+<script type="text/javascript" src="../../static/assets/plugins/zDialog/zDrag.js"
+        th:src="@{/assets/plugins/zDialog/zDrag.js}"></script>
+<script type="text/javascript" src="../../static/assets/plugins/zDialog/zDialog.js"
+        th:src="@{/assets/plugins/zDialog/zDialog.js}"></script>
+
+<script src="../../static/assets/plugins/taoliao/interface.js"
+        th:src="@{/assets/plugins/taoliao/interface.js}"></script>
+<script src="../../static/assets/plugins/taoliao/common.js"
+        th:src="@{/assets/plugins/taoliao/common.js}"></script>
+<script src="../../static/assets/plugins/taoliao/dialog.js"
+        th:src="@{/assets/plugins/taoliao/dialog.js}"></script>
+<script src="../../static/assets/plugins/taoliao/taoliao.js"
+        th:src="@{/assets/plugins/taoliao/taoliao.js}"></script>
+
+<script>
+    JackingApp.init();
+    $('.ui-jqgrid-bdiv').perfectScrollbar();
+
+    var treeSetting = {
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onClick: JackingApp.treeOnClick
+        }
+    };
+
+    $(function(){
+        $("#pipe_id").bigAutocomplete({
+            data: JackingApp.MachiningList,
+            fields: 'pipeId'
+        });
+    })
+</script>
+</body>
+</html>

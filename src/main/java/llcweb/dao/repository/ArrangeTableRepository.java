@@ -23,5 +23,9 @@ public interface ArrangeTableRepository extends JpaRepository<ArrangeTable,Integ
 
     //查找某工位的派工情况
     List<ArrangeTable> findBySectionAndStageAndWorkplaceAndIsFinished(String section,String stage,String workpalce,int isFinished);
+    //查找某工序下的派工情况
+    List<ArrangeTable> findBySectionAndArrangeTypeAndIsFinished(String section,int arrangeType,int isFinished);
+    //查找某工位的派工情况
+    List<ArrangeTable> findByWorkplaceAndArrangeTypeAndIsFinished(String workpalce,int arrangeType,int isFinished);
 
 }

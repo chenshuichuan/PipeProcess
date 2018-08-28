@@ -19,4 +19,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface PipeProcessingRepository extends JpaRepository<PipeProcessing,Integer>
         , JpaSpecificationExecutor<PipeProcessing> {
     Page<PipeProcessing> findAll(Specification<PipeProcessing> spec, Pageable pageable);
+    PipeProcessing findByPipeIdAndProcessState(int pipeId,int processState);
+
 }

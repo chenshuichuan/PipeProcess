@@ -168,4 +168,19 @@ public class HtmlController {
         modelAndView.addObject("treeList",departmentTreeList);
         return modelAndView;
     }
+    //派工记录页面
+    @RequestMapping("/online_cut.html")
+    public ModelAndView online_cut(){
+        ModelAndView modelAndView = new ModelAndView("online_cut");
+        Users users = usersService.getCurrentUser();
+        modelAndView.addObject("user", users);
+        return modelAndView;
+    }
+    //派工记录页面
+    @RequestMapping("/iframe/taoliao.html")
+    public ModelAndView taoliao(){
+        ModelAndView modelAndView = new ModelAndView("/iframe/taoliao");
+
+        return modelAndView;
+    }
 }

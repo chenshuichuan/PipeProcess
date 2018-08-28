@@ -79,8 +79,9 @@ public class PlanController {
                 planTable.setStocks(searchValue);
                 planTable.setSections(searchValue);
                 planTable.setProcessPlace(searchValue);
-                planTable.setIsCutted(-1);
+
             }
+            planTable.setIsCutted(-1);
         }
        else{
             //工段

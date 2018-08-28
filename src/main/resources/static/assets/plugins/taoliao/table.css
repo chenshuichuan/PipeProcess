@@ -1,0 +1,86 @@
+table {
+    /*table-layout:fixed;*/
+    /*empty-cells:show;*/
+    width: 100%;
+    /*border-right: 1px solid #ccc;*/
+
+}
+
+.select {
+    background: #4A5B79;
+    color: #ffffff;
+}
+.hover {
+    background-color: #F2F2F2;
+    cursor: pointer;
+}
+
+.table tr{
+    /*border: 1px solid #ccc;*/
+    /*border-right: none;*/
+    /*border-top: none;*/
+    /*background: #fcfdfd;*/
+    /*color: #000000;*/
+    height: 22px;
+}
+
+.table td {
+    font-weight: normal;
+    overflow: hidden;
+    white-space: pre;
+    height: 22px;
+    padding: 0 2px 0 2px;
+    border-bottom: none;
+}
+
+.table th {
+    /*background: rgb(242,242,242);*/
+    /*border: #ccc 1px solid;*/
+    /*overflow: hidden;*/
+    white-space: nowrap;
+    text-align: left;
+    border-top: 0 none;
+    border-bottom: 0 none;
+    background: url(./images/bg_repeat.png) repeat-x 0 0;
+    color: #000;
+    height: 26px;
+    line-height: 23px;
+    /*height:30px;*/
+}
+
+.table td, .table th {
+    padding: 0 1em 0;
+    border: #4A5B79 1px solid;
+}
+
+/*.table tr:hover{*/
+/*background-color: #F2F2F2;*/
+/*}*/
+
+.sub td {
+    border: #ccc 1px solid;
+}
+
+.table thead {
+    /*border-bottom: #ccc 1px solid;*/
+    padding-bottom: 1px;
+    background-color: #F2F2F2;
+    height: 26px;
+    line-height: 26px;
+    /*padding-left: 5px;*/
+    /*padding-right: 5px;*/
+    vertical-align: baseline;
+}
+
+.table thead th {
+    color: #000;
+    font-weight: normal;
+}
+
+/*.table tbody tr:hover{*/
+/*background-color: #F2F2F2;*/
+/*}*/
+
+.sub {
+    background-color: #fff;
+}

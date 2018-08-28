@@ -64,4 +64,14 @@ public interface ArrangeTableService {
 
     //管件派工到下一个工序
     int arrangePipe(PipeTable pipeTable, Departments workPlace,int arrangeId);
+
+
+
+    /**
+     *@Author: Ricardo
+     *@Description: //根据当前登录用户获取其可以查看的派工记录
+     *@Date: 14:32 2018/8/27
+     *@param:
+     **/
+    List<ArrangeTable> getUsersArrangeTable(int arrangeType,int isFinished);
 }

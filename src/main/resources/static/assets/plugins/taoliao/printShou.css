@@ -1,0 +1,46 @@
+.barDiv {
+    height: 26.2mm;
+    width: 70mm !important;
+    float: left;
+    margin-top: 1.5mm !important;
+    margin-bottom: 1.5mm !important;
+    /*margin-left: 6mm;*/
+}
+
+.yl_length{
+    /*float: left;*/
+    margin-left: 15px;
+}
+
+.bcTarget {
+    float: left;
+    margin-left: 5px;
+    /*width: 40%;*/
+}
+
+.pipeDetail {
+    float: left;
+    width: 100%;
+    /*height: 8mm;*/
+}
+
+.l_detail, .r_detail {
+    overflow: hidden;
+    /*height: 50%;*/
+}
+
+.pipeDetail span {
+    float: left;
+    /*width: 23%;*/
+}
+
+.STYLE444 {
+    /*font-weight: bold;*/
+    font-size: 17px;
+    /*margin: 10px;*/
+    /*line-height: 30px;*/
+}
+
+/*.STYLE34{*/
+    /*font-size: 12px;*/
+/*}*/

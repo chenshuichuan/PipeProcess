@@ -21,4 +21,6 @@ public interface ScannerTableRepository extends JpaRepository<ScannerTable,Integ
     Page<ScannerTable> findAll(Specification<ScannerTable> spec, Pageable pageable);
     //根据绑定的工位查找扫码枪
     ScannerTable findByWorkplaceId(int workplaceId);
+    //根据绑定的工位查找扫码枪
+    ScannerTable findByWorkerId(int workerId);
 }

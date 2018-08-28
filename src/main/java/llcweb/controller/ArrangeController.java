@@ -47,6 +47,8 @@ public class ArrangeController {
     private UnitTableService unitTableService;
     @Autowired
     private UnitTableRepository unitTableRepository;
+    @Autowired
+    private AsyncTaskService asyncTaskService;
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
     @ResponseBody
@@ -176,6 +178,8 @@ public class ArrangeController {
                 Users users = usersService.getCurrentUser();
                 Workers arranger= workersRepository.findOne(users.getWorkerId());
                 arrangeTableService.arrangeBatchToWorkPlace(arranger,planTable,workPlace);
+                //生成套料管材表,另一个线程去执行
+                asyncTaskService.generateTaoliaoRecord(planTable);
                 message = "派工成功！";
                 result=0;
             }
