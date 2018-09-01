@@ -1,18 +1,13 @@
 package llcweb.controller;
 
-import llcweb.dao.repository.PipeProcessingRepository;
-import llcweb.dao.repository.PlanTableRepository;
-import llcweb.dao.repository.ScannerTableRepository;
-import llcweb.dao.repository.ShipTableRepository;
+import llcweb.dao.repository.*;
+import llcweb.domain.entities.CutPipeInfo;
 import llcweb.domain.models.*;
 import llcweb.jacking.BatchJacking;
 import llcweb.jacking.BatchJackingResult;
 import llcweb.jacking.PipeCutingItem;
 import llcweb.jacking.PipeLength;
-import llcweb.service.ArrangeTableService;
-import llcweb.service.PlanTableService;
-import llcweb.service.TaoliaoService;
-import llcweb.service.UsersService;
+import llcweb.service.*;
 import llcweb.tools.DateUtil;
 import llcweb.tools.PageParam;
 import org.slf4j.Logger;
@@ -39,6 +34,8 @@ public class TaoliaoController {
     @Autowired
     private TaoliaoService taoliaoService;
     @Autowired
+    private TaoliaoRepository taoliaoRepository;
+    @Autowired
     private PlanTableRepository planTableRepository;
     @Autowired
     private ShipTableRepository shipTableRepository;
@@ -47,7 +44,11 @@ public class TaoliaoController {
     @Autowired
     private ArrangeTableService arrangeTableService;
     @Autowired
+    private PipeProcessingService pipeProcessingService;
+    @Autowired
     private PipeProcessingRepository pipeProcessingRepository;
+    @Autowired
+    private WorkstageRepository workstageRepository;
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
     @ResponseBody
@@ -69,14 +70,8 @@ public class TaoliaoController {
         if(planId!=null&&planId.length()>0){
             taoliao.setPlanId(Integer.parseInt(planId));
         }
-        else{
-            //获取下料未完成的批次派工
-            List<ArrangeTable> arrangeTableList = arrangeTableService.getUsersArrangeTable(1,0);
-            //默认列表中的第一个plan下料 派工
-            if(arrangeTableList.size()>0)taoliao.setPlanId(arrangeTableList.get(0).getPlanId());
-        }
         if(isTaoliao!=null&&isTaoliao.length()>0){ //默认查找全部
-            taoliao.setPlanId(Integer.parseInt(isTaoliao));
+            taoliao.setIsTaoliao(Integer.parseInt(isTaoliao));
         }
 
         Page<Taoliao> taoliaoPage = taoliaoService.getPage(new PageParam(currentPage,size),taoliao);
@@ -93,10 +88,27 @@ public class TaoliaoController {
     //更新数据
     @RequestMapping(value = "/update")
     @ResponseBody
-    public Map<String,Object> update(HttpServletRequest request, HttpServletResponse response){
+    public Map<String,Object> update(HttpServletRequest request, HttpServletResponse response,
+                                     @RequestParam("id")int id,
+                                     @RequestParam("isTaoliao")int isTaoliao){
         Map<String,Object> map =new HashMap<String,Object>();
-
-
+        int result = 1;
+        String message="更新成功！";
+        if(id>0){
+            Taoliao taoliao = taoliaoRepository.findOne(id);
+            if(taoliao!=null){
+                taoliao.setIsTaoliao(isTaoliao);
+                taoliaoRepository.save(taoliao);
+            }
+            else{
+                result = 0;
+                message="更新失败！未找到数据";
+                logger.error(message);
+            }
+        }
+        map.put("data",null);
+        map.put("result",result);
+        map.put("message",message);
         return map;
     }
 
@@ -149,11 +161,12 @@ public class TaoliaoController {
                 //item.setAreaCode(pipeTableList.get(i).getAreaCode());
                 item.setCuttingLength(pipeTable.getCutLength());
                 //下料加工记录
-                PipeProcessing pipeProcessing = pipeProcessingRepository.findByPipeIdAndProcessState(pipeTable.getPipeId(),1);
+                Workstage workstage = workstageRepository.findByName("下料");
+                int status = pipeProcessingService.processingStateOfSatge(pipeTable,workstage.getId());
 
                 //套料算法是否已经套过料的不算入内？
-                if(pipeProcessing!=null&&pipeProcessing.getIsFinished()!=1) item.setCutted(false);
-                else item.setCutted(true);
+                if(status==1) item.setCutted(true);
+                else item.setCutted(false);
                 item.setNoInstalled(pipeTable.getNoInstalled());
                 item.setOutfieid(pipeTable.getOutfield());
                 item.setPipeId(pipeTable.getPipeCode());//集配管号
@@ -191,18 +204,42 @@ public class TaoliaoController {
 
 
     //根据当前登录用户，获取其可以查看的下料计划批次名
-    @RequestMapping(value = "/getPipeTableByTaoliaoId")
+    @RequestMapping(value = "/getPipesByTaoliaoId")
     @ResponseBody
-    public Map<String,Object> getPipeTableByTaoliaoId(HttpServletRequest request, HttpServletResponse response,
-                                          @RequestParam("taoliaoId")int taoliaoId){
+    public Map<String,Object> getPipeTableByTaoliaoId(HttpServletRequest request, HttpServletResponse response){
         Map<String,Object> map =new HashMap<String,Object>();
-
         //根据taoliaoId 获取该套料下的管件
-        List<PipeTable> pipeTableList = taoliaoService.getPipeTableByTaoliaoId(taoliaoId);
-        //这里总觉得有问题
-        map.put("data",pipeTableList);
-        map.put("result",0);
-        map.put("message","获取成功");
+        //直接返回前台
+        String draw = request.getParameter("draw");
+        //当前数据的起始位置 ，如第10条
+        String startIndex = request.getParameter("startIndex");
+        //数据长度
+        String pageSize = request.getParameter("pageSize");
+        int size = Integer.parseInt(pageSize);
+        int currentPage = Integer.parseInt(startIndex)/size+1;
+        String taoliaoId = request.getParameter("taoliaoId");
+
+        if(taoliaoId!=null&&taoliaoId.length()>0){ //默认查找全部
+            //获取该套料管材的分页管件
+            Page<PipeTable> pipeTablePage =
+                    taoliaoService.getPipeTableByTaoliaoId(new PageParam(currentPage,size),Integer.parseInt(taoliaoId));
+            //封装为CutPipeInfo对象
+            List<CutPipeInfo> cutPipeInfoList=
+                    taoliaoService.turnPipeTableToCutPipeInfo(pipeTablePage.getContent(),Integer.parseInt(taoliaoId));
+            //总记录数
+            long total = pipeTablePage.getTotalElements();
+            map.put("pageData", cutPipeInfoList);
+            map.put("total", total);
+            map.put("result",1);
+            map.put("message","");
+        }
+        else {
+            map.put("pageData", null);
+            map.put("total", 0);
+            map.put("result",0);
+            map.put("message","查找失败！");
+        }
+        map.put("draw", draw);
         return map;
     }
 }

@@ -23,7 +23,9 @@ public class ScannerTable {
 
     private String description;
     private String scannerCode;
+    public ScannerTable(){
 
+    }
     public ScannerTable(Integer workerId, Integer workplaceId, String description, String scannerCode) {
         this.workerId = workerId;
         this.workplaceId = workplaceId;

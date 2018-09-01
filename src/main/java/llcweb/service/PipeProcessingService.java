@@ -41,4 +41,6 @@ public interface PipeProcessingService {
   * example 为字段可能包含的值
   * */
     Page<PipeProcessing> getPage(PageParam pageParam, PipeProcessing example);
+
+    int processingStateOfSatge(PipeTable pipeTable,int stageId);
 }

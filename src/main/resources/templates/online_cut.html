@@ -29,8 +29,16 @@
           th:href="@{/custom/css/common.css}" rel="stylesheet"/>
     <link href="../static/assets/plugins/selector/css/bootstrap-select.min.css"
           th:href="@{/assets/plugins/selector/css/bootstrap-select.min.css}" rel="stylesheet">
+    <style>
+        /*用于选中行突出*/
+        .selected{
+            color: #4c4ae1;
+            font-size: medium;
+        }
+    </style>
 </head>
 <body>
+
 
 <div id="wrapper">
     <!-- top side start-->
@@ -50,7 +58,7 @@
 
         <div id="page-inner">
             <div class="panel panel-default" style="margin-top: -30px;">
-                <div class="panel-body">
+                <div id="panel-div" class="panel-body">
                     <div class="row">
                         <div class="col-md-1" style="text-align: right;">
                             <span>选择下料批次:</span>
@@ -70,42 +78,109 @@
                         </div>
                         <div class="col-md-2" style="text-align: left;">
                             <select id="selected-IsTaoliao" class="form-control large selectpicker" title="选择套料状态">
-                                <option value="">所有</option>
-                                <option value="0">未套料</option>
-                                <option value="0">已套料</option>
+                                <option value="" data-content="<span class='label label-info'>所有</span>">所有</option>
+                                <option value="0"data-content="<span class='label label-warning'>未套料</span>" selected = "selected">未套料</option>
+                                <option value="1"data-content="<span class='label label-success'>已套料</span>" >已套料</option>
                             </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered table-hover"
-                                       id="material-table">
-                                    <thead>
-                                    <tr>
-                                        <th>编号</th>
-                                        <th>管材</th>
-                                        <th>需求总长度</th>
-                                        <th>包含管数量</th>
-                                        <th>是否已套料</th>
-                                        <th>操作</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="material-body">
-                                    <tr>
-                                        <td>编号</td>
-                                        <td>管材</td>
-                                        <td>需求总长度</td>
-                                        <td>包含管数量</td>
-                                        <td>是否已套料</td>
-                                        <td></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover"
+                                               id="material-table">
+                                            <thead>
+                                            <tr>
+                                                <th>编号</th>
+                                                <th>管材</th>
+                                                <th>需求总长度</th>
+                                                <th>包含管数量</th>
+                                                <th>是否已套料</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="material-body">
+                                            <tr>
+                                                <td>编号</td>
+                                                <td>管材</td>
+                                                <td>需求总长度</td>
+                                                <td>包含管数量</td>
+                                                <td>是否已套料</td>
+                                                <td></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span>管材:</span>
+                                            <input id="view-pipe-material" type="text" class="form-control" readonly/>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>需求总长度:</span>
+                                            <input id="view-total-length" type="text" class="form-control" readonly/>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>缺少长度:</span>
+                                            <input  id="view-lack-length" type="text" class="form-control" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span>原材料长度:</span>
+                                            <input id="input-material-length" type="number" class="form-control" placeholder="请输入"/>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>原材料数量:</span>
+                                            <input  id="input-material-number" type="number" class="form-control" placeholder="请输入"/>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <button id="btn-add-row" type="button" class="btn btn-success"><i class="fa fa-plus"></i>添加</button>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <button id="btn-taoliao" type="button" class="btn btn-warning"><i class="fa fa-magnet"></i>套料</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <button id="btn-delete-row" type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i>删除</button>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button id="btn-delete-all" type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i>清空输入表格</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive" style="margin-top: 20px;">
+                                        <table class="table table-striped table-bordered table-hover"
+                                               id="input-table" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th>管材</th>
+                                                <th>原材料长度</th>
+                                                <th>原材料数量</th>
+                                                <!--<th>操作</th>-->
+                                            </tr>
+                                            </thead>
+                                            <tbody id="input-tb-body">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="col-lg-6">
-                            <h3 class="panel-title" id="material-title">material-title 下包含的管件</h3>
+                            <h3 class="panel-title">管材:
+                                <span  id="material-title"style="color: #0b9612;">material-title</span>
+                                下包含的管件</h3>
                             <table class="table table-striped table-bordered table-hover"
                                    id="pipe-table">
                                 <thead>
@@ -115,7 +190,7 @@
                                     <th>单元</th>
                                     <th>管号</th>
                                     <th>下料长</th>
-                                    <th>是否下料完成</th>
+                                    <th>下料状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -126,61 +201,26 @@
                                     <td>单元</td>
                                     <td>管号</td>
                                     <td>下料长</td>
-                                    <td>是否下料完成</td>
+                                    <td>下料状态</td>
                                     <td>操作</td>
                                 </tr>
+                                <tr>
+                                    <td>编号1</td>
+                                    <td>批次</td>
+                                    <td>单元</td>
+                                    <td>管号</td>
+                                    <td>下料长</td>
+                                    <td>下料状态</td>
+                                    <td>操作</td>
+                                </tr>
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <span>管材:</span>
-                                    <input id="pipe-material-input" type="text" class="form-control" readonly/>
-                                </div>
-                                <div class="col-md-4">
-                                    <span>需求总长度:</span>
-                                    <input type="text" class="form-control" readonly/>
-                                </div>
-                                <div class="col-md-4">
-                                    <span>缺少长度:</span>
-                                    <input type="text" class="form-control" readonly/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <span>原材料长度:</span>
-                                    <input type="text" class="form-control"/>
-                                </div>
-                                <div class="col-md-3">
-                                    <span>原材料数量:</span>
-                                    <input type="text" class="form-control"/>
-                                </div>
 
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered table-hover"
-                                       id="input-table">
-                                    <thead>
-                                    <tr>
-                                        <th>管材</th>
-                                        <th>原材料长度</th>
-                                        <th>原材料数量</th>
-                                        <th>删除</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="input-tb-body">
-                                    <tr>
-                                        <td>管材</td>
-                                        <td>原材料长度</td>
-                                        <td>原材料数量</td>
-                                        <td>删除</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
                     </div>
                 </div>

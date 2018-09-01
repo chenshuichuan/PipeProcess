@@ -1,5 +1,6 @@
 package llcweb.service;
 
+import llcweb.domain.entities.CutPipeInfo;
 import llcweb.domain.models.PipeTable;
 import llcweb.domain.models.PlanTable;
 import llcweb.domain.models.Taoliao;
@@ -39,5 +40,7 @@ public interface TaoliaoService {
     Page<Taoliao> getPage(PageParam pageParam, Taoliao taoliao);
     int generateTaoliao(PlanTable planTable);
     List<PipeTable> getPipeTableByTaoliaoId(int taoliaoId);
+    Page<PipeTable> getPipeTableByTaoliaoId( PageParam pageParam,int taoliaoId);
+    List<CutPipeInfo> turnPipeTableToCutPipeInfo(List<PipeTable> pipeTableList, int taoliaoId);
 
 }

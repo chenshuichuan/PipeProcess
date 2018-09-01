@@ -1,11 +1,13 @@
 package llcweb.service;
 
 import llcweb.domain.models.PipeTable;
+import llcweb.domain.models.UnitTable;
 import llcweb.domain.models.Workstage;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
 
 import java.nio.channels.Pipe;
+import java.util.List;
 
 /**
  * Created by:Ricardo
@@ -35,7 +37,7 @@ public interface PipeTableService {
     * */
     void deleteById(int id);
 
-    Page<PipeTable> getPage(PageParam pageParam, Integer batchId);
+    Page<PipeTable> getPage(PageParam pageParam, PipeTable pipeTable,List<UnitTable> unitTableList);
     void turnUnit(int startPage, String batchName);
 
     //解析管件的加工工序,传入所有工序，防止单元调用批次调用时，每次重新读取数据库，

@@ -46,6 +46,9 @@ public class PipeTableServiceImpl implements PipeTableService {
     private WorkstageRepository workstageRepository;
     @Autowired
     private ProcessOrderRepository processOrderRepository;
+    @Autowired
+    private PipeProcessingRepository pipeProcessingRepository;
+
     @Transactional
     @Override
     public void add() {
@@ -89,25 +92,71 @@ public class PipeTableServiceImpl implements PipeTableService {
      *@Date: 10:17 2018/8/10
      *@param: pageParam:分页参数
      *@param: batchId: 要查找的批次id
+     * unitTableList : 下料分页查找时使用
      **/
-    public Page<PipeTable> getPage(PageParam pageParam, Integer batchId) {
+    @Override
+    public Page<PipeTable> getPage(PageParam pageParam, PipeTable example,List<UnitTable> unitTableList) {
         //规格定义
         Specification<PipeTable> specification = new Specification<PipeTable>() {
 
-            /**
-             * 构造断言
-             * @param root 实体对象引用
-             * @param query 规则查询对象
-             * @param cb 规则构建对象
-             * @return 断言
-             */
             @Override
             public Predicate toPredicate(Root<PipeTable> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>(); //所有的断言
-                if(batchId>0){ //添加断言
-
-                    Predicate likeUserName = cb.equal(root.get("batchId").as(Integer.class),batchId);
-                    predicates.add(likeUserName);
+                if(example.getBatchId()!=null&&example.getBatchId()>0){ //添加断言
+                    Predicate likeName = cb.equal(root.get("batchId").as(Integer.class),example.getBatchId());
+                    predicates.add(likeName);
+                }
+                if(StringUtils.isNotBlank(example.getPipeCode())){
+                    Predicate likeName = cb.equal(root.get("pipeCode").as(String.class),example.getPipeCode());
+                    predicates.add(likeName);
+                }
+                if(StringUtils.isNotBlank(example.getShipCode())){
+                    Predicate likeName = cb.equal(root.get("shipCode").as(String.class),example.getShipCode());
+                    predicates.add(likeName);
+                }
+                //下料页面的分页数据
+                if(unitTableList!=null&&unitTableList.size()>0){
+                    CriteriaBuilder.In<Object> in = cb.in(root.get("unitName"));
+                    for (UnitTable unitTable: unitTableList){
+                        in.value(unitTable.getUnitName());
+                    }
+                    predicates.add(in);
+                }
+                else if(StringUtils.isNotBlank(example.getUnitName())){
+                    Predicate likeName = cb.equal(root.get("unitName").as(String.class),example.getUnitName());
+                    predicates.add(likeName);
+                }
+                if(StringUtils.isNotBlank(example.getPipeMaterial())){
+                    Predicate likeName = cb.equal(root.get("pipeMaterial").as(String.class),example.getPipeMaterial());
+                    predicates.add(likeName);
+                }
+                if(StringUtils.isNotBlank(example.getPipeShape())){
+                    Predicate likeName = cb.equal(root.get("pipeShape").as(String.class),example.getPipeShape());
+                    predicates.add(likeName);
+                }
+                if(StringUtils.isNotBlank(example.getSurfaceTreat())){
+                    Predicate likeName = cb.equal(root.get("surfaceTreat").as(String.class),example.getSurfaceTreat());
+                    predicates.add(likeName);
+                }
+                if(StringUtils.isNotBlank(example.getSurfaceName())){
+                    Predicate likeName = cb.equal(root.get("surfaceName").as(String.class),example.getSurfaceName());
+                    predicates.add(likeName);
+                }
+                if(example.getPipeMaterialLevel()!=null&&example.getPipeMaterialLevel()>0){ //添加断言
+                    Predicate likeName = cb.equal(root.get("pipeMaterialLevel").as(Integer.class),example.getPipeMaterialLevel());
+                    predicates.add(likeName);
+                }
+                if(example.getNoInstalled()!=null&&example.getNoInstalled()>0){ //添加断言
+                    Predicate likeName = cb.equal(root.get("noInstalled").as(Integer.class),example.getNoInstalled());
+                    predicates.add(likeName);
+                }
+                if(example.getProcessOrder()!=null&&example.getProcessOrder()>0){ //添加断言
+                    Predicate likeName = cb.equal(root.get("processOrder").as(Integer.class),example.getProcessOrder());
+                    predicates.add(likeName);
+                }
+                if(example.getProcessState()!=null&&example.getProcessState()>0){ //添加断言
+                    Predicate likeName = cb.equal(root.get("processState").as(Integer.class),example.getProcessState());
+                    predicates.add(likeName);
                 }
                 return cb.and(predicates.toArray(new Predicate[0]));
             }
@@ -131,10 +180,13 @@ public class PipeTableServiceImpl implements PipeTableService {
         BatchTable temp = batchTableRepository.findByBatchName(batchName);
         Integer batchId = 0;
         if(temp!=null)batchId = temp.getBatchId();
-        Page<PipeTable> page =  getPage(new PageParam(1,50), batchId);
+        PipeTable pipeTable1= new PipeTable();
+        pipeTable1.setBatchId(batchId);
+        Page<PipeTable> page =  getPage(new PageParam(1,50), pipeTable1,null);
         int pageSize = page.getTotalPages();
         for (int i = startPage; i <= pageSize; i++) {
-            page =  getPage(new PageParam(i,50), batchId);
+
+            page =  getPage(new PageParam(i,50), pipeTable1,null);
             System.out.println("page size ="+pageSize+" currrent page="+i);
             List<PipeTable> pipeTableList = page.getContent();
 

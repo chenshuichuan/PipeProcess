@@ -1,11 +1,9 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.*;
+import llcweb.domain.entities.CutPipeInfo;
 import llcweb.domain.models.*;
-import llcweb.service.PipeTableService;
-import llcweb.service.ProcessOrderService;
-import llcweb.service.TaoliaoService;
-import llcweb.service.UsersService;
+import llcweb.service.*;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,6 +38,8 @@ public class TaoliaoServiceImpl implements TaoliaoService {
     @Autowired
     private PipeTableRepository pipeTableRepository;
     @Autowired
+    private PipeTableService pipeTableService;
+    @Autowired
     private BatchTableRepository batchTableRepository;
     @Autowired
     private UnitTableRepository unitTableRepository;
@@ -55,6 +55,11 @@ public class TaoliaoServiceImpl implements TaoliaoService {
     private UsersService usersService;
     @Autowired
     private ArrangeTableRepository arrangeTableRepository;
+    @Autowired
+    private ArrangeTableService arrangeTableService;
+    @Autowired
+    private PipeProcessingService pipeProcessingService;
+
 
     @Transactional
     @Override
@@ -95,9 +100,17 @@ public class TaoliaoServiceImpl implements TaoliaoService {
             public Predicate toPredicate(Root<Taoliao> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>(); //所有的断言
                 if(taoliao.getPlanId()!=null && taoliao.getPlanId()>0){ //添加断言
-
                     Predicate likeUserName = cb.equal(root.get("planId").as(Integer.class),taoliao.getPlanId());
                     predicates.add(likeUserName);
+                }
+                else{//获取所有未下料
+                    //获取登录用户能查看的下料未完成的批次派工
+                    List<ArrangeTable> arrangeTableList = arrangeTableService.getUsersArrangeTable(1,0);
+                    CriteriaBuilder.In<Object> in = cb.in(root.get("planId"));
+                    for (ArrangeTable arrangeTable: arrangeTableList){
+                        in.value(arrangeTable.getPlanId());
+                    }
+                    predicates.add(in);
                 }
                 if(taoliao.getIsTaoliao()!=null){ //空的话，已套料，未套料的都查
                     Predicate likeUserName = cb.equal(root.get("isTaoliao").as(Integer.class),taoliao.getIsTaoliao());
@@ -188,13 +201,13 @@ public class TaoliaoServiceImpl implements TaoliaoService {
         }
         return 0;
     }
-
     //根据taoliaoId 获取该套料下的管件
     @Override
     public List<PipeTable> getPipeTableByTaoliaoId(int taoliaoId){
         Taoliao taoliao = taoliaoRepository.findOne(taoliaoId);
         List<PipeTable>pipeTableList = new ArrayList<>();
         if(taoliao!=null){
+            logger.info("查询套料id="+taoliaoId);
             //获取计划批次下所有单元
             List<UnitTable> unitTableList = unitTableRepository.findByPlanId(taoliao.getPlanId());
             for (UnitTable unitTable:unitTableList){
@@ -206,5 +219,48 @@ public class TaoliaoServiceImpl implements TaoliaoService {
             }
         }
         return  pipeTableList;
+    }
+
+    //根据taoliaoId 获取该套料下的管件
+    @Override
+    public Page<PipeTable> getPipeTableByTaoliaoId( PageParam pageParam,int taoliaoId){
+        List<UnitTable> unitTableList =new ArrayList<>();
+        PipeTable pipeTable = new PipeTable();
+        Taoliao taoliao = taoliaoRepository.findOne(taoliaoId);
+        if(taoliao!=null){
+            logger.info("查询套料id="+taoliaoId);
+            //获取计划批次下所有单元
+            unitTableList= unitTableRepository.findByPlanId(taoliao.getPlanId());
+            //获取单元下该管材的管件
+            pipeTable.setBatchId(taoliao.getBatchId());
+            pipeTable.setPipeMaterial(taoliao.getPipeMaterial());
+        }
+        return  pipeTableService.getPage(pageParam,pipeTable,unitTableList);
+    }
+    //将套料管件信息封装为CutPipeInfo对象
+    @Override
+    public List<CutPipeInfo> turnPipeTableToCutPipeInfo(List<PipeTable> pipeTableList,int taoliaoId){
+        List<CutPipeInfo> cutPipeInfoList =  new ArrayList<>();
+
+        Taoliao taoliao = taoliaoRepository.findOne(taoliaoId);
+        if(taoliao!=null) {
+            logger.info("查询套料id=" + taoliaoId);
+            BatchTable batchTable = batchTableRepository.findOne(taoliao.getBatchId());
+            //下料加工记录
+            Workstage workstage = workstageRepository.findByName("下料");
+
+            if(batchTable!=null)
+            for(PipeTable pipeTable:pipeTableList){
+                CutPipeInfo cutPipeInfo = new CutPipeInfo(pipeTable.getPipeId(),pipeTable.getCutLength(),pipeTable.getPipeCode());
+                cutPipeInfo.setBatchName(batchTable.getBatchName());
+                cutPipeInfo.setUnitName(pipeTable.getUnitName());
+
+                int status = pipeProcessingService.processingStateOfSatge(pipeTable,workstage.getId());
+                if(status==1)cutPipeInfo.setIsCutted(1);
+                else cutPipeInfo.setIsCutted(0);
+                cutPipeInfoList.add(cutPipeInfo);
+            }
+        }
+        return cutPipeInfoList;
     }
 }

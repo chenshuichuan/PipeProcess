@@ -98,4 +98,31 @@ public class PipeProcessingServiceImpl implements PipeProcessingService {
         //查询
         return pipeProcessingRepository.findAll(specification,pageable);
     }
+
+
+    /**
+     *@Author: Ricardo
+     *@Description: //返回pipe在某工序的加工状态：未开始 -1，加工中0，已完工1
+     * 未开始：pipeprocessing中不存在该工序的加工记录
+     * 加工中：该工序的加工记录中存在未完成的记录
+     * 已完工：该工序的加工记录中所有记录都已完成
+     *@Date: 11:24 2018/9/1
+     *@param:
+     **/
+    public int processingStateOfSatge(PipeTable pipeTable,int stageId){
+
+        List<PipeProcessing> pipeProcessingList =
+                pipeProcessingRepository.findByPipeIdAndProcessState(pipeTable.getPipeId(),stageId);
+        int stageProcessStatus = 1;
+        for(PipeProcessing pipeProcessing: pipeProcessingList){
+            //存在未完成记录
+            if(pipeProcessing.getIsFinished()==0){
+                stageProcessStatus=0;
+                break;
+            }
+        }
+        //不存在加工记录
+        if(pipeProcessingList==null||pipeProcessingList.size()==0)stageProcessStatus=-1;
+        return stageProcessStatus;
+    }
 }
