@@ -160,9 +160,9 @@ public class PlanController {
         String stocks = request.getParameter("stocks");
         String sections = request.getParameter("sections");
 
-        Date startDate = DateUtil.StringTodate(planStart);
-        Date endDate = DateUtil.StringTodate(planEnd);
-        Date sendDate = DateUtil.StringTodate(sendPicTime);
+        Date startDate = DateUtil.StringTodate(planStart,"yyyy/MM/dd");
+        Date endDate = DateUtil.StringTodate(planEnd,"yyyy/MM/dd");
+        Date sendDate = DateUtil.StringTodate(sendPicTime,"yyyy/MM/dd");
         //如果传入的日期字符非空，日期不可以为空
         if((planStart!=null&&planStart.length()>0&&startDate==null)
                 ||(planEnd!=null&&planEnd.length()>0&&endDate==null)
