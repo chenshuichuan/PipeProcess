@@ -25,4 +25,6 @@ public interface BatchTableRepository extends JpaRepository<BatchTable,Integer>
     BatchTable findByBatchName(String batchName);
     BatchTable findByShipCodeAndBatchName(String shipCode, String batchName);
     List<BatchTable> findByShipCode(String shipCode);
+    List<BatchTable> findByShipCodeAndFinishedTimeIsNull(String shipCode);
+    List<BatchTable> findByShipCodeAndFinishedTimeIsNotNull(String shipCode);
 }

@@ -68,4 +68,10 @@ public interface UnitTableService {
 
     //统计某船 的管件加工情况
     ProcessInfo calPipeProcessOfShip(String shipCode);
+
+    //统计某批次 的管件加工情况
+    ProcessInfo calPipeProcessOfBatch(String batchName);
+
+    //统计 批次 的管件加工情况
+    //List<> getUnitProcessOfBatch(BatchTable batchTable);
 }

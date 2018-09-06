@@ -105,7 +105,30 @@ public class HtmlController {
 //        modelAndView.addObject("user", users);
         return modelAndView;
     }
-
+    //批次监控页面
+    @RequestMapping("/monitor_batchs.html")
+    public ModelAndView monitor_batchs(){
+        ModelAndView modelAndView = new ModelAndView("monitor_batchs");
+        Users users = usersService.getCurrentUser();
+        modelAndView.addObject("user", users);
+        return modelAndView;
+    }
+    //单元监控页面
+    @RequestMapping("/monitor_units.html")
+    public ModelAndView monitor_units(){
+        ModelAndView modelAndView = new ModelAndView("monitor_units");
+        Users users = usersService.getCurrentUser();
+        modelAndView.addObject("user", users);
+        return modelAndView;
+    }
+    //管件监控页面
+    @RequestMapping("/monitor_pipes.html")
+    public ModelAndView monitor_pipes(){
+        ModelAndView modelAndView = new ModelAndView("monitor_pipes");
+        Users users = usersService.getCurrentUser();
+        modelAndView.addObject("user", users);
+        return modelAndView;
+    }
     //批次派工页面
     @RequestMapping("/arrange_batchs.html")
     public ModelAndView arrange_batchs(){

@@ -40,5 +40,6 @@ public interface ShipTableService {
     Page<ShipTable> getPage(PageParam pageParam, ShipTable example);
     List<ShipTable> getAllShipNameByState(int state);
 
+    //统计船的加工情况
     List<ShipProcessInfo> getShipProcessInfo(List<ShipTable> shipTableList);
 }

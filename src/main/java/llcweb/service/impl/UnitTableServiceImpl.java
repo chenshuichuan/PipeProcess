@@ -457,4 +457,23 @@ public class UnitTableServiceImpl implements UnitTableService {
         processInfo.setNumber(number);
         return processInfo;
     }
+    //统计某批次的管件加工情况
+    @Override
+    public ProcessInfo calPipeProcessOfBatch(String batchName) {
+        List<UnitTable> unitTableList = unitTableRepository.findByBatchName(batchName);
+        ProcessInfo processInfo = new ProcessInfo();
+        int finished = 0;
+        int number = 0;
+        for (UnitTable unitTable:unitTableList){
+            finished+=unitTable.getPipeFinishedNumber();
+            number +=unitTable.getPipeNumber();
+        }
+        double temp=0;
+        if(number!=0)temp = (double)finished/(double)number;
+        processInfo.setFinishedRate(CalculateUtil.DecimalDouble(temp,4));
+
+        processInfo.setFinished(finished);
+        processInfo.setNumber(number);
+        return processInfo;
+    }
 }

@@ -48,7 +48,17 @@ public class ShipController {
         map.put("page",shipTableService.getPage(new PageParam(1,10),shipTable));
         return map;
     }
-
+    //获取所有船名和shipCode
+    @RequestMapping(value = "/getAllShip",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> getAllShip(){
+        Map<String,Object> map =new HashMap<String,Object>();
+        List<ShipTable> shipTableList =  shipTableService.getAllShipNameByState(-1);
+        map.put("data",shipTableList);
+        map.put("message","ok");
+        map.put("result",1);
+        return map;
+    }
     //获取当前未完工的船名和shipCode
     @RequestMapping(value = "/getAllUnfinishedShip",method = RequestMethod.GET)
     @ResponseBody

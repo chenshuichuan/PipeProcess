@@ -2,12 +2,15 @@ package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.BatchTableRepository;
+import llcweb.domain.entities.BatchProcessInfo;
 import llcweb.domain.entities.ProcessInfo;
 import llcweb.domain.models.BatchTable;
 import llcweb.domain.models.ProcessOrder;
+import llcweb.domain.models.ShipTable;
 import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.BatchTableService;
+import llcweb.service.UnitTableService;
 import llcweb.tools.CalculateUtil;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +43,8 @@ public class BatchTableServiceImpl implements BatchTableService {
     private  final  Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     @Autowired
     private BatchTableRepository batchTableRepository;
-
+    @Autowired
+    private UnitTableService unitTableService;
     @Transactional
     @Override
     public void add() {
@@ -105,5 +109,39 @@ public class BatchTableServiceImpl implements BatchTableService {
         processInfo.setFinished(finished);
         processInfo.setNumber(number);
         return processInfo;
+    }
+
+    /**
+     *@Author: Ricardo
+     *@Description: 根据船名和完工状态获取批次信息
+     *@Date: 23:21 2018/9/6
+     *@param: isfinished -1 所有批次， 0未完工批次 1完工批次
+     **/
+    @Override
+    public List<BatchProcessInfo> getBatchProcessInfo(ShipTable shipTable,int isfinished) {
+        List<BatchTable> batchTableList = getBatchTableByShipCodeAndSate(shipTable.getShipCode(),isfinished);
+        List<BatchProcessInfo> batchProcessInfoList =new ArrayList<>();
+        //封装BatchTable信息未BatchProcessInfo信息
+        for (BatchTable batchTable:batchTableList){
+            BatchProcessInfo batchProcessInfo = new BatchProcessInfo(batchTable);
+            batchProcessInfo.setShipName(shipTable.getShipName());
+            //计算该批次下管件加工情况
+            ProcessInfo processInfo = unitTableService.calPipeProcessOfBatch(batchTable.getBatchName());
+            batchProcessInfo.setPipeNumber(processInfo.getNumber());
+            batchProcessInfo.setPipeFinished(processInfo.getFinished());
+            batchProcessInfo.setPipeFinishedRate(processInfo.getFinishedRate());
+
+            //计算该批次下料状态
+
+
+            batchProcessInfoList.add(batchProcessInfo);
+        }
+
+        return batchProcessInfoList;
+    }
+    private List<BatchTable> getBatchTableByShipCodeAndSate(String shipCode,int isFinished){
+        if(isFinished==0)return batchTableRepository.findByShipCodeAndFinishedTimeIsNull(shipCode);
+        else if(isFinished==1)return batchTableRepository.findByShipCodeAndFinishedTimeIsNotNull(shipCode);
+        else return batchTableRepository.findByShipCode(shipCode);
     }
 }

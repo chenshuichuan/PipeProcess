@@ -9,11 +9,14 @@ var urlGetDepartmentBySectionAndStage ="/department/getDepartmentBySectionAndSta
 var urlGetUserManageSections = "/users/getUserManageSections";
 ////获取当前未完工的船名和shipCode
 var urlGetAllUnfinishedShip = "/ship/getAllUnfinishedShip";
+var urlGetAllShip = "/ship/getAllShip";
 
 //根据查找工段下所有工序
 var urlGetStageBySection = "/department/getStageBySection";
 //查找船下所有的批次名
 var urlGetBatchNameByShipCode = "/batch/getBatchNameByShipCode";
+
+
 
 /*常量*/
 Date.prototype.toLocaleString = function() {
@@ -202,6 +205,21 @@ function getAllUnfinishedShip() {
     $.ajax({
         type : "get",
         url : urlGetAllUnfinishedShip,
+        data :"",
+        async : false,
+        success : function(data){
+            ships = data.data;
+        }
+    });
+    return ships;
+}
+////获取当前未完工的船名和shipCode
+function getAllShip() {
+    var ships =null;
+    //设置同步
+    $.ajax({
+        type : "get",
+        url : urlGetAllShip,
         data :"",
         async : false,
         success : function(data){

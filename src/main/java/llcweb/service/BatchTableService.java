@@ -1,10 +1,14 @@
 package llcweb.service;
 
+import llcweb.domain.entities.BatchProcessInfo;
 import llcweb.domain.entities.ProcessInfo;
 import llcweb.domain.models.BatchTable;
+import llcweb.domain.models.ShipTable;
 import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * Created by:Ricardo
@@ -39,4 +43,6 @@ public interface BatchTableService {
 
     //统计某船 的单元加工情况
     ProcessInfo calUnitProcessOfShip(String shipCode);
+    // 统计某船所有批次加工情况
+    List<BatchProcessInfo> getBatchProcessInfo(ShipTable shipTable,int isfinished);
 }
