@@ -1,9 +1,16 @@
 package llcweb.controller;
 
+import llcweb.dao.repository.BatchTableRepository;
+import llcweb.dao.repository.ShipTableRepository;
+import llcweb.domain.entities.ProcessInfo;
+import llcweb.domain.entities.ShipProcessInfo;
+import llcweb.domain.models.BatchTable;
 import llcweb.domain.models.Departments;
 import llcweb.domain.models.ShipTable;
 import llcweb.domain.models.Users;
+import llcweb.service.BatchTableService;
 import llcweb.service.ShipTableService;
+import llcweb.service.UnitTableService;
 import llcweb.service.UsersService;
 import llcweb.tools.PageParam;
 import org.slf4j.Logger;
@@ -13,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +35,12 @@ public class ShipController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private ShipTableService shipTableService;
+    @Autowired
+    private ShipTableRepository shipTableRepository;
 
     @RequestMapping(value = "/page",method = RequestMethod.GET)
     @ResponseBody
-    public Map<String,Object> login(HttpServletRequest request, HttpServletResponse response){
+    public Map<String,Object> page(HttpServletRequest request, HttpServletResponse response){
         Map<String,Object> map =new HashMap<String,Object>();
 
         ShipTable shipTable = new ShipTable();
@@ -60,6 +70,48 @@ public class ShipController {
         map.put("result",0);
         map.put("message","");
         logger.info("");
+        return map;
+    }
+    /**
+     *@Author: Ricardo
+     *@Description: 获取首页船舶加工进度table数据
+     *@Date: 18:26 2018/9/6
+     *@param:
+     **/
+    @RequestMapping(value = "/processingInfo",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> processingInfo(HttpServletRequest request, HttpServletResponse response){
+        Map<String,Object> map =new HashMap<String,Object>();
+
+        //直接返回前台
+        String draw = request.getParameter("draw");
+        //是否是加工完成的船
+        String isFinishedStr = request.getParameter("isFinished");
+        int isFinished =0;
+        if (isFinishedStr!=null&&!isFinishedStr.equals("")) {
+            isFinished= Integer.parseInt(isFinishedStr);
+            List<ShipTable>shipTableList = new ArrayList<>();
+            if(isFinished>=-1&&isFinished<=1){
+                shipTableList = shipTableService.getAllShipNameByState(isFinished);
+                List<ShipProcessInfo> shipProcessInfoList = shipTableService.getShipProcessInfo(shipTableList);
+
+                map.put("data",shipProcessInfoList);
+                map.put("result", 1);
+                map.put("message","获取成功！");
+            }
+            else {
+                map.put("result", 0);
+                map.put("message","参数错误！");
+                logger.error("参数错误！");
+            }
+        }
+        //返回全部船数据
+        else{
+            map.put("result", 0);
+            map.put("message","参数错误！");
+            logger.error("参数错误！");
+        }
+        map.put("draw", draw);
         return map;
     }
 }

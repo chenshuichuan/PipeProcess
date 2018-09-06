@@ -1,6 +1,7 @@
 package llcweb.service.impl;
 
 import llcweb.dao.repository.*;
+import llcweb.domain.entities.ProcessInfo;
 import llcweb.domain.entities.UnitTableInfo;
 import llcweb.domain.entities.Units;
 import llcweb.domain.models.*;
@@ -8,6 +9,7 @@ import llcweb.service.ArrangeTableService;
 import llcweb.service.PipeTableService;
 import llcweb.service.ProcessOrderService;
 import llcweb.service.UnitTableService;
+import llcweb.tools.CalculateUtil;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -435,5 +437,24 @@ public class UnitTableServiceImpl implements UnitTableService {
             unitTableInfoList.add(unitTableInfo);
         }
         return unitTableInfoList;
+    }
+    //统计某船 的管件加工情况
+    @Override
+    public ProcessInfo calPipeProcessOfShip(String shipCode) {
+        List<UnitTable> unitTableList = unitTableRepository.findByShipCode(shipCode);
+        ProcessInfo processInfo = new ProcessInfo();
+        int finished = 0;
+        int number = 0;
+        for (UnitTable unitTable:unitTableList){
+            finished+=unitTable.getPipeFinishedNumber();
+            number +=unitTable.getPipeNumber();
+        }
+        double temp=0;
+        if(number!=0)temp = (double)finished/(double)number;
+        processInfo.setFinishedRate(CalculateUtil.DecimalDouble(temp,4));
+
+        processInfo.setFinished(finished);
+        processInfo.setNumber(number);
+        return processInfo;
     }
 }

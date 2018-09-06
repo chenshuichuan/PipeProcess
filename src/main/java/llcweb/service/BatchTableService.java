@@ -1,5 +1,6 @@
 package llcweb.service;
 
+import llcweb.domain.entities.ProcessInfo;
 import llcweb.domain.models.BatchTable;
 import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
@@ -35,4 +36,7 @@ public interface BatchTableService {
   * example 为字段可能包含的值
   * */
     Page<BatchTable> getPage(PageParam pageParam, BatchTable example);
+
+    //统计某船 的单元加工情况
+    ProcessInfo calUnitProcessOfShip(String shipCode);
 }

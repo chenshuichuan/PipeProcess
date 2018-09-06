@@ -1,5 +1,6 @@
 package llcweb.service;
 
+import llcweb.domain.entities.ShipProcessInfo;
 import llcweb.domain.models.ShipTable;
 import llcweb.domain.models.Workers;
 import llcweb.tools.PageParam;
@@ -38,4 +39,6 @@ public interface ShipTableService {
   * */
     Page<ShipTable> getPage(PageParam pageParam, ShipTable example);
     List<ShipTable> getAllShipNameByState(int state);
+
+    List<ShipProcessInfo> getShipProcessInfo(List<ShipTable> shipTableList);
 }

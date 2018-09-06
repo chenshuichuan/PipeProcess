@@ -1,5 +1,6 @@
 package llcweb.tools;
 
+import java.math.BigDecimal;
 import java.util.Random;
 
 public class CalculateUtil {
@@ -87,5 +88,9 @@ public class CalculateUtil {
 		}
 		return ipInt;
 	}
-
+	//将number 保留scale位小数
+	public static double DecimalDouble(double number,int scale){
+		BigDecimal b = new BigDecimal(number);
+		return b.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
 }

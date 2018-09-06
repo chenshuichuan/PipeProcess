@@ -2,10 +2,13 @@ package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.BatchTableRepository;
+import llcweb.domain.entities.ProcessInfo;
 import llcweb.domain.models.BatchTable;
+import llcweb.domain.models.ProcessOrder;
 import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
 import llcweb.service.BatchTableService;
+import llcweb.tools.CalculateUtil;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -83,5 +86,24 @@ public class BatchTableServiceImpl implements BatchTableService {
         Pageable pageable = new PageRequest(pageParam.getCurrentPage() - 1, pageParam.getNumPerPage()); //页码：前端从1开始，jpa从0开始，做个转换
         //查询
         return batchTableRepository.findAll(specification,pageable);
+    }
+    //统计某船 的单元加工情况
+    @Override
+    public ProcessInfo calUnitProcessOfShip(String shipCode) {
+        List<BatchTable> batchTableList = batchTableRepository.findByShipCode(shipCode);
+        ProcessInfo processInfo = new ProcessInfo();
+        int finished = 0;
+        int number = 0;
+        for (BatchTable batchTable:batchTableList){
+            finished+=batchTable.getUnitFinishedNumber();
+            number +=batchTable.getUnitNumber();
+        }
+        double temp=0;
+        if(number!=0)temp = (double)finished/(double)number;
+        processInfo.setFinishedRate(CalculateUtil.DecimalDouble(temp,4));
+
+        processInfo.setFinished(finished);
+        processInfo.setNumber(number);
+        return processInfo;
     }
 }

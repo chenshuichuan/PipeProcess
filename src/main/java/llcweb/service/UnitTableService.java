@@ -1,5 +1,6 @@
 package llcweb.service;
 
+import llcweb.domain.entities.ProcessInfo;
 import llcweb.domain.entities.UnitTableInfo;
 import llcweb.domain.entities.Units;
 import llcweb.domain.models.*;
@@ -64,4 +65,7 @@ public interface UnitTableService {
                                Workstage polish, Workstage surface, Workstage finished,boolean saveToDataBase);
     //UnitTable转换为UnitTableInfo
     List<UnitTableInfo> unitToUnitInfo(List<UnitTable> unitTableList,Departments section);
+
+    //统计某船 的管件加工情况
+    ProcessInfo calPipeProcessOfShip(String shipCode);
 }

@@ -2,10 +2,14 @@ package llcweb.service.impl;
 
 import llcweb.dao.repository.ArrangeTableRepository;
 import llcweb.dao.repository.ShipTableRepository;
+import llcweb.domain.entities.ProcessInfo;
+import llcweb.domain.entities.ShipProcessInfo;
 import llcweb.domain.models.ShipTable;
 import llcweb.domain.models.Workers;
 import llcweb.service.ArrangeTableService;
+import llcweb.service.BatchTableService;
 import llcweb.service.ShipTableService;
+import llcweb.service.UnitTableService;
 import llcweb.tools.PageParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,7 +41,10 @@ public class ShipTableServiceImpl implements ShipTableService {
     private  final  Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     @Autowired
     private ShipTableRepository shipTableRepository;
-
+    @Autowired
+    private BatchTableService batchTableService;
+    @Autowired
+    private UnitTableService unitTableService;
     @Transactional
     @Override
     public void add() {
@@ -86,10 +93,35 @@ public class ShipTableServiceImpl implements ShipTableService {
     }
 
     //根据state 查询船
-    //state：1 完工状态 ，0未完工状态
+    //state：1 完工状态 ，0未完工状态 -1所有
     @Override
     public List<ShipTable> getAllShipNameByState(int state) {
-        if(state==1) return shipTableRepository.findFinishedShip();
+        if(state==-1)return shipTableRepository.findAll();
+        else if(state==1) return shipTableRepository.findFinishedShip();
         else  return shipTableRepository.findUnfinishedShip();
     }
+    @Override
+    public List<ShipProcessInfo> getShipProcessInfo(List<ShipTable> shipTableList){
+        List<ShipProcessInfo> shipProcessInfoList = new ArrayList<>();
+        //跟据船列表获取加工信息
+        for (ShipTable shipTable: shipTableList){
+            //继承船信息，加工批次信息
+            ShipProcessInfo shipProcessInfo = new ShipProcessInfo(shipTable);
+            //获取所有批次 统计单元信息
+            ProcessInfo unitProcessInfo = batchTableService.calUnitProcessOfShip(shipTable.getShipCode());
+            shipProcessInfo.setUnitNumber(unitProcessInfo.getNumber());
+            shipProcessInfo.setUnitFinished(unitProcessInfo.getFinished());
+            shipProcessInfo.setUnitFinishedRate(unitProcessInfo.getFinishedRate());
+
+            //获取所有单元 统计管件信息
+            ProcessInfo pipeProcessInfo = unitTableService.calPipeProcessOfShip(shipTable.getShipCode());
+            shipProcessInfo.setPipeNumber(unitProcessInfo.getNumber());
+            shipProcessInfo.setPipeFinished(unitProcessInfo.getFinished());
+            shipProcessInfo.setPipeFinishedRate(unitProcessInfo.getFinishedRate());
+
+            shipProcessInfoList.add(shipProcessInfo);
+        }
+        return  shipProcessInfoList;
+    }
+
 }

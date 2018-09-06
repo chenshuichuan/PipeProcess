@@ -21,7 +21,7 @@ Date.prototype.toLocaleString = function() {
 };
 //后台传来的日期数据，转化为2012/08/02 的格式
 function dateToString(date) {
-    if(date===null)return "未知";
+    if(date==null||date==undefined)return "---";
     else return new Date(date).toLocaleString();
 }
 var CONSTANT = {
