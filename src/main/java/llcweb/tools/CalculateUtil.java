@@ -6,10 +6,13 @@ import java.util.Random;
 public class CalculateUtil {
 	
 	//随机码字典集
-    private static final String RANDOM_STR="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";  
+    private static final String RANDOM_STR="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	public static void main(String[] args){
 
+		for(int i=0;i<10;i++)System.out.println(CalculateUtil.getNext(0,5));
+	}
 	/**
-	 * 取某个范围的任意数
+	 * 取某个范围的任意数 min<= x < max
 	 * @param min
 	 * @param max
 	 * @return
@@ -22,7 +25,6 @@ public class CalculateUtil {
 	
 	/**
 	 * 取某个范围的任意数
-	 * @param min
 	 * @param max
 	 * @return
 	 */
